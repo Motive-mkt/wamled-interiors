@@ -1,0 +1,8 @@
+{
+  "name": "Wamled",
+  "description": "Bespoke interior design studio specializing in residential and commercial spaces with a structured, professional approach.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

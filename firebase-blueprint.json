@@ -1,0 +1,109 @@
+{
+  "entities": {
+    "SiteContent": {
+      "title": "Site Content",
+      "description": "CMS content for the homepage",
+      "type": "object",
+      "properties": {
+        "heroHeadline": { "type": "string" },
+        "heroImage": { "type": "string" },
+        "galleryImages": { 
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "url": { "type": "string" },
+              "label": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "Service": {
+      "title": "Service",
+      "description": "Interior design services offered",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "category": { "type": "string" }
+      },
+      "required": ["title", "description"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Items for sale",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "imageUrl": { "type": "string" }
+      },
+      "required": ["name", "price"]
+    },
+    "Lead": {
+      "title": "Lead",
+      "description": "User inquiries",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "projectType": { "type": "string" },
+        "details": { "type": "string" },
+        "status": { "type": "string", "enum": ["New", "In Progress", "Closed", "Archived"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "source": { "type": "string" }
+      },
+      "required": ["name", "phone", "status"]
+    },
+    "User": {
+      "title": "User",
+      "description": "System user (Owner or Worker)",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["owner", "worker"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "role"]
+    },
+    "Invite": {
+      "title": "Invite",
+      "description": "One-time invite code for workers",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "used": { "type": "boolean" }
+      },
+      "required": ["code", "used"]
+    }
+  },
+  "firestore": {
+    "site_content/homepage": {
+      "schema": "SiteContent",
+      "description": "The main content for the homepage"
+    },
+    "services/{serviceId}": {
+      "schema": "Service",
+      "description": "List of services"
+    },
+    "products/{productId}": {
+      "schema": "Product",
+      "description": "List of products"
+    },
+    "leads/{leadId}": {
+      "schema": "Lead",
+      "description": "Submitted lead inquiries"
+    },
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and roles"
+    },
+    "invites/{code}": {
+      "schema": "Invite",
+      "description": "Worker invitation codes"
+    }
+  }
+}
