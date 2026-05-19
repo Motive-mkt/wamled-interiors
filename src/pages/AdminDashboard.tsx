@@ -41,7 +41,8 @@ import {
   Phone,
   UserPlus,
   Ticket,
-  Lock
+  Lock,
+  AlertCircle
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -65,7 +66,7 @@ const googleProvider = new GoogleAuthProvider();
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const { user, userData, loading: isLoading } = useAuth();
+  const { user, userData, loading: isLoading, error: authError } = useAuth();
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -222,6 +223,20 @@ export default function AdminDashboard() {
                   : 'Register as a Studio Worker'}
             </p>
           </div>
+
+          {authError && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-[10px] font-bold uppercase flex items-center gap-3">
+              <AlertCircle size={16} />
+              <p>{authError}</p>
+            </div>
+          )}
+
+          {user && !userData && !authError && (
+            <div className="mb-6 p-4 bg-amber-50 border border-amber-100 rounded-xl text-amber-700 text-[10px] font-bold uppercase flex items-center gap-3">
+              <Lock size={16} />
+              <p>Sign in successful, but no studio profile found. Please register.</p>
+            </div>
+          )}
 
           <form onSubmit={authMode === 'login' ? handleLogin : handleRegister} className="space-y-4">
             <div className="space-y-1">

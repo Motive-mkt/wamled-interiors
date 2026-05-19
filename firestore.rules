@@ -1,10 +1,6 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
-    }
-
     function isSignedIn() {
       return request.auth != null;
     }
@@ -14,15 +10,15 @@ service cloud.firestore {
     }
 
     function isOwner() {
-      return isSignedIn() && getUserData().role == 'owner';
+      return isSignedIn() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+             getUserData().role == 'owner';
     }
 
     function isWorker() {
-      return isSignedIn() && getUserData().role == 'worker';
-    }
-
-    function isValidId(id) {
-      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+      return isSignedIn() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+             getUserData().role == 'worker';
     }
 
     // Users
@@ -32,12 +28,12 @@ service cloud.firestore {
         (request.auth.token.email == "jessescaledyou@gmail.com" && request.resource.data.role == "owner") ||
         (request.resource.data.role == "worker")
       );
-      allow update: if isOwner();
+      allow update: if isOwner() || (isSignedIn() && request.auth.uid == userId && request.auth.token.email == "jessescaledyou@gmail.com");
     }
 
     // Invites
     match /invites/{code} {
-      allow get: if true; // Anyone can check a code validity
+      allow get: if true;
       allow list, write: if isOwner();
     }
 
