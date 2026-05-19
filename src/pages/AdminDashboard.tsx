@@ -10,9 +10,7 @@ import {
   deleteDoc,
   orderBy,
   limit,
-  getDoc,
-  setDoc,
-  where
+  setDoc
 } from 'firebase/firestore';
 import { 
   LayoutDashboard, 
@@ -22,17 +20,14 @@ import {
   LogOut, 
   Plus, 
   Trash2, 
-  CheckCircle, 
   Clock, 
   TrendingUp,
   User as UserIcon,
-  Search,
   ExternalLink,
   Save,
   Star,
   Image as ImageIcon,
   Phone,
-  UserPlus,
   Ticket,
   Lock,
   AlertCircle
@@ -56,14 +51,14 @@ import { useAuth } from '../components/AuthContext';
 const COLORS = ['#A83F1B', '#E5E7EB', '#FBBF24', '#10B981'];
 
 export default function AdminDashboard() {
-  const navigate = useNavigate();
-  const { user, userData, loading: isLoading, error: authError, login, googleLogin, register, logout } = useAuth();
+  const { user, role, authLoading, roleLoading, login, googleLogin, register, logout } = useAuth();
+  
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [inviteCode, setInviteCode] = useState('');
-  
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
   
   const [activeTab, setActiveTab] = useState<'overview' | 'leads' | 'services' | 'products' | 'cms' | 'invites'>('overview');
   const [leads, setLeads] = useState<any[]>([]);
@@ -72,7 +67,7 @@ export default function AdminDashboard() {
   const { content, updateContent } = useCMS();
 
   useEffect(() => {
-    if (!user || !userData) return;
+    if (authLoading || roleLoading || !user || !role) return;
 
     const qLeads = query(collection(db, 'leads'), orderBy('createdAt', 'desc'));
     const unsubLeads = onSnapshot(qLeads, (s) => setLeads(s.docs.map(d => ({ id: d.id, ...d.data() }))));
@@ -88,15 +83,16 @@ export default function AdminDashboard() {
       unsubServices();
       unsubProducts();
     };
-  }, [user, userData]);
+  }, [user, role, authLoading, roleLoading]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setAuthError(null);
     try {
       await login(email, password);
     } catch (e: any) {
-      alert(e.message);
+      setAuthError(e.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -104,10 +100,11 @@ export default function AdminDashboard() {
 
   const handleGoogleLogin = async () => {
     setIsSubmitting(true);
+    setAuthError(null);
     try {
       await googleLogin();
     } catch (e: any) {
-      alert(e.message);
+      setAuthError(e.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -116,21 +113,28 @@ export default function AdminDashboard() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setAuthError(null);
     try {
       await register(email, password, inviteCode);
     } catch (e: any) {
-      alert(e.message);
+      setAuthError(e.message);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleLogout = () => logout();
+  if (authLoading || roleLoading) {
+    return (
+      <div className="min-h-screen bg-cream flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Clock className="animate-spin text-brand" size={32} />
+          <p className="text-sm font-bold uppercase tracking-widest text-ink/40">Authenticating...</p>
+        </div>
+      </div>
+    );
+  }
 
-
-  if (isLoading) return null;
-
-  if (!user || !userData) {
+  if (!user || !role) {
     return (
       <div className="min-h-screen bg-cream flex items-center justify-center p-6">
         <div className="bg-white p-8 rounded-3xl shadow-xl max-w-md w-full">
@@ -142,11 +146,11 @@ export default function AdminDashboard() {
               {authMode === 'login' ? 'Studio Access' : 'Create Account'}
             </h1>
             <p className="text-ink/60 text-sm">
-              {authMode === 'login' 
-                ? 'Sign in to manage your studio' 
-                : email === "jessescaledyou@gmail.com" 
-                  ? 'Register as the Studio Owner' 
-                  : 'Register as a Studio Worker'}
+              {user && !role 
+                ? "Account registered. Waiting for admin approval."
+                : authMode === 'login' 
+                  ? 'Sign in to manage your studio' 
+                  : 'Register for worker access'}
             </p>
           </div>
 
@@ -157,117 +161,126 @@ export default function AdminDashboard() {
             </div>
           )}
 
-          {user && !userData && !authError && (
-            <div className="mb-6 p-4 bg-amber-50 border border-amber-100 rounded-xl text-amber-700 text-[10px] font-bold uppercase flex items-center gap-3">
-              <Lock size={16} />
-              <p>Sign in successful, but no studio profile found. Please register.</p>
+          {user && !role && (
+            <div className="mb-6 p-6 bg-amber-50 border border-amber-100 rounded-2xl text-amber-800 text-center space-y-4">
+              <div className="flex justify-center text-amber-500">
+                <Lock size={32} />
+              </div>
+              <div>
+                <p className="text-sm font-bold mb-1">Awaiting Role Assignment</p>
+                <p className="text-xs opacity-75">Your account ({user.email}) is active, but permissions haven't been assigned yet.</p>
+              </div>
+              <button 
+                onClick={() => logout()}
+                className="text-[10px] font-bold uppercase tracking-widest text-amber-600 hover:underline"
+              >
+                Sign out and try another account
+              </button>
             </div>
           )}
 
-          <form onSubmit={authMode === 'login' ? handleLogin : handleRegister} className="space-y-4">
-            <div className="space-y-1">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Email Address</label>
-              <input 
-                type="email"
-                required
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Choose Password</label>
-              <input 
-                type="password"
-                required
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
-              />
-            </div>
+          {(!user || (user && !role)) && (
+            <>
+              {(!user) && (
+                <form onSubmit={authMode === 'login' ? handleLogin : handleRegister} className="space-y-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Email Address</label>
+                    <input 
+                      type="email"
+                      required
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      placeholder="your@email.com"
+                      className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Choose Password</label>
+                    <input 
+                      type="password"
+                      required
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+                    />
+                  </div>
 
-            {authMode === 'register' && email !== "jessescaledyou@gmail.com" && (
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Invite Code (5 Digits)</label>
-                <input 
-                  type="text"
-                  required
-                  maxLength={5}
-                  value={inviteCode}
-                  onChange={e => setInviteCode(e.target.value)}
-                  placeholder="XXXXX"
-                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-center font-mono text-xl tracking-widest"
-                />
-              </div>
-            )}
-            
-            {authMode === 'register' && email === "jessescaledyou@gmail.com" && (
-              <div className="p-4 bg-brand/5 border border-brand/10 rounded-xl text-[10px] font-bold text-brand uppercase text-center">
-                System recognized Owner: No invite code required.
-              </div>
-            )}
+                  {authMode === 'register' && email !== "jessescaledyou@gmail.com" && (
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Invite Code (5 Digits)</label>
+                      <input 
+                        type="text"
+                        required
+                        maxLength={5}
+                        value={inviteCode}
+                        onChange={e => setInviteCode(e.target.value)}
+                        placeholder="XXXXX"
+                        className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-center font-mono text-xl tracking-widest"
+                      />
+                    </div>
+                  )}
 
-            <button 
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-brand text-white py-4 rounded-xl font-bold transition-all hover:bg-brand/90 mt-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {isSubmitting ? (
-                <>
-                  <Clock className="animate-spin" size={18} />
-                  Processing...
-                </>
-              ) : (
-                authMode === 'login' ? 'Sign In' : 'Complete Registration'
+                  <button 
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-brand text-white py-4 rounded-xl font-bold transition-all hover:bg-brand/90 mt-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Clock className="animate-spin" size={18} />
+                        Processing...
+                      </>
+                    ) : (
+                      authMode === 'login' ? 'Sign In' : 'Complete Registration'
+                    )}
+                  </button>
+
+                  <div className="relative my-8">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t border-gray-200" />
+                    </div>
+                    <div className="relative flex justify-center text-[10px] font-bold uppercase tracking-[0.2em] px-4">
+                      <span className="bg-white px-4 text-ink/30">Or use Google</span>
+                    </div>
+                  </div>
+
+                  <button 
+                    type="button"
+                    onClick={handleGoogleLogin}
+                    disabled={isSubmitting}
+                    className="w-full bg-white border-2 border-gray-100 py-4 rounded-xl font-bold flex items-center justify-center gap-3 transition-all hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 18 18">
+                      <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
+                      <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+                      <path d="M3.964 10.705a5.41 5.41 0 0 1-.282-1.705c0-.593.102-1.17.282-1.705V4.963H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.037l3.007-2.332z" fill="#FBBC05"/>
+                      <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.963L3.964 7.295C4.672 5.168 6.656 3.58 9 3.58z" fill="#EA4335"/>
+                    </svg>
+                    {authMode === 'login' ? 'Sign in with Google' : 'Register with Google'}
+                  </button>
+                </form>
               )}
-            </button>
 
-            <div className="relative my-8">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-gray-200" />
+              <div className="mt-8 pt-6 border-t text-center">
+                <button 
+                  onClick={() => {
+                    setAuthMode(authMode === 'login' ? 'register' : 'login');
+                    setAuthError(null);
+                  }}
+                  className="text-xs font-bold text-brand hover:underline"
+                >
+                  {authMode === 'login' ? "First time? Register your account" : "Back to Login"}
+                </button>
               </div>
-              <div className="relative flex justify-center text-[10px] font-bold uppercase tracking-[0.2em] px-4">
-                <span className="bg-white px-4 text-ink/30">Or use Google</span>
-              </div>
-            </div>
-
-            <button 
-              type="button"
-              onClick={handleGoogleLogin}
-              disabled={isSubmitting}
-              className="w-full bg-white border-2 border-gray-100 py-4 rounded-xl font-bold flex items-center justify-center gap-3 transition-all hover:bg-gray-50 disabled:opacity-50"
-            >
-              <svg width="18" height="18" viewBox="0 0 18 18">
-                <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
-                <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-                <path d="M3.964 10.705a5.41 5.41 0 0 1-.282-1.705c0-.593.102-1.17.282-1.705V4.963H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.037l3.007-2.332z" fill="#FBBC05"/>
-                <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.963L3.964 7.295C4.672 5.168 6.656 3.58 9 3.58z" fill="#EA4335"/>
-              </svg>
-              {authMode === 'login' ? 'Sign in with Google' : 'Register with Google'}
-            </button>
-          </form>
-
-          <div className="mt-8 pt-6 border-t text-center">
-            <button 
-              onClick={() => {
-                setAuthMode(authMode === 'login' ? 'register' : 'login');
-                setEmail('');
-                setPassword('');
-                setInviteCode('');
-              }}
-              className="text-xs font-bold text-brand hover:underline"
-            >
-              {authMode === 'login' ? "First time? Register your account" : "Back to Login"}
-            </button>
-          </div>
+            </>
+          )}
         </div>
       </div>
     );
   }
 
-  const isOwner = userData.role === 'owner';
+  const isOwner = role === 'owner';
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -294,14 +307,14 @@ export default function AdminDashboard() {
         <div className="p-4 border-t border-white/10">
           <div className="flex items-center gap-3 mb-4 px-4 py-2 bg-white/5 rounded-xl">
             <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center font-bold text-xs uppercase">
-              {userData.email[0]}
+              {user.email?.[0]}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold truncate">{userData.email.split('@')[0]}</p>
-              <p className="text-[10px] text-white/40 truncate capitalize">{userData.role}</p>
+              <p className="text-xs font-bold truncate">{user.email?.split('@')[0]}</p>
+              <p className="text-[10px] text-white/40 truncate capitalize">{role}</p>
             </div>
           </div>
-          <button onClick={handleLogout} className="flex items-center gap-2 text-xs text-white/60 hover:text-white transition-colors px-4 py-2 w-full">
+          <button onClick={() => logout()} className="flex items-center gap-2 text-xs text-white/60 hover:text-white transition-colors px-4 py-2 w-full">
             <LogOut size={16} />
             Logout
           </button>
@@ -319,7 +332,7 @@ export default function AdminDashboard() {
           </div>
           <div className="flex items-center gap-4">
             <div className="bg-white border rounded-xl px-4 py-2 flex items-center gap-3 text-sm">
-              <CalendarIcon size={16} className="text-ink/40" />
+              <span className="font-medium text-ink/40 tracking-widest text-[10px] font-bold uppercase">Kenya Standard Time</span>
               <span className="font-medium">{new Date().toLocaleDateString('en-KE', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
             </div>
           </div>
@@ -365,7 +378,7 @@ function OverviewTab({ leads, services }: any) {
   const leadSourceData = [
     { name: 'WhatsApp', value: leads.filter((l: any) => l.source === 'whatsapp').length },
     { name: 'Contact Form', value: leads.filter((l: any) => l.source === 'form').length },
-    { name: 'Meta Ads', value: 0 }, // Placeholder for simulation
+    { name: 'Meta Ads', value: 0 }, 
     { name: 'Google SEO', value: 0 },
   ];
 
@@ -375,7 +388,7 @@ function OverviewTab({ leads, services }: any) {
         {stats.map((s, i) => (
           <div key={i} className="bg-white p-6 rounded-3xl shadow-sm border">
             <p className="text-ink/40 text-[10px] font-bold uppercase tracking-widest mb-1">{s.label}</p>
-            <p className={`text-4xl font-bold serif text-${s.color === 'brand' ? 'brand' : 'ink'}`}>{s.value}</p>
+            <p className={`text-4xl font-bold serif ${s.color === 'brand' ? 'text-brand' : 'text-ink'}`}>{s.value}</p>
           </div>
         ))}
       </div>
@@ -915,23 +928,3 @@ function CMSTab({ content, updateContent }: any) {
   );
 }
 
-function CalendarIcon({ size, className }: any) {
-  return (
-    <svg 
-      width={size} 
-      height={size} 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      className={className}
-    >
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-      <line x1="16" y1="2" x2="16" y2="6" />
-      <line x1="8" y1="2" x2="8" y2="6" />
-      <line x1="3" y1="10" x2="21" y2="10" />
-    </svg>
-  );
-}

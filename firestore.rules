@@ -1,72 +1,49 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Default Deny
-    match /{document=**} {
-      allow read, write: if false;
-    }
 
-    // Primitives
+    // Global Helpers
     function isSignedIn() {
       return request.auth != null;
     }
-    
+
     function getUserData() {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
     }
 
+    function hasUserDoc() {
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
     function isOwner() {
-      return isSignedIn() && 
-             exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
-             getUserData().role == 'owner';
+      return isSignedIn() && hasUserDoc() && getUserData().role == 'owner';
     }
 
     function isWorker() {
-      return isSignedIn() && 
-             exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
-             getUserData().role == 'worker';
+      return isSignedIn() && hasUserDoc() && (getUserData().role == 'worker' || getUserData().role == 'owner');
     }
 
-    function isValidId(id) {
-      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
-    }
-
-    // Users
+    // Rules for the Users Collection
     match /users/{userId} {
+      // Users can read their own profile; only owners can manage profiles or see others
       allow read: if isSignedIn() && (request.auth.uid == userId || isOwner());
-      allow create: if isSignedIn() && request.auth.uid == userId && (
-        (request.auth.token.email == "jessescaledyou@gmail.com" && request.resource.data.role == "owner") ||
-        (request.resource.data.role == "worker")
-      );
-      allow update: if isOwner() || (isSignedIn() && request.auth.uid == userId && request.auth.token.email == "jessescaledyou@gmail.com");
-    }
-
-    // Leads
-    match /leads/{leadId} {
-      allow read: if isOwner() || isWorker();
-      allow create: if true; // Public can submit leads
+      // Let any signed-in user write their initial doc (required for self-initialization code)
+      allow create: if isSignedIn() && request.auth.uid == userId;
       allow update, delete: if isOwner();
     }
 
-    // Services & Products
-    match /services/{id} {
-      allow read: if true;
-      allow write: if isOwner();
-    }
-    match /products/{id} {
-      allow read: if true;
-      allow write: if isOwner();
+    // Rules for Protected Business Assets
+    match /leads/{leadId} {
+      allow read, write: if isWorker(); // Both workers and owners can access leads
     }
 
-    // Invites
-    match /invites/{code} {
-      allow get: if true;
-      allow list, write: if isOwner();
+    match /services/{serviceId} {
+      allow read: if isSignedIn();
+      allow write: if isOwner(); // Only owners can update pricing/services
     }
 
-    // Site Content
-    match /site_content/{page} {
-      allow read: if true;
+    match /products/{productId} {
+      allow read: if isSignedIn();
       allow write: if isOwner();
     }
   }
