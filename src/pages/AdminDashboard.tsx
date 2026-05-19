@@ -102,7 +102,8 @@ export default function AdminDashboard() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      console.log("User signed in successfully:", userCred.user);
       navigate('/');
     } catch (e: any) {
       alert(e.message);
@@ -175,6 +176,7 @@ export default function AdminDashboard() {
 
       // 2. Create user
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      console.log("User signed up successfully:", userCred.user);
       
       // 3. Set user doc
       const role = isOwnerEmail ? 'owner' : 'worker';

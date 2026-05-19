@@ -20,6 +20,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const unsub = onAuthStateChanged(auth, async (u) => {
       setUser(u);
       if (u) {
+        console.log("User is signed in:", u.uid);
         const userDoc = await getDoc(doc(db, 'users', u.uid));
         if (userDoc.exists()) {
           setUserData(userDoc.data());
@@ -32,6 +33,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUserData(null);
         }
       } else {
+        console.log("User is signed out");
         setUserData(null);
       }
       setLoading(false);
