@@ -6,7 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
-import { addDoc, collection, serverTimestamp, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot } from 'firebase/firestore';
 import { db } from './lib/firebase';
 import { CMSProvider, useCMS } from './components/CMSContext';
 import { AuthProvider, useAuth } from './components/AuthContext';
@@ -171,6 +171,7 @@ const Hero = () => {
     }
   };
 
+
   return (
     <section className="relative min-h-[90vh] flex items-center pt-20">
       <div className="absolute inset-0 z-0">
@@ -310,8 +311,8 @@ const Services = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, 'services'), (s) => {
-      setServices(s.docs.map(d => ({ id: d.id, ...d.data() })));
+    const unsub = onSnapshot(collection(db, 'services'), (snapshot) => {
+      setServices(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
       setLoading(false);
     });
     return () => unsub();
@@ -373,8 +374,8 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, 'products'), (s) => {
-      setProducts(s.docs.map(d => ({ id: d.id, ...d.data() })));
+    const unsub = onSnapshot(collection(db, 'products'), (snapshot) => {
+      setProducts(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
       setLoading(false);
     });
     return () => unsub();

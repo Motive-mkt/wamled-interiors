@@ -1,65 +1,8 @@
 {
   "entities": {
-    "SiteContent": {
-      "title": "Site Content",
-      "description": "CMS content for the homepage",
-      "type": "object",
-      "properties": {
-        "heroHeadline": { "type": "string" },
-        "heroImage": { "type": "string" },
-        "galleryImages": { 
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "url": { "type": "string" },
-              "label": { "type": "string" }
-            }
-          }
-        }
-      }
-    },
-    "Service": {
-      "title": "Service",
-      "description": "Interior design services offered",
-      "type": "object",
-      "properties": {
-        "title": { "type": "string" },
-        "description": { "type": "string" },
-        "price": { "type": "number" },
-        "category": { "type": "string" }
-      },
-      "required": ["title", "description"]
-    },
-    "Product": {
-      "title": "Product",
-      "description": "Items for sale",
-      "type": "object",
-      "properties": {
-        "name": { "type": "string" },
-        "price": { "type": "number" },
-        "imageUrl": { "type": "string" }
-      },
-      "required": ["name", "price"]
-    },
-    "Lead": {
-      "title": "Lead",
-      "description": "User inquiries",
-      "type": "object",
-      "properties": {
-        "name": { "type": "string" },
-        "phone": { "type": "string" },
-        "projectType": { "type": "string" },
-        "details": { "type": "string" },
-        "status": { "type": "string", "enum": ["New", "In Progress", "Closed", "Archived"] },
-        "createdAt": { "type": "string", "format": "date-time" },
-        "source": { "type": "string" }
-      },
-      "required": ["name", "phone", "status"]
-    },
     "User": {
       "title": "User",
-      "description": "System user (Owner or Worker)",
+      "description": "User profile with role",
       "type": "object",
       "properties": {
         "email": { "type": "string" },
@@ -68,22 +11,72 @@
       },
       "required": ["email", "role"]
     },
+    "Lead": {
+      "title": "Lead",
+      "description": "Potential client inquiry",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "projectType": { "type": "string" },
+        "notes": { "type": "string" },
+        "status": { "type": "string", "enum": ["New", "In Progress", "Closed"] },
+        "source": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Service": {
+      "title": "Service",
+      "description": "Offered service description",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" }
+      }
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Studio product for sale",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "description": { "type": "string" }
+      }
+    },
     "Invite": {
       "title": "Invite",
-      "description": "One-time invite code for workers",
+      "description": "Registration invite code",
       "type": "object",
       "properties": {
         "code": { "type": "string" },
         "createdAt": { "type": "string", "format": "date-time" },
-        "used": { "type": "boolean" }
-      },
-      "required": ["code", "used"]
+        "used": { "type": "boolean" },
+        "usedBy": { "type": "string" }
+      }
+    },
+    "SiteContent": {
+      "title": "Site Content",
+      "description": "CMS content for the website",
+      "type": "object",
+      "properties": {
+        "heroHeadline": { "type": "string" },
+        "heroImage": { "type": "string" },
+        "location": { "type": "string" },
+        "hours": { "type": "string" },
+        "phone": { "type": "string" }
+      }
     }
   },
   "firestore": {
-    "site_content/homepage": {
-      "schema": "SiteContent",
-      "description": "The main content for the homepage"
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "leads/{leadId}": {
+      "schema": "Lead",
+      "description": "Inquiries from the website"
     },
     "services/{serviceId}": {
       "schema": "Service",
@@ -93,17 +86,13 @@
       "schema": "Product",
       "description": "List of products"
     },
-    "leads/{leadId}": {
-      "schema": "Lead",
-      "description": "Submitted lead inquiries"
-    },
-    "users/{userId}": {
-      "schema": "User",
-      "description": "User profiles and roles"
-    },
     "invites/{code}": {
       "schema": "Invite",
-      "description": "Worker invitation codes"
+      "description": "Invite codes for registration"
+    },
+    "site_content/{page}": {
+      "schema": "SiteContent",
+      "description": "Dynamic page content"
     }
   }
 }

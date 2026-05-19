@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { doc, onSnapshot, setDoc } from 'firebase/firestore';
-import { db, handleFirestoreError, OperationType } from '../lib/firebase';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { useAuth } from './AuthContext';
 
 interface CMSContent {
   heroHeadline: string;
@@ -29,16 +30,6 @@ const defaultContent: CMSContent = {
       text: "Great service and quality work. The team listened, planned thoroughly, and delivered a finish that exceeded what we imagined.",
       author: "Verified Client",
       rating: 5
-    },
-    {
-      text: "Wamled transformed our living space into something we're proud to come home to. Professional from first meeting to final styling.",
-      author: "Mombasa Homeowner",
-      rating: 5
-    },
-    {
-      text: "Structured process, beautiful result. Our office now reflects who we are — and our clients notice.",
-      author: "Commercial Client",
-      rating: 5
     }
   ]
 };
@@ -54,15 +45,17 @@ const CMSContext = createContext<CMSContextType | undefined>(undefined);
 export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [content, setContent] = useState<CMSContent>(defaultContent);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
-    const unsub = onSnapshot(doc(db, 'site_content', 'homepage'), (doc) => {
-      if (doc.exists()) {
-        setContent({ ...defaultContent, ...doc.data() } as CMSContent);
+    // We can fetch public content without auth, or with auth
+    const unsub = onSnapshot(doc(db, 'site_content', 'homepage'), (snapshot) => {
+      if (snapshot.exists()) {
+        setContent(snapshot.data() as CMSContent);
       }
       setLoading(false);
     }, (error) => {
-      console.error("CMS Load Error:", error);
+      console.error("CMS Fetch Error:", error);
       setLoading(false);
     });
 
@@ -72,8 +65,10 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const updateContent = async (newContent: CMSContent) => {
     try {
       await setDoc(doc(db, 'site_content', 'homepage'), newContent);
-    } catch (error) {
-      handleFirestoreError(error, OperationType.WRITE, 'site_content/homepage');
+      setContent(newContent);
+    } catch (e) {
+      console.error("CMS Update Error:", e);
+      throw e;
     }
   };
 

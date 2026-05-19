@@ -15,13 +15,6 @@ import {
   where
 } from 'firebase/firestore';
 import { 
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-  GoogleAuthProvider,
-  signInWithPopup
-} from 'firebase/auth';
-import { 
   LayoutDashboard, 
   MessageSquare, 
   Package, 
@@ -56,17 +49,15 @@ import {
   Pie, 
   Cell 
 } from 'recharts';
-import { db, auth } from '../lib/firebase';
+import { db } from '../lib/firebase';
 import { useCMS } from '../components/CMSContext';
 import { useAuth } from '../components/AuthContext';
 
 const COLORS = ['#A83F1B', '#E5E7EB', '#FBBF24', '#10B981'];
 
-const googleProvider = new GoogleAuthProvider();
-
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const { user, userData, loading: isLoading, error: authError } = useAuth();
+  const { user, userData, loading: isLoading, error: authError, login, googleLogin, register, logout } = useAuth();
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -103,9 +94,7 @@ export default function AdminDashboard() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const userCred = await signInWithEmailAndPassword(auth, email, password);
-      console.log("User signed in successfully:", userCred.user);
-      navigate('/');
+      await login(email, password);
     } catch (e: any) {
       alert(e.message);
     } finally {
@@ -116,37 +105,7 @@ export default function AdminDashboard() {
   const handleGoogleLogin = async () => {
     setIsSubmitting(true);
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-      
-      // Check if user document exists
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      
-      if (!userDoc.exists()) {
-        const isOwnerEmail = user.email === "jessescaledyou@gmail.com";
-        // If it's a new owner login, create the doc
-        if (isOwnerEmail) {
-          await setDoc(doc(db, 'users', user.uid), {
-            email: user.email,
-            role: 'owner',
-            createdAt: new Date().toISOString()
-          });
-        } else {
-          // For workers signing in with Google, we might need an invite system
-          // But for now, if they don't have a doc, let's just see if they have a code
-          // Or better: If they don't have a doc and aren't owner, they can't log in 
-          // yet via Google unless we implement a link system.
-          // For simplicity, let's allow them to log in but they'll have no role
-          // and thus see nothing if the rules are strict.
-          // Wait, the rules check for role.
-          alert('New account detected. Please register using an invite code if you are a studio worker.');
-          await signOut(auth);
-          setIsSubmitting(false);
-          return;
-        }
-      }
-      
-      navigate('/');
+      await googleLogin();
     } catch (e: any) {
       alert(e.message);
     } finally {
@@ -156,43 +115,9 @@ export default function AdminDashboard() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    const isOwnerEmail = email === "jessescaledyou@gmail.com";
-    
-    if (!isOwnerEmail && (!inviteCode || inviteCode.length !== 5)) {
-      alert('Please enter a valid 5-digit invite code.');
-      return;
-    }
-
     setIsSubmitting(true);
     try {
-      // 1. Check if invite code is valid (if not owner)
-      if (!isOwnerEmail) {
-        const inviteDoc = await getDoc(doc(db, 'invites', inviteCode));
-        if (!inviteDoc.exists() || inviteDoc.data().used) {
-          alert('Invalid or already used invite code.');
-          setIsSubmitting(false);
-          return;
-        }
-      }
-
-      // 2. Create user
-      const userCred = await createUserWithEmailAndPassword(auth, email, password);
-      console.log("User signed up successfully:", userCred.user);
-      
-      // 3. Set user doc
-      const role = isOwnerEmail ? 'owner' : 'worker';
-      await setDoc(doc(db, 'users', userCred.user.uid), {
-        email,
-        role,
-        createdAt: new Date().toISOString()
-      });
-
-      // 4. Mark code as used (if not owner)
-      if (!isOwnerEmail) {
-        await updateDoc(doc(db, 'invites', inviteCode), { used: true, usedBy: userCred.user.uid });
-      }
-
-      navigate('/');
+      await register(email, password, inviteCode);
     } catch (e: any) {
       alert(e.message);
     } finally {
@@ -200,7 +125,8 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleLogout = () => signOut(auth);
+  const handleLogout = () => logout();
+
 
   if (isLoading) return null;
 
