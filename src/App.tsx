@@ -49,7 +49,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { content } = useCMS();
-  const { user, userData } = useAuth();
+  const { user, role } = useAuth();
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
 
@@ -68,7 +68,7 @@ const Navbar = () => {
       <a href="#gallery" onClick={() => setIsMobileMenuOpen(false)} className={`text-sm font-medium hover:text-brand transition-colors ${!isScrolled && !mobile ? 'text-white' : 'text-ink'}`}>Work</a>
       <a href="#reviews" onClick={() => setIsMobileMenuOpen(false)} className={`text-sm font-medium hover:text-brand transition-colors ${!isScrolled && !mobile ? 'text-white' : 'text-ink'}`}>Reviews</a>
       
-      {user && userData && (
+      {user && role && (
         <Link 
           to="/admin" 
           onClick={() => setIsMobileMenuOpen(false)}

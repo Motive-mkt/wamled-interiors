@@ -7,7 +7,7 @@ import {
   signOut,
   signInWithPopup
 } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db, googleProvider } from '../lib/firebase';
 
 interface AuthContextType {
@@ -81,8 +81,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const register = async (email: string, pass: string, inviteCode?: string) => {
     const isOwnerEmail = email === "jessescaledyou@gmail.com";
-    if (!isOwnerEmail && (!inviteCode || inviteCode.length !== 5)) {
-      throw new Error("Invalid invite code");
+    
+    if (!isOwnerEmail) {
+      if (!inviteCode || inviteCode.length !== 5) throw new Error("Invite code required");
+      const inviteDoc = await getDoc(doc(db, 'invites', inviteCode));
+      if (!inviteDoc.exists() || inviteDoc.data()?.used) {
+        throw new Error("Invalid or already used invite code");
+      }
     }
     
     // Create the user first
@@ -96,6 +101,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       role: userRole,
       createdAt: new Date().toISOString()
     });
+
+    // Mark invite as used
+    if (!isOwnerEmail && inviteCode) {
+      await updateDoc(doc(db, 'invites', inviteCode), { used: true, usedBy: u.uid });
+    }
   };
 
   const logout = async () => {
