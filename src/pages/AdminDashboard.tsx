@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { 
   collection, 
   query, 
@@ -287,7 +287,9 @@ export default function AdminDashboard() {
       {/* Sidebar */}
       <aside className="w-64 bg-ink text-white flex flex-col">
         <div className="p-8">
-          <div className="text-2xl font-bold serif tracking-tight">Wamled<span className="text-brand">.</span></div>
+          <Link to="/" className="text-2xl font-bold serif tracking-tight block hover:opacity-80 transition-opacity">
+            Wamled<span className="text-brand">.</span>
+          </Link>
           <p className="text-[10px] text-white/40 tracking-widest mt-1">STUDIO DASHBOARD</p>
         </div>
 
