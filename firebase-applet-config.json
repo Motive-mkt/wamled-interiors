@@ -1,10 +1,10 @@
 {
-  "projectId": "exemplary-freehold-f07pf",
-  "appId": "1:138138498156:web:14eaebb77ae6be6ef15449",
-  "apiKey": "AIzaSyBWjLbEksmH9ivLUc41oqwHbEFRZ8nORec",
-  "authDomain": "exemplary-freehold-f07pf.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-9c98a624-681c-4f2f-b044-f05fb6750786",
-  "storageBucket": "exemplary-freehold-f07pf.firebasestorage.app",
-  "messagingSenderId": "138138498156",
-  "measurementId": ""
+  "projectId": "studio-access-main",
+  "appId": "1:180259329754:web:1fb9a93a16ea43b6cef7e3",
+  "apiKey": "AIzaSyDRjKZ1fAHKj1tiY3ja9ejFlWA_yuivjtM",
+  "authDomain": "studio-access-main.firebaseapp.com",
+  "firestoreDatabaseId": "(default)",
+  "storageBucket": "studio-access-main.firebasestorage.app",
+  "messagingSenderId": "180259329754",
+  "measurementId": "G-Z9FVDXGZS9"
 }
