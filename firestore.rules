@@ -26,7 +26,13 @@ service cloud.firestore {
     // Rules for the Users Collection
     match /users/{userId} {
       allow read: if isSignedIn() && (request.auth.uid == userId || isOwner());
-      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isSignedIn() && request.auth.uid == userId && (
+        request.resource.data.role == 'worker' ||
+        (request.resource.data.role == 'owner' && (
+          request.resource.data.email == "jessescaledyou@gmail.com" ||
+          !exists(/databases/$(database)/documents/site_content/status)
+        ))
+      );
       allow update, delete: if isOwner();
     }
 

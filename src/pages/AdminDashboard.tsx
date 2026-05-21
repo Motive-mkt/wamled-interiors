@@ -51,7 +51,7 @@ import { useAuth } from '../components/AuthContext';
 const COLORS = ['#A83F1B', '#E5E7EB', '#FBBF24', '#10B981'];
 
 export default function AdminDashboard() {
-  const { user, role, authLoading, roleLoading, login, googleLogin, register, logout } = useAuth();
+  const { user, role, authLoading, roleLoading, isFirstUser, login, googleLogin, register, logout } = useAuth();
   
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
@@ -143,14 +143,16 @@ export default function AdminDashboard() {
               <UserIcon className="text-brand" size={32} />
             </div>
             <h1 className="text-2xl font-bold serif mb-2">
-              {authMode === 'login' ? 'Studio Access' : 'Create Account'}
+              {authMode === 'login' ? 'Studio Access' : isFirstUser ? 'Owner Setup' : 'Create Account'}
             </h1>
             <p className="text-ink/60 text-sm">
               {user && !role 
                 ? "Account registered. Waiting for admin approval."
                 : authMode === 'login' 
                   ? 'Sign in to manage your studio' 
-                  : 'Register for worker access'}
+                  : isFirstUser
+                    ? 'Register as the first user to become Studio Owner.'
+                    : 'Register for worker access'}
             </p>
           </div>
 
@@ -206,7 +208,7 @@ export default function AdminDashboard() {
                     />
                   </div>
 
-                  {authMode === 'register' && email !== "jessescaledyou@gmail.com" && (
+                  {authMode === 'register' && email !== "jessescaledyou@gmail.com" && !isFirstUser && (
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Invite Code (5 Digits)</label>
                       <input 
@@ -221,6 +223,13 @@ export default function AdminDashboard() {
                     </div>
                   )}
 
+                  {authMode === 'register' && isFirstUser && (
+                    <div className="p-4 bg-brand/5 border border-brand/10 rounded-2xl space-y-1">
+                      <p className="text-[10px] font-bold text-brand uppercase tracking-widest">👑 Studio Owner Setup</p>
+                      <p className="text-xs text-ink/60">Success! You are the first registrant, so you will automatically be initialized as the Studio Owner (No invite code needed).</p>
+                    </div>
+                  )}
+
                   <button 
                     type="submit"
                     disabled={isSubmitting}
@@ -232,7 +241,7 @@ export default function AdminDashboard() {
                         Processing...
                       </>
                     ) : (
-                      authMode === 'login' ? 'Sign In' : 'Complete Registration'
+                      authMode === 'login' ? 'Sign In' : 'Complete Setup & Register'
                     )}
                   </button>
 
