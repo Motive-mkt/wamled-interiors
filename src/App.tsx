@@ -5,12 +5,24 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { collection, addDoc, onSnapshot } from 'firebase/firestore';
 import { db } from './lib/firebase';
 import { CMSProvider, useCMS } from './components/CMSContext';
 import { AuthProvider, useAuth } from './components/AuthContext';
 import AdminDashboard from './pages/AdminDashboard';
+import { BrandValues } from './components/BrandValues';
+import { WhyUsStats } from './components/WhyUsStats';
+import { ServiceStacks } from './components/ServiceStacks';
+import { EnterpriseBridge } from './components/EnterpriseBridge';
+import { ClientReviewsSlider } from './components/ClientReviewsSlider';
+import { BentoGalleryGateway } from './components/BentoGalleryGateway';
+import { Filmstrip } from './pages/Filmstrip';
+import { ServiceDetail } from './pages/ServiceDetail';
+import { BespokeServices } from './pages/BespokeServices';
+import Portfolio from './pages/Portfolio';
+import Contact from './pages/Contact';
+import CaseStudies from './pages/CaseStudies';
 import { 
   Phone, 
   MapPin, 
@@ -63,56 +75,122 @@ const Navbar = () => {
 
   const NavLinks = ({ mobile }: { mobile?: boolean }) => (
     <>
-      <a href="#services" onClick={() => setIsMobileMenuOpen(false)} className={`text-sm font-medium hover:text-brand transition-colors ${!isScrolled && !mobile ? 'text-white' : 'text-ink'}`}>Services</a>
-      <a href="#products" onClick={() => setIsMobileMenuOpen(false)} className={`text-sm font-medium hover:text-brand transition-colors ${!isScrolled && !mobile ? 'text-white' : 'text-ink'}`}>Shop</a>
-      <a href="#gallery" onClick={() => setIsMobileMenuOpen(false)} className={`text-sm font-medium hover:text-brand transition-colors ${!isScrolled && !mobile ? 'text-white' : 'text-ink'}`}>Work</a>
-      <a href="#reviews" onClick={() => setIsMobileMenuOpen(false)} className={`text-sm font-medium hover:text-brand transition-colors ${!isScrolled && !mobile ? 'text-white' : 'text-ink'}`}>Reviews</a>
-      
-      {user && role && (
-        <Link 
-          to="/admin" 
-          onClick={() => setIsMobileMenuOpen(false)}
-          className={`text-sm font-bold flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${
-            !isScrolled && !mobile
-              ? 'border-white/20 text-white hover:bg-white/10' 
-              : 'border-brand/20 text-brand hover:bg-brand/5'
-          }`}
-        >
-          <Layout size={16} />
-          DASHBOARD
-        </Link>
-      )}
+      <Link 
+        to="/services" 
+        onClick={() => setIsMobileMenuOpen(false)}
+        className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
+          mobile ? 'py-3 text-lg text-ink hover:text-brand' : isScrolled ? 'text-ink/85 hover:text-brand' : 'text-[#D1D1D1] hover:text-[#FFFFFF]'
+        }`}
+      >
+        Services
+      </Link>
+      <Link 
+        to="/portfolio" 
+        onClick={() => setIsMobileMenuOpen(false)}
+        className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
+          mobile ? 'py-3 text-lg text-ink hover:text-brand' : isScrolled ? 'text-ink/85 hover:text-brand' : 'text-[#D1D1D1] hover:text-[#FFFFFF]'
+        }`}
+      >
+        Portfolio
+      </Link>
+      <Link 
+        to="/casestudies" 
+        onClick={() => setIsMobileMenuOpen(false)}
+        className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
+          mobile ? 'py-3 text-lg text-ink hover:text-brand' : isScrolled ? 'text-ink/85 hover:text-brand' : 'text-[#D1D1D1] hover:text-[#FFFFFF]'
+        }`}
+      >
+        Case Studies
+      </Link>
+      <Link 
+        to="/filmstrip" 
+        onClick={() => setIsMobileMenuOpen(false)}
+        className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
+          mobile ? 'py-3 text-lg text-ink hover:text-brand' : isScrolled ? 'text-ink/85 hover:text-brand' : 'text-[#D1D1D1] hover:text-[#FFFFFF]'
+        }`}
+      >
+        Work
+      </Link>
+      <Link 
+        to="/contact" 
+        onClick={() => setIsMobileMenuOpen(false)}
+        className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
+          mobile ? 'py-3 text-lg text-ink hover:text-brand' : isScrolled ? 'text-ink/85 hover:text-brand' : 'text-[#D1D1D1] hover:text-[#FFFFFF]'
+        }`}
+      >
+        Contact
+      </Link>
+      <Link 
+        to="/" 
+        onClick={() => {
+          setIsMobileMenuOpen(false);
+          const el = document.getElementById('reviews-section');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }}
+        className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
+          mobile ? 'py-3 text-lg text-ink hover:text-brand' : isScrolled ? 'text-ink/85 hover:text-brand' : 'text-[#D1D1D1] hover:text-[#FFFFFF]'
+        }`}
+      >
+        Reviews
+      </Link>
     </>
   );
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'bg-white/90 backdrop-blur-md py-4 shadow-sm' : 'bg-transparent py-6'}`}>
+      {content.announcementActive && content.announcementText && (
+        <div className="bg-[#A83F1B] text-white py-2 px-6 text-center text-[9px] md:text-xs font-mono tracking-widest uppercase relative z-50 flex items-center justify-center gap-2 select-none border-b border-white/10 shrink-0">
+          <span className="truncate max-w-[85vw] font-semibold">{content.announcementText}</span>
+          {content.announcementLink && (
+            <Link to={content.announcementLink} className="underline text-white font-extrabold tracking-widest hover:text-[#C5A059] ml-1 transition-colors shrink-0">
+              EXPLORE
+            </Link>
+          )}
+        </div>
+      )}
+      <nav className={`fixed left-0 right-0 z-50 transition-all duration-500 ${
+        content.announcementActive && !isScrolled ? 'top-[36px] md:top-[40px]' : 'top-0'
+      } ${isScrolled ? 'bg-[#F9F9F7]/95 backdrop-blur-md py-4 border-b border-ink/5 shadow-md' : 'bg-transparent py-7'}`}>
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          <div className={`text-2xl font-semibold serif tracking-tight decoration-brand underline underline-offset-4 transition-colors ${!isScrolled ? 'text-white' : 'text-ink'}`}>
-            <Link to="/">Wamled<span className="text-brand">.</span></Link>
+          <div className="text-2xl md:text-3xl font-serif tracking-tight transition-colors duration-500">
+            <Link to="/" className="relative pb-1.5 select-none flex items-center">
+              <span className={isScrolled ? 'text-ink' : 'text-[#FFFFFF]'}>Wamled</span>
+              <span className="text-[#A83F1B]">.</span>
+              <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#A83F1B]" />
+            </Link>
           </div>
           
           <div className="hidden md:flex items-center gap-8">
             <NavLinks />
-            <a 
-              href={`tel:${content.phone.replace(/\s+/g, '')}`}
-              className={`flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-full transition-all ${
+            <Link 
+              to="/admin" 
+              className={`flex items-center gap-2 text-[10px] font-mono tracking-wider px-4 py-2 rounded-lg border transition-all duration-300 ${
                 !isScrolled 
-                  ? 'bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm' 
-                  : 'bg-brand text-white hover:bg-brand/90'
+                  ? 'border-white/20 text-[#D1D1D1] hover:border-white hover:text-white hover:bg-white/5' 
+                  : 'border-brand/20 text-brand hover:bg-brand/5'
               }`}
             >
-              <Phone size={16} />
+              <Layout size={12} />
+              DASHBOARD
+            </Link>
+            <a 
+              href={`tel:${content.phone.replace(/\s+/g, '')}`}
+              className={`flex items-center gap-2 text-xs font-sans tracking-wide px-4 py-2 rounded-full border transition-all duration-300 ${
+                !isScrolled 
+                  ? 'border-white/10 text-white bg-white/5 hover:bg-white/10' 
+                  : 'border-brand/20 text-ink bg-cream/5 hover:bg-cream/15'
+              }`}
+            >
+              <Phone size={12} className="text-[#888888] group-hover:text-white" />
               {content.phone}
             </a>
           </div>
 
           <button 
-            className={`md:hidden p-2 rounded-lg transition-colors ${!isScrolled ? 'text-white hover:bg-white/10' : 'text-ink hover:bg-gray-100'}`}
+            className={`md:hidden p-2 rounded-lg transition-colors ${!isScrolled ? 'text-white hover:bg-white/10' : 'text-ink hover:bg-cream/10'}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </nav>
@@ -124,17 +202,20 @@ const Navbar = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-40 md:hidden bg-white pt-24 px-6"
+            className="fixed inset-0 z-40 md:hidden bg-[#F9F9F7]/98 pt-28 px-6 flex flex-col justify-between pb-12"
           >
             <div className="flex flex-col gap-8 text-center items-center">
               <NavLinks mobile />
               <a 
                 href={`tel:${content.phone.replace(/\s+/g, '')}`}
-                className="w-full flex items-center justify-center gap-3 bg-brand text-white py-4 rounded-xl font-bold"
+                className="w-full flex items-center justify-center gap-3 bg-brand text-white py-4 rounded-xl font-bold font-mono text-xs uppercase tracking-widest hover:bg-ink transition-colors shadow-sm"
               >
-                <Phone size={18} />
+                <Phone size={14} />
                 {content.phone}
               </a>
+            </div>
+            <div className="text-center font-mono text-[10px] text-ink/40 uppercase tracking-widest">
+              Wamled Atelier Mombasa
             </div>
           </motion.div>
         )}
@@ -145,6 +226,7 @@ const Navbar = () => {
 
 const Hero = () => {
   const { content } = useCMS();
+  const navigate = useNavigate();
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
   const [formData, setFormData] = useState({
     name: '',
@@ -160,64 +242,67 @@ const Hero = () => {
       await addDoc(collection(db, 'leads'), {
         ...formData,
         status: 'New',
-        source: 'form',
+        source: 'homepage-consultation',
         createdAt: new Date().toISOString()
       });
       setFormStatus('success');
-      setTimeout(() => setFormStatus('idle'), 5000);
+      setTimeout(() => setFormStatus('idle'), 6000);
     } catch (error) {
       console.error(error);
       setFormStatus('idle');
     }
   };
 
-
   return (
-    <section className="relative min-h-[90vh] flex items-center pt-20">
+    <section className="relative min-h-[95vh] flex items-center pt-28 pb-16 bg-[#1A1A1A] text-white overflow-hidden animate-fade-in animate-duration-1000">
+      {/* Background Cinematic Texture & Vignette Overlay */}
       <div className="absolute inset-0 z-0">
         <img 
           src={content.heroImage} 
-          alt="Modern living space"
+          alt="Luxury coastal interior design studio space"
           className="w-full h-full object-cover"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-ink/40" />
+        {/* Scrim Overlay: modern gradient mask so the image features on the right stay perfectly clear & bright */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent pointer-events-none" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10 w-full">
+      <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-12 items-center relative z-10 w-full">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-white"
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="lg:col-span-7 space-y-8"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
-            <span className="text-xs font-semibold uppercase tracking-widest">Mombasa, Kenya</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/40 border border-white/10 backdrop-blur-md">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#A83F1B]" />
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[#FFFFFF] font-extrabold select-none">MOMBASA, KENYA</span>
           </div>
           
-          <h1 className="text-5xl lg:text-7xl serif font-medium leading-[1.1] mb-8 text-balance">
-            {content.heroHeadline.split(' ').map((word, i) => (
-              word.toLowerCase() === 'crafted' ? <span key={i} className="italic text-brand/90"> {word} </span> : word + ' '
-            ))}
-          </h1>
+          <div className="space-y-4">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-light leading-[1.1] text-white tracking-tight select-none">
+              Interiors <span className="italic text-[#A83F1B]">crafted</span><br />
+              around the<br />
+              way you live.
+            </h1>
+          </div>
           
-          <p className="text-lg text-white/80 max-w-lg mb-10 leading-relaxed font-light">
+          <p className="text-sm md:text-base text-[#F9F9F9]/90 max-w-xl leading-relaxed font-light">
             Bespoke residential and commercial interior design from a Mombasa studio with a reputation for quality, structure and quiet sophistication.
           </p>
 
-          <div className="flex flex-wrap gap-6 items-center">
-            <div className="flex items-center gap-2 text-sm font-medium">
-              <Star size={16} className="text-amber-400 fill-amber-400" />
-              <span>5.0 rated studio</span>
+          <div className="flex flex-wrap gap-x-8 gap-y-3 items-center pt-8 border-t border-white/10 text-[11px] text-[#FFFFFF] font-mono tracking-wider">
+            <div className="flex items-center gap-2">
+              <span className="text-amber-400">★</span>
+              <span className="font-semibold text-white/90">5.0 rated studio</span>
             </div>
-            <div className="flex items-center gap-2 text-sm font-medium">
-              <MapPin size={16} className="text-brand" />
-              <span>{content.location.split(',')[0]}</span>
+            <div className="flex items-center gap-2">
+              <MapPin size={12} className="text-[#888888]" />
+              <span className="font-semibold text-white/90">Moi Avenue</span>
             </div>
-            <div className="flex items-center gap-2 text-sm font-medium">
-              <Clock size={16} className="text-brand" />
-              <span>{content.hours}</span>
+            <div className="flex items-center gap-2">
+              <Clock size={12} className="text-[#888888]" />
+              <span className="font-semibold text-white/90">Open until 8:00 PM</span>
             </div>
           </div>
         </motion.div>
@@ -225,295 +310,90 @@ const Hero = () => {
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="bg-cream p-8 lg:p-10 rounded-2xl shadow-2xl max-w-md ml-auto"
+          transition={{ duration: 1, delay: 0.2 }}
+          id="consultation-form-box"
+          className="lg:col-span-5 bg-[#FDFDFD] p-10 lg:p-12 rounded-3xl border border-gray-100 shadow-2xl max-w-md lg:ml-auto w-full relative animate-fade-in"
         >
           {formStatus === 'success' ? (
-            <div className="py-12 text-center space-y-4">
-              <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto scale-110">
-                <Star size={32} className="fill-current" />
+            <div className="py-16 text-center space-y-4">
+              <div className="w-16 h-16 bg-[#A83F1B]/10 text-[#A83F1B] rounded-full flex items-center justify-center mx-auto scale-110">
+                <Star size={30} className="fill-current animate-pulse" />
               </div>
-              <h2 className="text-2xl serif font-medium text-ink">Thank you!</h2>
-              <p className="text-ink/60 text-sm">We've received your inquiry and will contact you shortly.</p>
+              <h2 className="text-2xl font-serif text-[#111111] uppercase tracking-wider">Success</h2>
+              <p className="text-gray-500 text-xs font-light max-w-xs mx-auto">We've received your request. A lead architect will contact you directly within 24 hours.</p>
             </div>
           ) : (
             <>
-              <h2 className="text-2xl serif font-medium mb-2 text-ink">Book a free consultation</h2>
-              <p className="text-ink/60 text-sm mb-8">We'll respond within one business day.</p>
+              <h2 className="text-2xl md:text-3xl font-serif font-light text-[#111111] mb-2 text-left">Book a free consultation</h2>
+              <p className="text-[#888888] text-xs font-light mb-8 text-left">We'll respond within one business day.</p>
               
-              <form className="space-y-5" onSubmit={handleSubmit}>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Full Name</label>
+              <form className="space-y-6" onSubmit={handleSubmit}>
+                <div className="space-y-1.5 text-left">
+                  <label className="text-[10px] font-mono uppercase tracking-widest text-[#888888] font-bold">FULL NAME</label>
                   <input 
                     required
                     type="text" 
                     placeholder="Jane Mwangi" 
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full bg-transparent border-b border-ink/10 py-2 text-ink focus:outline-none focus:border-brand transition-colors text-sm"
+                    className="w-full bg-transparent border-b border-gray-200 py-2 text-[#111111] text-sm focus:outline-none focus:border-[#A83F1B] placeholder-gray-400 transition-colors rounded-none"
                   />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Phone</label>
+                <div className="space-y-1.5 text-left">
+                  <label className="text-[10px] font-mono uppercase tracking-widest text-[#888888] font-bold font-sans">PHONE</label>
                   <input 
                     required
                     type="tel" 
                     placeholder="07XX XXX XXX" 
                     value={formData.phone}
                     onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-transparent border-b border-ink/10 py-2 text-ink focus:outline-none focus:border-brand transition-colors text-sm"
+                    className="w-full bg-transparent border-b border-gray-200 py-2 text-[#111111] text-sm focus:outline-none focus:border-[#A83F1B] placeholder-gray-400 transition-colors rounded-none"
                   />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Project Type</label>
-                  <select 
-                    value={formData.projectType}
-                    onChange={e => setFormData({ ...formData, projectType: e.target.value })}
-                    className="w-full bg-transparent border-b border-ink/10 py-2 text-ink focus:outline-none focus:border-brand transition-colors text-sm appearance-none"
-                  >
-                    <option>Residential</option>
-                    <option>Commercial</option>
-                    <option>Other</option>
-                  </select>
+                <div className="space-y-1.5 text-left">
+                  <label className="text-[10px] font-mono uppercase tracking-widest text-[#888888] font-bold">PROJECT TYPE</label>
+                  <div className="relative">
+                    <select 
+                      value={formData.projectType}
+                      onChange={e => setFormData({ ...formData, projectType: e.target.value })}
+                      className="w-full bg-transparent border-b border-gray-200 py-2 text-[#111111] text-sm focus:outline-none focus:border-[#A83F1B] appearance-none cursor-pointer rounded-none"
+                    >
+                      <option value="Residential">Residential</option>
+                      <option value="Commercial">Commercial & Hospitality</option>
+                      <option value="Yacht & Exterior">Curated Yacht & Exterior</option>
+                      <option value="Landscaping">Bespoke Landscaping</option>
+                    </select>
+                    <span className="absolute right-2 top-3 pointer-events-none text-gray-400 text-xs">▼</span>
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Tell us about your space (Optional)</label>
+                <div className="space-y-1.5 text-left">
+                  <label className="text-[10px] font-mono uppercase tracking-widest text-[#888888] font-bold">TELL US ABOUT YOUR SPACE (OPTIONAL)</label>
                   <textarea 
                     placeholder="A 3-bedroom apartment in Nyali..." 
-                    rows={2}
+                    rows={1}
                     value={formData.details}
                     onChange={e => setFormData({ ...formData, details: e.target.value })}
-                    className="w-full bg-transparent border-b border-ink/10 py-2 text-ink focus:outline-none focus:border-brand transition-colors text-sm resize-none"
+                    className="w-full bg-transparent border-b border-gray-200 py-1 text-[#111111] text-sm focus:outline-none focus:border-[#A83F1B] placeholder-gray-400 transition-colors resize-none rounded-none"
                   />
                 </div>
                 
                 <button 
+                  type="submit"
                   disabled={formStatus === 'submitting'}
-                  className="w-full bg-brand text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-brand/90 transition-all shadow-lg hover:shadow-brand/20 mt-4 group disabled:opacity-50"
+                  className="w-full bg-[#A83F1B] hover:bg-[#8d3212] text-white py-4 rounded-xl font-mono text-xs uppercase tracking-widest font-bold transition-all disabled:opacity-50 hover:scale-[1.01] cursor-pointer flex items-center justify-center gap-1 mt-4"
                 >
-                  {formStatus === 'submitting' ? 'SENDING...' : 'REQUEST CONSULTATION'}
-                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  {formStatus === 'submitting' ? 'TRANSMITTING...' : 'REQUEST CONSULTATION'}
+                  <span className="text-white ml-1">→</span>
                 </button>
-                <p className="text-[10px] text-center text-ink/40 mt-4">
-                  Or call <a href={`tel:${content.phone}`} className="underline hover:text-brand transition-colors">{content.phone}</a>
-                </p>
               </form>
+              <div className="text-center pt-4">
+                <p className="text-[11px] text-[#888888] font-light">
+                  Or call <a href={`tel:${content.phone.replace(/\s+/g, '')}`} className="underline hover:text-[#A83F1B] transition-colors font-semibold">{content.phone}</a>
+                </p>
+              </div>
             </>
           )}
         </motion.div>
-      </div>
-    </section>
-  );
-};
-
-const Services = () => {
-  const [services, setServices] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const unsub = onSnapshot(collection(db, 'services'), (snapshot) => {
-      setServices(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-      setLoading(false);
-    });
-    return () => unsub();
-  }, []);
-
-  const getIcon = (title: string) => {
-    const t = title.toLowerCase();
-    if (t.includes('residential') || t.includes('home')) return <Home className="text-brand" size={24} />;
-    if (t.includes('commercial') || t.includes('office')) return <Building2 className="text-brand" size={24} />;
-    if (t.includes('styling') || t.includes('curated')) return <Sparkles className="text-brand" size={24} />;
-    if (t.includes('space') || t.includes('layout')) return <Layout className="text-brand" size={24} />;
-    if (t.includes('furniture') || t.includes('decor')) return <Lamp className="text-brand" size={24} />;
-    return <PaintBucket className="text-brand" size={24} />;
-  };
-
-  if (loading) return null;
-  if (services.length === 0) return null;
-
-  return (
-    <section id="services" className="py-24 bg-cream">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-16 mb-20 items-end">
-          <div>
-            <span className="text-brand font-bold text-[10px] uppercase tracking-[0.3em] mb-4 block">OUR SERVICES</span>
-            <h2 className="text-4xl md:text-6xl serif font-medium text-ink leading-tight">
-              A structured, professional approach to every interior.
-            </h2>
-          </div>
-          <p className="text-ink/60 max-w-md leading-relaxed">
-            From the first sketch to the final styled vignette, we deliver interiors that are functional, considered and built to last — for homes and businesses across the Kenyan coast.
-          </p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-12">
-          {services.map((service, index) => (
-            <motion.div
-              key={service.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="group"
-            >
-              <div className="mb-6 p-4 bg-white rounded-2xl w-fit shadow-sm group-hover:shadow-md transition-shadow">
-                {getIcon(service.title)}
-              </div>
-              <h3 className="text-xl font-medium serif mb-3 text-ink group-hover:text-brand transition-colors">{service.title}</h3>
-              <p className="text-ink/60 text-sm leading-relaxed">{service.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const Products = () => {
-  const [products, setProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const unsub = onSnapshot(collection(db, 'products'), (snapshot) => {
-      setProducts(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-      setLoading(false);
-    });
-    return () => unsub();
-  }, []);
-
-  if (loading || products.length === 0) return null;
-
-  return (
-    <section id="products" className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <span className="text-brand font-bold text-[10px] uppercase tracking-[0.3em] mb-4 block">THE SHOP</span>
-          <h2 className="text-4xl md:text-6xl serif font-medium text-ink">Curated Pieces.</h2>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product, index) => (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="group bg-cream/30 rounded-3xl p-8 border border-transparent hover:border-brand/10 transition-all hover:bg-cream/50"
-            >
-              <div className="mb-6 flex justify-between items-start">
-                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-brand">
-                  <ShoppingBag size={24} />
-                </div>
-                <span className="text-xl font-bold text-ink">KSh {Number(product.price).toLocaleString()}</span>
-              </div>
-              <h3 className="text-xl font-bold serif mb-3 text-ink">{product.name}</h3>
-              <p className="text-ink/60 text-sm mb-8 leading-relaxed line-clamp-3">{product.description}</p>
-              
-              <a 
-                href={`https://wa.me/254723758595?text=Hi, I'm interested in the ${product.name}`}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full flex items-center justify-center gap-2 bg-ink text-white py-4 rounded-xl font-bold text-sm tracking-wide transition-all hover:bg-brand"
-              >
-                ENQUIRE NOW
-                <ArrowRight size={18} />
-              </a>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const Gallery = () => {
-  const { content } = useCMS();
-  const isEmpty = content.galleryImages.length === 0;
-  
-  return (
-    <section id="gallery" className="py-24 bg-white/50">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
-          <div>
-            <span className="text-brand font-bold text-[10px] uppercase tracking-[0.3em] mb-4 block">SELECTED WORK</span>
-            <h2 className="text-4xl md:text-6xl serif font-medium text-ink">Recent interiors.</h2>
-          </div>
-          <p className="text-ink/60 max-w-xs leading-relaxed text-sm md:text-base">
-            A glimpse of homes and spaces shaped by the Wamled studio.
-          </p>
-        </div>
-
-        {isEmpty ? (
-          <div className="py-24 text-center border-2 border-dashed border-ink/10 rounded-3xl bg-cream/30">
-            <ImageIcon className="mx-auto text-ink/20 mb-4" size={48} />
-            <p className="text-ink/40 font-medium italic">Our portfolio is being updated. No images yet.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-            {content.galleryImages.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                className="relative overflow-hidden group rounded-2xl aspect-[3/4] md:aspect-[3/4]"
-              >
-                <img 
-                  src={item.url} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute inset-0 bg-ink/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              </motion.div>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
-  );
-};
-
-const Reviews = () => {
-  const { content } = useCMS();
-
-  return (
-    <section id="reviews" className="py-24 bg-cream">
-      <div className="max-w-7xl mx-auto px-6 text-center">
-        <div className="flex flex-col items-center mb-12">
-          <div className="flex gap-1 mb-4">
-            {[...Array(5)].map((_, i) => <Star key={i} size={16} className="text-amber-400 fill-amber-400" />)}
-          </div>
-          <span className="text-brand font-bold text-[10px] uppercase tracking-[0.3em] mb-6 block">5.0 STUDIO RATING</span>
-          <h2 className="text-4xl md:text-6xl serif font-medium text-ink max-w-3xl mx-auto leading-tight">
-            Trusted by clients who care about the details.
-          </h2>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {content.reviews.map((testimonial, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white p-8 rounded-2xl text-left border border-ink/5 flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex gap-1 mb-6">
-                  {[...Array(testimonial.rating)].map((_, i) => <Star key={i} size={12} className="text-amber-400 fill-amber-400" />)}
-                </div>
-                <p className="text-ink/80 italic mb-8 leading-relaxed font-light serif text-lg text-balance">
-                  "{testimonial.text}"
-                </p>
-              </div>
-              <div className="pt-6 border-t border-ink/5">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-ink/40">{testimonial.author}</span>
-              </div>
-            </motion.div>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -525,12 +405,12 @@ const Footer = () => {
   const trackWhatsApp = async () => {
     try {
       await addDoc(collection(db, 'leads'), {
-        name: 'WhatsApp Inquiry',
-        phone: 'See WhatsApp',
+        name: 'WhatsApp Click',
+        phone: 'See WhatsApp Link',
         projectType: 'Direct Message',
-        details: 'User clicked WhatsApp button',
+        details: 'User initiated WhatsApp conversation',
         status: 'New',
-        source: 'whatsapp',
+        source: 'whatsapp-footer',
         createdAt: new Date().toISOString()
       });
     } catch (e) {
@@ -539,86 +419,96 @@ const Footer = () => {
     window.open(`https://wa.me/${content.phone.replace(/\s+/g, '').replace(/^0/, '254')}`, '_blank');
   };
 
-  const SocialIcon = ({ platform }: { platform: string }) => {
-    switch (platform) {
-      case 'instagram': return <Instagram size={18} />;
-      case 'facebook': return <Facebook size={18} />;
-      case 'twitter': return <Twitter size={18} />;
-      case 'linkedin': return <Linkedin size={18} />;
-      default: return null;
-    }
-  };
-
   return (
-    <footer className="bg-brand text-white py-24 relative overflow-hidden">
-      {/* Decorative patterns */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <div className="grid grid-cols-[repeat(20,minmax(0,1fr))] h-full">
-          {[...Array(400)].map((_, i) => (
-            <div key={i} className="border-r border-b border-white flex items-center justify-center h-12 w-full text-[6px]">
-              +
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-        <span className="text-white/60 font-bold text-[10px] uppercase tracking-[0.4em] mb-8 block">BEGIN YOUR PROJECT</span>
-        <h2 className="text-5xl md:text-8xl serif font-medium mb-8 leading-[1.1] text-balance">
-          Let's design <span className="italic text-white opacity-90">something remarkable.</span>
+    <footer 
+      className="bg-[#A83F1B] text-white py-24 relative overflow-hidden"
+      style={{
+        backgroundImage: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px), linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px)',
+        backgroundSize: '40px 40px, 40px 40px, 40px 40px'
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-6 relative z-10 text-center space-y-12">
+        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/60 block font-bold">
+          BEGIN YOUR PROJECT
+        </span>
+        
+        <h2 className="text-4xl sm:text-5xl md:text-7xl font-serif font-light text-white leading-[1.15] max-w-5xl mx-auto">
+          Let's design <span className="italic font-normal">something remarkable.</span>
         </h2>
         
-        <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-16 leading-relaxed font-light">
+        <p className="text-white/80 text-xs sm:text-sm md:text-base font-sans font-light max-w-2xl mx-auto leading-relaxed">
           Tell us about your space. We'll come back with a clear plan, an honest timeline, and a vision worth committing to.
         </p>
 
-        <div className="flex flex-wrap justify-center gap-6 mb-20">
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-4 max-w-lg mx-auto">
           <a 
             href={`tel:${content.phone}`} 
-            className="group flex items-center gap-3 bg-white text-brand px-10 py-5 rounded-xl font-bold text-sm tracking-wide transition-all hover:scale-105 shadow-xl"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white text-[#A83F1B] px-8 py-4 rounded-xl font-mono text-[11px] uppercase tracking-widest font-bold transition-all hover:bg-white/90 shadow-lg cursor-pointer"
           >
-            <Phone size={18} />
-            {content.phone}
+            <Phone size={13} className="fill-[#A83F1B]" />
+            {content.phone || '0723 758 595'}
           </a>
+          
           <button 
             onClick={trackWhatsApp}
-            className="flex items-center gap-3 bg-transparent border border-white/30 text-white px-10 py-5 rounded-xl font-bold text-sm tracking-wide transition-all hover:bg-white/10 group"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 border border-white/25 hover:border-white/50 text-white bg-transparent hover:bg-white/5 px-8 py-4 rounded-xl font-mono text-[11px] uppercase tracking-widest font-bold transition-all cursor-pointer"
           >
             MESSAGE ON WHATSAPP
-            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            <ArrowRight size={13} />
           </button>
         </div>
 
-        <div className="grid sm:grid-cols-3 gap-12 pt-16 border-t border-white/20 items-start">
-          <div className="flex flex-col items-center sm:items-start gap-3">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">LOCATION</span>
-            <span className="font-medium text-sm">{content.location}</span>
-          </div>
-          <div className="flex flex-col items-center sm:items-center gap-3">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">HOURS</span>
-            <span className="font-medium text-sm">{content.hours}</span>
-          </div>
-          <div className="flex flex-col items-center sm:items-end gap-3">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">CONSULTATION</span>
-            <span className="font-medium text-sm">Free first consultation</span>
-          </div>
+        {/* Subtle separator */}
+        <div className="pt-12">
+          <div className="border-t border-white/10 w-full" />
         </div>
 
-        <div className="mt-24 pt-8 text-[10px] font-bold uppercase tracking-widest text-white/20 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center">
-            <span>© 2024 WAMLED STUDIO INTERIORS.</span>
-            <div className="flex gap-4">
-              {content.socialLinks.map((social, i) => (
-                <a key={i} href={social.url} target="_blank" rel="noreferrer" className="text-white hover:text-white/60 transition-colors">
-                  <SocialIcon platform={social.platform} />
-                </a>
-              ))}
+        {/* Stats & Navigation columns */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 pt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-16 text-left w-full md:w-auto">
+            <div className="space-y-1">
+              <span className="text-[9px] font-mono text-white/55 tracking-widest uppercase block font-bold">
+                LOCATION
+              </span>
+              <span className="text-xs md:text-sm font-sans font-medium text-white block">
+                {content.location || 'Moi Avenue, Mombasa'}
+              </span>
+            </div>
+            
+            <div className="space-y-1">
+              <span className="text-[9px] font-mono text-white/55 tracking-widest uppercase block font-bold">
+                HOURS
+              </span>
+              <span className="text-xs md:text-sm font-sans font-medium text-white block">
+                {content.hours || 'Open until 8:00 PM'}
+              </span>
+            </div>
+            
+            <div className="space-y-1">
+              <span className="text-[9px] font-mono text-white/55 tracking-widest uppercase block font-bold">
+                CONSULTATION
+              </span>
+              <span className="text-xs md:text-sm font-sans font-medium text-white block">
+                Free first consultation
+              </span>
             </div>
           </div>
-          <div className="flex gap-8">
-            <Link to="/admin" className="hover:text-white transition-colors">ADMIN</Link>
-            <a href="#" className="hover:text-white transition-colors">PRIVACY</a>
-            <a href="#" className="hover:text-white transition-colors">TERMS</a>
+          
+          <div className="flex flex-col sm:flex-row items-start sm:items-end md:items-center gap-6 justify-between w-full md:w-auto">
+            <div className="flex flex-wrap gap-4 text-[9px] font-mono tracking-widest text-white/50 uppercase">
+              <Link to="/portfolio" className="hover:text-white transition-colors">PORTFOLIO</Link>
+              <Link to="/casestudies" className="hover:text-white transition-colors">CASE STUDIES</Link>
+              <Link to="/contact" className="hover:text-white transition-colors">CONTACT</Link>
+              <Link to="/admin" className="hover:text-white transition-colors">ADMIN</Link>
+            </div>
+            
+            <button 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="p-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/30 text-white rounded-lg transition-all cursor-pointer self-end md:self-auto"
+              aria-label="Scroll to top"
+            >
+              <ArrowUp size={15} />
+            </button>
           </div>
         </div>
       </div>
@@ -626,60 +516,75 @@ const Footer = () => {
   );
 };
 
-// --- Main App ---
-
 const NotFound = () => (
-  <div className="min-h-screen bg-cream flex items-center justify-center p-6 text-center">
-    <div className="bg-white p-12 rounded-3xl shadow-xl max-w-md w-full">
-      <div className="w-20 h-20 bg-brand/10 text-brand rounded-2xl flex items-center justify-center mx-auto mb-8">
-        <AlertCircle size={40} />
+  <div className="min-h-screen bg-[#F9F9F7] flex items-center justify-center p-6 text-center text-ink relative">
+    <div className="absolute inset-0 bg-cream/10 bg-[radial-gradient(ellipse_at_top,rgba(168,63,27,0.025),transparent_75%)] pointer-events-none" />
+    <div className="bg-white border border-ink/10 p-12 rounded-3xl shadow-xl max-w-md w-full relative z-10">
+      <div className="w-16 h-16 bg-brand/10 text-brand rounded-full flex items-center justify-center mx-auto mb-8">
+        <AlertCircle size={32} />
       </div>
-      <h1 className="text-4xl font-bold serif mb-4">404</h1>
-      <p className="text-ink/60 mb-10">We couldn't find the page you're looking for. It might have been moved or deleted.</p>
+      <h1 className="text-4xl font-serif font-light mb-4 text-ink">404</h1>
+      <p className="text-ink/65 text-xs font-light mb-10 leading-relaxed">The luxury editorial segment or architectural study could not be matched.</p>
       <Link 
         to="/" 
-        className="inline-flex items-center gap-2 bg-brand text-white px-8 py-4 rounded-xl font-bold hover:bg-brand/90 transition-all"
+        className="inline-flex items-center gap-2 bg-brand text-white px-8 py-3.5 rounded-full font-mono text-xs font-bold uppercase tracking-widest hover:bg-ink transition-colors shadow-sm"
       >
-        <Home size={18} />
-        BACK HOME
+        <Home size={12} />
+        RETURN HOME
       </Link>
     </div>
   </div>
 );
 
-// --- Main App ---
+const GoogleMapSection = () => {
+  return (
+    <section className="py-20 bg-[#F9F9F7] px-6 border-t border-ink/5">
+      <div className="max-w-7xl mx-auto space-y-10">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 pb-6 border-b border-ink/10">
+          <div className="space-y-2 text-left">
+            <span className="text-brand font-mono tracking-[0.4em] text-[10px] uppercase font-bold">STUDIO LATITUDE</span>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-ink uppercase tracking-tight">Our Mombasa Headquarters</h2>
+          </div>
+          <div className="text-left font-mono text-[10px] text-ink/50 tracking-wider">
+            <span>📍 WMQ9+72, MOI AVENUE, MOMBASA, KENYA</span> <br className="hidden md:inline" />
+            <span className="md:ml-2 text-brand font-semibold">S 4° 3' 49.32'' / E 39° 40' 11.28''</span>
+          </div>
+        </div>
+        
+        <div className="w-full h-[450px] md:h-[550px] rounded-3xl overflow-hidden border border-ink/15 shadow-xl relative group">
+          <iframe 
+            title="Wamled Atelier Mombasa Headquarters Map"
+            src="https://maps.google.com/maps?q=WMQ9%2B72%20Mombasa%20Kenya&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+            className="w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-700 brightness-95 hover:brightness-100"
+            allowFullScreen={true}
+            loading="lazy"
+            referrerPolicy="no-referrer"
+          />
+          {/* Subtle design overlays to match the premium theme */}
+          <div className="absolute top-6 left-6 bg-ink/95 backdrop-blur-md rounded-2xl p-5 border border-white/10 text-white text-left shadow-2xl pointer-events-none max-w-xs space-y-2.5 hidden sm:block">
+            <span className="text-[9px] font-mono tracking-widest text-[#C5A059] uppercase block font-bold">Atelier Location</span>
+            <p className="text-xs font-serif font-light leading-relaxed text-white/80">
+              Our master Mombasa atelier is nestled precisely off Moi Avenue. Reach out to coordinate an on-site spatial consultation.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const LandingPage = () => {
-  const [showScrollTop, setShowScrollTop] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setShowScrollTop(window.scrollY > 1000);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
-    <div className="bg-cream/20">
+    <div className="bg-[#F9F9F7]">
       <Hero />
-      <Services />
-      <Products />
-      <Gallery />
-      <Reviews />
+      <ServiceStacks />
+      <BrandValues />
+      <WhyUsStats />
+      <EnterpriseBridge />
+      <ClientReviewsSlider />
+      <BentoGalleryGateway />
+      <GoogleMapSection />
       <Footer />
-
-      <AnimatePresence>
-        {showScrollTop && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.5 }}
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="fixed bottom-8 right-8 z-50 p-4 bg-brand text-white rounded-2xl shadow-2xl shadow-brand/40 hover:scale-110 transition-transform"
-          >
-            <ArrowUp size={24} />
-          </motion.button>
-        )}
-      </AnimatePresence>
     </div>
   );
 };
@@ -693,6 +598,12 @@ export default function App() {
           <Navbar />
           <Routes>
             <Route path="/" element={<LandingPage />} />
+            <Route path="/filmstrip" element={<Filmstrip />} />
+            <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="/casestudies" element={<CaseStudies />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/services" element={<BespokeServices />} />
+            <Route path="/services/:id" element={<ServiceDetail />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/404" element={<NotFound />} />
             <Route path="*" element={<Navigate to="/404" replace />} />
@@ -702,4 +613,5 @@ export default function App() {
     </BrowserRouter>
   );
 }
+
 

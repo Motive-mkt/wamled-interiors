@@ -5,14 +5,18 @@
   --font-serif: "Cormorant Garamond", serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   
-  --color-brand: #A83F1B;
-  --color-cream: #F9F5F1;
+  --color-brand: #C5A059;
+  --color-cream: #F0F0F0;
   --color-ink: #1A1A1A;
+  --color-alabaster: #F9F9F7;
+  --color-charcoal: #1A1A1A;
+  --color-platinum: #F0F0F0;
+  --color-champagne: #C5A059;
 }
 
 @layer base {
   body {
-    @apply font-sans text-ink bg-white;
+    @apply font-sans text-ink bg-alabaster;
   }
 }
 

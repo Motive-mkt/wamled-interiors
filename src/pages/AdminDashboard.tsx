@@ -30,7 +30,15 @@ import {
   Phone,
   Ticket,
   Lock,
-  AlertCircle
+  AlertCircle,
+  BookOpen,
+  FileDown,
+  Search,
+  Mail,
+  X,
+  Check,
+  Edit,
+  Eye
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -48,7 +56,7 @@ import { db } from '../lib/firebase';
 import { useCMS } from '../components/CMSContext';
 import { useAuth } from '../components/AuthContext';
 
-const COLORS = ['#A83F1B', '#E5E7EB', '#FBBF24', '#10B981'];
+const COLORS = ['#C5A059', '#E5E7EB', '#FBBF24', '#10B981'];
 
 export default function AdminDashboard() {
   const { user, role, authLoading, roleLoading, isFirstUser, login, googleLogin, register, logout } = useAuth();
@@ -60,10 +68,8 @@ export default function AdminDashboard() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   
-  const [activeTab, setActiveTab] = useState<'overview' | 'leads' | 'services' | 'products' | 'cms' | 'invites'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'leads' | 'cms' | 'invites' | 'portfolio' | 'casestudies'>('overview');
   const [leads, setLeads] = useState<any[]>([]);
-  const [services, setServices] = useState<any[]>([]);
-  const [products, setProducts] = useState<any[]>([]);
   const { content, updateContent } = useCMS();
 
   useEffect(() => {
@@ -72,16 +78,8 @@ export default function AdminDashboard() {
     const qLeads = query(collection(db, 'leads'), orderBy('createdAt', 'desc'));
     const unsubLeads = onSnapshot(qLeads, (s) => setLeads(s.docs.map(d => ({ id: d.id, ...d.data() }))));
 
-    const qServices = query(collection(db, 'services'));
-    const unsubServices = onSnapshot(qServices, (s) => setServices(s.docs.map(d => ({ id: d.id, ...d.data() }))));
-
-    const qProducts = query(collection(db, 'products'));
-    const unsubProducts = onSnapshot(qProducts, (s) => setProducts(s.docs.map(d => ({ id: d.id, ...d.data() }))));
-
     return () => {
       unsubLeads();
-      unsubServices();
-      unsubProducts();
     };
   }, [user, role, authLoading, roleLoading]);
 
@@ -296,8 +294,10 @@ export default function AdminDashboard() {
       {/* Sidebar */}
       <aside className="w-64 bg-ink text-white flex flex-col">
         <div className="p-8">
-          <Link to="/" className="text-2xl font-bold serif tracking-tight block hover:opacity-80 transition-opacity">
-            Wamled<span className="text-brand">.</span>
+          <Link to="/" className="inline-block relative pb-1.5 select-none hover:opacity-90 transition-opacity">
+            <span className="text-2xl font-serif tracking-tight text-white">Wamled</span>
+            <span className="text-2xl font-serif text-[#A83F1B]">.</span>
+            <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#A83F1B]" />
           </Link>
           <p className="text-[10px] text-white/40 tracking-widest mt-1">STUDIO DASHBOARD</p>
         </div>
@@ -307,8 +307,8 @@ export default function AdminDashboard() {
           <SidebarLink active={activeTab === 'leads'} onClick={() => setActiveTab('leads')} icon={<MessageSquare size={20} />} label="Leads & Inquiries" />
           {isOwner && (
             <>
-              <SidebarLink active={activeTab === 'services'} onClick={() => setActiveTab('services')} icon={<Package size={20} />} label="Services" />
-              <SidebarLink active={activeTab === 'products'} onClick={() => setActiveTab('products')} icon={<TrendingUp size={20} />} label="Products" />
+              <SidebarLink active={activeTab === 'portfolio'} onClick={() => setActiveTab('portfolio')} icon={<ImageIcon size={20} />} label="Portfolio Curator" />
+              <SidebarLink active={activeTab === 'casestudies'} onClick={() => setActiveTab('casestudies')} icon={<BookOpen size={20} />} label="Case Studies Curator" />
               <SidebarLink active={activeTab === 'cms'} onClick={() => setActiveTab('cms')} icon={<Settings size={20} />} label="Site Content" />
               <SidebarLink active={activeTab === 'invites'} onClick={() => setActiveTab('invites')} icon={<Ticket size={20} />} label="Worker Invites" />
             </>
@@ -349,10 +349,10 @@ export default function AdminDashboard() {
           </div>
         </header>
 
-        {activeTab === 'overview' && <OverviewTab leads={leads} services={services} />}
+        {activeTab === 'overview' && <OverviewTab leads={leads} />}
         {activeTab === 'leads' && <LeadsTab leads={leads} isOwner={isOwner} />}
-        {activeTab === 'services' && isOwner && <ListManager collectionName="services" items={services} />}
-        {activeTab === 'products' && isOwner && <ListManager collectionName="products" items={products} />}
+        {activeTab === 'portfolio' && isOwner && <PortfolioTab />}
+        {activeTab === 'casestudies' && isOwner && <CaseStudiesTab />}
         {activeTab === 'cms' && isOwner && <CMSTab content={content} updateContent={updateContent} />}
         {activeTab === 'invites' && isOwner && <InvitesTab />}
       </main>
@@ -372,12 +372,11 @@ function SidebarLink({ active, onClick, icon, label }: any) {
   );
 }
 
-function OverviewTab({ leads, services }: any) {
+function OverviewTab({ leads }: any) {
   const stats = [
     { label: 'Total Inquiries', value: leads.length, color: 'brand' },
     { label: 'Active Leads', value: leads.filter((l: any) => l.status === 'New' || l.status === 'In Progress').length, color: 'amber' },
-    { label: 'Closed Deals', value: leads.filter((l: any) => l.status === 'Closed').length, color: 'emerald' },
-    { label: 'Services', value: services.length, color: 'ink' }
+    { label: 'Closed Deals', value: leads.filter((l: any) => l.status === 'Closed').length, color: 'emerald' }
   ];
 
   const leadStatusData = [
@@ -414,7 +413,7 @@ function OverviewTab({ leads, services }: any) {
                 <XAxis dataKey="name" fontSize={12} />
                 <YAxis fontSize={12} />
                 <Tooltip />
-                <Bar dataKey="value" fill="#A83F1B" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="value" fill="#C5A059" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -457,75 +456,466 @@ function OverviewTab({ leads, services }: any) {
 }
 
 function LeadsTab({ leads, isOwner }: any) {
+  const [activeTab, setActiveTab] = useState<'All' | 'New' | 'In Progress' | 'Closed' | 'Archived'>('All');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedLead, setSelectedLead] = useState<any | null>(null);
+  const [newNoteText, setNewNoteText] = useState('');
+
+  // 1. Calculate Analytics Metrics
+  const totalCount = leads.length;
+  const newCount = leads.filter((l: any) => l.status === 'New' || !l.status).length;
+  const inProgressCount = leads.filter((l: any) => l.status === 'In Progress').length;
+  const closedCount = leads.filter((l: any) => l.status === 'Closed').length;
+  const archivedCount = leads.filter((l: any) => l.status === 'Archived').length;
+  const conversionRate = totalCount > 0 ? Math.round((closedCount / totalCount) * 100) : 0;
+
+  // 2. Filter Leads based on Status Tab & Search Term
+  const filteredLeads = leads.filter((lead: any) => {
+    const status = lead.status || 'New';
+    
+    // Tab filter
+    if (activeTab !== 'All' && status !== activeTab) {
+      return false;
+    }
+
+    // Search query filter
+    const query = searchTerm.toLowerCase();
+    return (
+      (lead.name || '').toLowerCase().includes(query) ||
+      (lead.email || '').toLowerCase().includes(query) ||
+      (lead.phone || '').toLowerCase().includes(query) ||
+      (lead.projectType || '').toLowerCase().includes(query) ||
+      (lead.details || '').toLowerCase().includes(query)
+    );
+  });
+
+  // 3. Update Status
   const updateLeadStatus = async (id: string, status: string) => {
     try {
       await updateDoc(doc(db, 'leads', id), { status });
+      if (selectedLead && selectedLead.id === id) {
+        setSelectedLead((prev: any) => ({ ...prev, status }));
+      }
     } catch (e) {
       console.error(e);
     }
   };
 
+  // 4. Add action note/followup logs
+  const handleAddNote = async (leadId: string, currentNotes: any[]) => {
+    if (!newNoteText.trim()) return;
+    const noteObj = {
+      text: newNoteText,
+      createdAt: new Date().toISOString()
+    };
+    const updatedNotes = [...(currentNotes || []), noteObj];
+    try {
+      await updateDoc(doc(db, 'leads', leadId), {
+        notes: updatedNotes
+      });
+      setNewNoteText('');
+      if (selectedLead && selectedLead.id === leadId) {
+        setSelectedLead((prev: any) => ({ ...prev, notes: updatedNotes }));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // 5. Export to Excel/CSV
+  const exportToCSV = () => {
+    if (leads.length === 0) return alert('No inquiries available to export.');
+    
+    const headers = ['Name', 'Email', 'Phone', 'Project Subject', 'Inquiry Source', 'Received Date', 'Status', 'Inquiry Message', 'Follow-up Notes Count'];
+    const rows = leads.map((l: any) => [
+      l.name || '',
+      l.email || '',
+      l.phone || '',
+      l.projectType || '',
+      l.source || 'Form',
+      l.createdAt ? new Date(l.createdAt).toLocaleString() : 'N/A',
+      l.status || 'New',
+      (l.details || '').replace(/"/g, '""'),
+      (l.notes || []).length
+    ]);
+    
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + [headers.join(','), ...rows.map((e: any) => e.map((val: any) => `"${val}"`).join(','))].join('\n');
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `wamled_inquiries_report_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
-    <div className="bg-white rounded-3xl shadow-sm border overflow-hidden">
-      <table className="w-full text-left border-collapse">
-        <thead>
-          <tr className="bg-gray-50 border-b">
-            <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Client</th>
-            <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Inquiry Details</th>
-            <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Date</th>
-            <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Status</th>
-            <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {leads.map((lead: any) => (
-            <tr key={lead.id} className="border-b hover:bg-gray-50/50 transition-colors">
-              <td className="px-6 py-6">
-                <p className="font-bold text-sm">{lead.name}</p>
-                <p className="text-xs text-ink/40">{lead.phone}</p>
-                <span className="inline-block mt-2 px-2 py-0.5 bg-brand/10 text-brand text-[8px] font-bold rounded uppercase">
-                  {lead.source || 'Form'}
+    <div className="space-y-6">
+      {/* Metrics Ribbon & Highlights */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="bg-white p-5 rounded-2xl border text-left shadow-sm">
+          <span className="text-[9px] font-mono tracking-widest text-ink/40 uppercase font-bold block">Total Inquiries</span>
+          <p className="text-2xl font-serif font-light text-ink mt-1">{totalCount}</p>
+        </div>
+        <div className="bg-amber-50/50 p-5 rounded-2xl border border-amber-100 text-left shadow-sm">
+          <span className="text-[9px] font-mono tracking-widest text-amber-700/60 uppercase font-bold block">🚨 New Requests</span>
+          <p className="text-2xl font-serif font-light text-amber-800 mt-1">{newCount}</p>
+        </div>
+        <div className="bg-blue-50/50 p-5 rounded-2xl border border-blue-100 text-left shadow-sm">
+          <span className="text-[9px] font-mono tracking-widest text-blue-700/60 uppercase font-bold block">⚡ In Progress</span>
+          <p className="text-2xl font-serif font-light text-blue-800 mt-1">{inProgressCount}</p>
+        </div>
+        <div className="bg-emerald-50/50 p-5 rounded-2xl border border-emerald-100 text-left shadow-sm">
+          <span className="text-[9px] font-mono tracking-widest text-emerald-700/60 uppercase font-bold block">✓ Closed / Wins</span>
+          <p className="text-2xl font-serif font-light text-emerald-800 mt-1">{closedCount}</p>
+        </div>
+        <div className="bg-ink/5 p-5 rounded-2xl border text-left shadow-sm col-span-2 md:col-span-1">
+          <span className="text-[9px] font-mono tracking-widest text-ink/50 uppercase font-bold block">Conversion %</span>
+          <p className="text-2xl font-serif font-light text-brand mt-1">{conversionRate}%</p>
+        </div>
+      </div>
+
+      {/* Advanced Filter and Control Bar */}
+      <div className="bg-white p-4 border rounded-3xl flex flex-col md:flex-row justify-between items-center gap-4">
+        {/* Tab Filters */}
+        <div className="flex flex-wrap gap-1 w-full md:w-auto">
+          {(['All', 'New', 'In Progress', 'Closed', 'Archived'] as const).map((tab) => {
+            const countMap = {
+              All: totalCount,
+              New: newCount,
+              'In Progress': inProgressCount,
+              Closed: closedCount,
+              Archived: archivedCount
+            };
+            const isActive = activeTab === tab;
+            return (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`text-[10px] sm:text-xs font-mono tracking-wider px-3 sm:px-4 py-2 rounded-xl font-bold transition-all relative ${
+                  isActive 
+                    ? 'bg-brand text-white shadow-sm' 
+                    : 'text-ink/60 hover:bg-gray-100'
+                }`}
+              >
+                {tab.toUpperCase()}
+                <span className={`ml-1.5 px-1.5 py-0.5 rounded-full text-[8px] ${
+                  isActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-ink/55'
+                }`}>
+                  {countMap[tab]}
                 </span>
-              </td>
-              <td className="px-6 py-6 max-w-xs">
-                <p className="text-xs font-medium text-brand mb-1">{lead.projectType}</p>
-                <p className="text-xs text-ink/60 line-clamp-2">{lead.details}</p>
-              </td>
-              <td className="px-6 py-6 text-xs text-ink/40">
-                {lead.createdAt ? new Date(lead.createdAt).toLocaleDateString() : 'N/A'}
-              </td>
-              <td className="px-6 py-6">
-                <select 
-                  value={lead.status} 
-                  onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
-                  className={`text-[10px] font-bold uppercase px-3 py-1.5 rounded-full border focus:outline-none ${
-                    lead.status === 'Closed' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' :
-                    lead.status === 'In Progress' ? 'bg-amber-50 text-amber-600 border-amber-200' :
-                    'bg-gray-50 text-gray-600 border-gray-200'
-                  }`}
-                >
-                  <option value="New">New</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Closed">Closed</option>
-                  <option value="Archived">Archived</option>
-                </select>
-              </td>
-              <td className="px-6 py-6">
-                <div className="flex gap-2">
-                  <a href={`tel:${lead.phone}`} className="p-2 bg-gray-100 rounded-lg hover:bg-brand hover:text-white transition-all">
-                    <Phone size={14} />
-                  </a>
-                  {isOwner && (
-                    <button onClick={() => deleteDoc(doc(db, 'leads', lead.id))} className="p-2 bg-gray-100 rounded-lg hover:bg-red-500 hover:text-white transition-all text-red-500">
-                      <Trash2 size={14} />
-                    </button>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Search & Export inputs */}
+        <div className="flex items-center gap-3 w-full md:w-auto justify-end">
+          <div className="relative w-full md:w-64">
+            <Search className="absolute left-3.5 top-3 text-ink/30" size={14} />
+            <input
+              type="text"
+              placeholder="Search clients, messages..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 text-xs border bg-gray-50 rounded-xl focus:outline-none focus:border-brand"
+            />
+          </div>
+          <button
+            onClick={exportToCSV}
+            title="Export leads database to CSV"
+            className="p-2 border hover:bg-gray-50 rounded-xl text-ink/75 font-mono text-[10px] font-bold tracking-widest flex items-center gap-1.5 h-10 px-4 whitespace-nowrap cursor-pointer"
+          >
+            <FileDown size={14} />
+            EXPORT
+          </button>
+        </div>
+      </div>
+
+      {/* Leads Table Container */}
+      <div className="bg-white rounded-3xl shadow-sm border overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse min-w-[800px]">
+            <thead>
+              <tr className="bg-gray-50 border-b">
+                <th className="px-6 py-4 text-[10px] font-mono font-bold uppercase tracking-widest text-ink/40">Client Info</th>
+                <th className="px-6 py-4 text-[10px] font-mono font-bold uppercase tracking-widest text-ink/40">Project Classification</th>
+                <th className="px-6 py-4 text-[10px] font-mono font-bold uppercase tracking-widest text-ink/40">Submitted Message excerpt</th>
+                <th className="px-6 py-4 text-[10px] font-mono font-bold uppercase tracking-widest text-ink/40">Date</th>
+                <th className="px-6 py-4 text-[10px] font-mono font-bold uppercase tracking-widest text-ink/40">Status Staging</th>
+                <th className="px-6 py-4 text-[10px] font-mono font-bold uppercase tracking-widest text-ink/40">Action Room</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredLeads.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center text-xs text-ink/40 font-mono">
+                    No matching client inquiries found.
+                  </td>
+                </tr>
+              ) : (
+                filteredLeads.map((lead: any) => {
+                  const status = lead.status || 'New';
+                  return (
+                    <tr key={lead.id} className="border-b hover:bg-gray-50/30 transition-colors">
+                      {/* Name & Source */}
+                      <td className="px-6 py-5">
+                        <div className="space-y-1 text-left">
+                          <p className="font-bold text-ink hover:text-brand transition-colors text-sm">{lead.name}</p>
+                          <p className="text-[11px] font-mono text-ink/40">{lead.phone}</p>
+                          {lead.email && <p className="text-[10px] text-ink/40 truncate max-w-[150px]">{lead.email}</p>}
+                        </div>
+                      </td>
+
+                      {/* Project Subject */}
+                      <td className="px-6 py-5 text-left">
+                        <span className="text-[10px] font-mono uppercase bg-brand/5 border border-brand/10 text-brand px-2 py-1 rounded-md max-w-[170px] inline-block truncate">
+                          {lead.projectType || 'General Consultation'}
+                        </span>
+                        <div className="text-[8px] font-mono tracking-widest text-ink/30 uppercase mt-1">
+                          Source: {lead.source || 'Standard Form'}
+                        </div>
+                      </td>
+
+                      {/* Message details */}
+                      <td className="px-6 py-5 max-w-xs text-left">
+                        <p className="text-xs text-ink/70 line-clamp-2 mt-0.5 leading-relaxed font-sans">{lead.details}</p>
+                        {(lead.notes || []).length > 0 && (
+                          <span className="inline-flex items-center gap-1 text-[9px] font-mono text-emerald-600 bg-emerald-50 px-1.5 py-0.5 mt-1 rounded">
+                            ● {(lead.notes || []).length} follow-up logs
+                          </span>
+                        )}
+                      </td>
+
+                      {/* Date */}
+                      <td className="px-6 py-5 text-xs text-ink/40 font-mono">
+                        {lead.createdAt ? new Date(lead.createdAt).toLocaleDateString() : 'N/A'}
+                      </td>
+
+                      {/* Status select dropdown */}
+                      <td className="px-6 py-5">
+                        <select 
+                          value={status} 
+                          onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
+                          className={`text-[9px] font-mono font-bold uppercase px-3 py-1.5 rounded-full border cursor-pointer focus:outline-none ${
+                            status === 'Closed' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' :
+                            status === 'In Progress' ? 'bg-blue-50 text-blue-600 border-blue-200' :
+                            status === 'Archived' ? 'bg-gray-50 text-gray-400 border-gray-200' :
+                            'bg-amber-50 text-amber-700 border-amber-200 animate-pulse'
+                          }`}
+                        >
+                          <option value="New">New</option>
+                          <option value="In Progress">In Progress</option>
+                          <option value="Closed">Closed</option>
+                          <option value="Archived">Archived</option>
+                        </select>
+                      </td>
+
+                      {/* View Dossier and quick actions */}
+                      <td className="px-6 py-5">
+                        <div className="flex gap-1.5">
+                          <button
+                            onClick={() => setSelectedLead(lead)}
+                            className="p-2 bg-[#F9F9F7] hover:bg-brand hover:text-white rounded-lg transition-all text-ink/60 border hover:border-brand flex items-center gap-1 text-[10px] font-mono font-bold tracking-widest cursor-pointer"
+                            title="Open client dossier and activity log room"
+                          >
+                            <Eye size={13} />
+                            DOSSIER
+                          </button>
+                          
+                          {isOwner && (
+                            <button 
+                              onClick={() => {
+                                if (confirm('Are you absolutely sure you want to purge this lead? This action is irreversible.')) {
+                                  deleteDoc(doc(db, 'leads', lead.id));
+                                }
+                              }} 
+                              className="p-2 bg-red-50 hover:bg-red-500 hover:text-white rounded-lg transition-all text-red-500 border border-red-100"
+                              title="Purge dossier record"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* World-Class Client Inquiry Dossier & Notes Log (Translucent Aside Drawer Modal) */}
+      {selectedLead && (
+        <div className="fixed inset-0 z-[60] flex justify-end bg-black/40 backdrop-blur-xs transition-opacity duration-300">
+          {/* Backdrop Closer */}
+          <div className="absolute inset-0" onClick={() => setSelectedLead(null)} />
+          
+          <div className="relative w-full max-w-lg bg-white h-full shadow-2xl flex flex-col justify-between overflow-hidden border-l border-ink/5 animate-slide-in">
+            {/* Header */}
+            <div className="flex justify-between items-center p-6 border-b border-ink/5 bg-[#F9F9F7]">
+              <div className="text-left space-y-1">
+                <span className="text-[8px] font-mono tracking-widest text-brand uppercase block font-bold">Wamled Client Ingest Track</span>
+                <h3 className="text-lg font-serif text-ink tracking-tight uppercase leading-none">Inquiry Dossier Log</h3>
+              </div>
+              <button 
+                onClick={() => setSelectedLead(null)}
+                className="p-2 bg-white hover:bg-brand hover:text-white border rounded-xl transition-all cursor-pointer text-ink/50 shadow-xs"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Content Body */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-8 text-left">
+              {/* Client Info Grid Card */}
+              <div className="bg-[#F9F9F7] border border-ink/5 rounded-2xl p-5 space-y-4">
+                <div className="flex justify-between items-start">
+                  <div className="space-y-0.5">
+                    <p className="text-[10px] font-mono text-ink/40 tracking-wider font-bold">CLIENT NAME</p>
+                    <p className="font-serif font-semibold text-lg text-ink uppercase">{selectedLead.name}</p>
+                  </div>
+                  <span className={`text-[9px] font-mono font-bold uppercase px-2.5 py-1 rounded-full border ${
+                    (selectedLead.status || 'New') === 'Closed' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' :
+                    (selectedLead.status || 'New') === 'In Progress' ? 'bg-blue-50 text-blue-600 border-blue-200' :
+                    (selectedLead.status || 'New') === 'Archived' ? 'bg-gray-50 text-gray-500 border-gray-200' :
+                    'bg-amber-50 text-amber-700 border-amber-200'
+                  }`}>
+                    {selectedLead.status || 'New'}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 pt-2 border-t border-ink/5 text-xs">
+                  <div>
+                    <span className="text-[8px] font-mono text-ink/40 font-bold block">PHONE NUMBER</span>
+                    <a href={`tel:${selectedLead.phone}`} className="text-ink hover:text-brand font-medium block mt-0.5 transition-colors underline">
+                      {selectedLead.phone}
+                    </a>
+                  </div>
+                  {selectedLead.email && (
+                    <div>
+                      <span className="text-[8px] font-mono text-ink/40 font-bold block">EMAIL ADDRESS</span>
+                      <a href={`mailto:${selectedLead.email}`} className="text-ink hover:text-brand font-medium block mt-0.5 transition-colors truncate underline">
+                        {selectedLead.email}
+                      </a>
+                    </div>
                   )}
                 </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+
+                <div className="grid grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <span className="text-[8px] font-mono text-ink/40 font-bold block">RECEIVED TIMEFRAME</span>
+                    <span className="text-ink/60 font-mono block mt-0.5">
+                      {selectedLead.createdAt ? new Date(selectedLead.createdAt).toLocaleString() : 'N/A'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[8px] font-mono text-ink/40 font-bold block">PROJECT CLASSIFICATION</span>
+                    <span className="text-brand font-mono font-bold uppercase block mt-0.5 text-[10px] truncate">
+                      {selectedLead.projectType || 'General Consultation'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Instant Connect Suite Buttons */}
+                <div className="pt-3 border-t border-ink/5 flex flex-wrap gap-2 justify-center">
+                  <a 
+                    href={`tel:${selectedLead.phone}`}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-white hover:bg-gray-100 border text-ink font-mono text-[9px] font-bold tracking-widest rounded-xl transition-all"
+                  >
+                    <Phone size={11} />
+                    DIAL
+                  </a>
+                  {selectedLead.email && (
+                    <a 
+                      href={`mailto:${selectedLead.email}?subject=Wamled%20Atelier%20Response&body=Dear%20${encodeURIComponent(selectedLead.name)},%0D%0A%0D%0AThank%20you%20for%20contacting%20Wamled%20Design%20Atelier...`}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-white hover:bg-gray-100 border text-ink font-mono text-[9px] font-bold tracking-widest rounded-xl transition-all"
+                    >
+                      <Mail size={11} />
+                      EMAIL
+                    </a>
+                  )}
+                  <a 
+                    href={`https://wa.me/${selectedLead.phone.replace(/[^0-9]/g, '')}?text=Hello%20${encodeURIComponent(selectedLead.name)},%20this%20is%20Wamled%20Atelier%20Mombasa.%20Thank%20you%20for%20reaching%20out...`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-[9px] font-bold tracking-widest rounded-xl transition-all"
+                  >
+                    <MessageSquare size={11} />
+                    WHATSAPP
+                  </a>
+                </div>
+              </div>
+
+              {/* Raw customer inquiries content panel */}
+              <div className="space-y-2">
+                <span className="text-[9px] font-mono text-ink/45 uppercase tracking-widest block font-bold">CLIENT BRIEF</span>
+                <div className="bg-amber-50/20 border border-brand/5 rounded-2xl p-5 shadow-inner">
+                  <p className="text-xs text-ink/85 leading-relaxed font-sans font-light whitespace-pre-wrap">
+                    "{selectedLead.details}"
+                  </p>
+                </div>
+              </div>
+
+              {/* CRM interaction timeline and notes */}
+              <div className="space-y-4 pt-4 border-t border-ink/5">
+                <div className="flex justify-between items-center">
+                  <span className="text-[9px] font-mono text-ink/45 uppercase tracking-widest block font-bold">ACTION TIMELINE LOG</span>
+                  <span className="text-[8px] font-mono text-ink/30 uppercase">
+                    {(selectedLead.notes || []).length} followups
+                  </span>
+                </div>
+
+                {/* Log entries */}
+                <div className="space-y-3.5 max-h-52 overflow-y-auto pr-1">
+                  {(selectedLead.notes || []).length === 0 ? (
+                    <div className="text-center py-6 border border-dashed rounded-2xl bg-gray-50/50">
+                      <p className="text-[10px] text-ink/40 font-mono">No action notes committed. Add follow-up updates below.</p>
+                    </div>
+                  ) : (
+                    (selectedLead.notes || []).map((note: any, nIdx: number) => (
+                      <div key={nIdx} className="bg-emerald-50/30 border border-emerald-100/40 rounded-xl p-3.5 space-y-2 text-xs relative">
+                        <div className="flex justify-between items-center text-[9px] font-mono text-ink/40 border-b border-ink/5 pb-1">
+                          <span className="text-emerald-700 font-semibold uppercase">Follow-up Log #{nIdx + 1}</span>
+                          <span>{new Date(note.createdAt).toLocaleString()}</span>
+                        </div>
+                        <p className="text-ink/80 text-xs text-left leading-relaxed">{note.text}</p>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {/* Submitting followup log */}
+                <div className="space-y-2 border-t pt-4">
+                  <label className="text-[9px] font-mono uppercase tracking-widest text-ink/45 block font-bold text-left">
+                    Log new dynamic update
+                  </label>
+                  <div className="flex gap-2">
+                    <textarea
+                      placeholder="e.g. Discussed seaside villa master bathroom with client. Scheduling drone photography of site on Diani Beach."
+                      value={newNoteText}
+                      onChange={(e) => setNewNoteText(e.target.value)}
+                      rows={2}
+                      className="flex-1 p-3 bg-gray-50 border rounded-2xl text-xs focus:outline-none focus:border-brand resize-none leading-relaxed font-sans placeholder-ink/30"
+                    />
+                  </div>
+                  <button
+                    onClick={() => handleAddNote(selectedLead.id, selectedLead.notes)}
+                    disabled={!newNoteText.trim()}
+                    className="w-full bg-[#A83F1B] hover:bg-[#8D3212] text-white py-2.5 rounded-xl font-mono text-[9px] uppercase tracking-widest font-bold transition-all disabled:opacity-40 select-none shadow-xs text-center cursor-pointer"
+                  >
+                    COMMIT WORK LOG NOTE
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -615,129 +1005,73 @@ function InvitesTab() {
   );
 }
 
-function ListManager({ collectionName, items }: any) {
-  const [isAdding, setIsAdding] = useState(false);
-  const [formData, setFormData] = useState<any>({ title: '', name: '', description: '', price: '' });
-
-  const handleAdd = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await addDoc(collection(db, collectionName), {
-        ...formData,
-        price: Number(formData.price),
-        createdAt: new Date().toISOString()
-      });
-      setFormData({ title: '', name: '', description: '', price: '' });
-      setIsAdding(false);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    if (confirm('Are you sure?')) {
-      await deleteDoc(doc(db, collectionName, id));
-    }
-  };
-
-  return (
-    <div className="space-y-6">
-      <div className="flex justify-end">
-        <button 
-          onClick={() => setIsAdding(!isAdding)}
-          className="bg-brand text-white px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 shadow-lg shadow-brand/20"
-        >
-          <Plus size={18} />
-          Add New {collectionName === 'services' ? 'Service' : 'Product'}
-        </button>
-      </div>
-
-      {isAdding && (
-        <div className="bg-white p-8 rounded-3xl border shadow-sm">
-          <form onSubmit={handleAdd} className="grid grid-cols-2 gap-6">
-            <div className="col-span-2 sm:col-span-1 space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Title / Name</label>
-              <input 
-                required
-                value={collectionName === 'services' ? formData.title : formData.name}
-                onChange={e => setFormData({ ...formData, [collectionName === 'services' ? 'title' : 'name']: e.target.value })}
-                className="w-full p-3 bg-gray-50 border rounded-xl focus:outline-none focus:border-brand"
-              />
-            </div>
-            <div className="col-span-2 sm:col-span-1 space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Price (KSh)</label>
-              <input 
-                type="number"
-                required
-                value={formData.price}
-                onChange={e => setFormData({ ...formData, price: e.target.value })}
-                className="w-full p-3 bg-gray-50 border rounded-xl focus:outline-none focus:border-brand"
-              />
-            </div>
-            <div className="col-span-2 space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Description</label>
-              <textarea 
-                required
-                rows={3}
-                value={formData.description}
-                onChange={e => setFormData({ ...formData, description: e.target.value })}
-                className="w-full p-3 bg-gray-50 border rounded-xl focus:outline-none focus:border-brand"
-              />
-            </div>
-            <button type="submit" className="col-span-2 bg-ink text-white py-3 rounded-xl font-bold">Save Item</button>
-          </form>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {items.map((item: any) => (
-          <div key={item.id} className="bg-white p-6 rounded-3xl border shadow-sm group relative overflow-hidden">
-            <div className="flex justify-between items-start mb-4">
-              <h4 className="text-xl font-bold serif">{item.title || item.name}</h4>
-              <button 
-                onClick={() => handleDelete(item.id)}
-                className="p-2 text-ink/20 hover:text-red-500 transition-colors"
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
-            <p className="text-xs text-ink/60 mb-6 line-clamp-2">{item.description}</p>
-            <div className="flex justify-between items-center">
-              <span className="text-brand font-bold text-lg">KSh {Number(item.price).toLocaleString()}</span>
-              <span className="text-[10px] font-bold text-ink/40 uppercase">READY TO QUOTE</span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function CMSTab({ content, updateContent }: any) {
-  const [formData, setFormData] = useState(content);
+  const [formData, setFormData] = useState({
+    ...content,
+    reviews: content.reviews || [],
+    announcementActive: content.announcementActive ?? false,
+    announcementText: content.announcementText ?? '',
+    announcementLink: content.announcementLink ?? ''
+  });
+
+  const [newReviewText, setNewReviewText] = useState('');
+  const [newReviewAuthor, setNewReviewAuthor] = useState('');
+  const [newReviewLocation, setNewReviewLocation] = useState('');
 
   const handleSave = async () => {
-    await updateContent(formData);
-    alert('Site content updated!');
+    try {
+      await updateContent(formData);
+      alert('Congratulations! Wamled Atelier website content and configuration have been successfully published live.');
+    } catch (e) {
+      console.error(e);
+      alert('Failed to save website changes. Please verify database rules.');
+    }
+  };
+
+  const handleAddReview = () => {
+    if (!newReviewText.trim() || !newReviewAuthor.trim()) {
+      alert('Review text and author are required.');
+      return;
+    }
+    const added = {
+      text: newReviewText,
+      author: newReviewAuthor,
+      location: newReviewLocation || 'Verified Client',
+      rating: 5
+    };
+    setFormData(prev => ({
+      ...prev,
+      reviews: [...(prev.reviews || []), added]
+    }));
+    setNewReviewText('');
+    setNewReviewAuthor('');
+    setNewReviewLocation('');
+  };
+
+  const handleRemoveReview = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      reviews: (prev.reviews || []).filter((_: any, idx: number) => idx !== index)
+    }));
   };
 
   return (
-    <div className="bg-white p-10 rounded-3xl border shadow-sm space-y-12">
+    <div className="bg-white p-6 sm:p-10 rounded-3xl border shadow-sm space-y-12">
       {/* Hero Section */}
-      <div className="space-y-6">
-        <h3 className="text-xl font-bold serif border-b pb-4 flex items-center gap-3">
+      <div className="space-y-6 text-left">
+        <h3 className="text-xl font-bold serif border-b pb-4 flex items-center gap-3 text-ink">
           <LayoutDashboard size={20} className="text-brand" />
-          Hero Section
+          Hero Branding Section
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-4">
             <div className="space-y-1">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Headline</label>
+              <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Headline Introduction</label>
               <textarea 
                 value={formData.heroHeadline}
                 onChange={e => setFormData({ ...formData, heroHeadline: e.target.value })}
                 rows={3}
-                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand transition-all font-serif text-lg"
+                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand transition-all font-serif text-lg leading-relaxed text-ink"
               />
             </div>
           </div>
@@ -747,21 +1081,163 @@ function CMSTab({ content, updateContent }: any) {
               <input 
                 value={formData.heroImage}
                 onChange={e => setFormData({ ...formData, heroImage: e.target.value })}
-                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand font-mono text-xs text-ink/75"
               />
               <div className="mt-4 aspect-video rounded-2xl overflow-hidden border">
-                <img src={formData.heroImage} className="w-full h-full object-cover" alt="" />
+                <img src={formData.heroImage} className="w-full h-full object-cover" alt="Current visual layout backdrop placeholder" />
               </div>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Advanced Studio Announcement Banner */}
+      <div className="space-y-6 text-left border-t pt-8">
+        <div className="flex justify-between items-center border-b pb-4">
+          <h3 className="text-xl font-bold serif flex items-center gap-3 text-ink">
+            <AlertCircle size={20} className="text-brand" />
+            Global Studio Announcement Banner
+          </h3>
+          <label className="relative inline-flex items-center cursor-pointer select-none">
+            <input 
+              type="checkbox" 
+              className="sr-only peer" 
+              checked={formData.announcementActive}
+              onChange={e => setFormData({ ...formData, announcementActive: e.target.checked })}
+            />
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:width-5 after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+            <span className="ml-3 text-xs font-mono font-bold tracking-widest text-ink/65 uppercase">
+              {formData.announcementActive ? 'ACTIVE LIVE' : 'DISABLED'}
+            </span>
+          </label>
+        </div>
+
+        <div className="bg-[#F9F9F7] p-5 rounded-3xl border border-ink/5 space-y-4">
+          <span className="text-[8px] font-mono tracking-widest text-ink/40 uppercase font-black block">Live Header Preview</span>
+          {formData.announcementActive ? (
+            <div className="bg-[#A83F1B] text-white py-2 px-4 text-center text-[10px] font-mono tracking-widest uppercase rounded-xl flex items-center justify-center gap-1.5 shadow-sm truncate">
+              <span className="font-semibold">{formData.announcementText || 'Your announcement message shows here'}</span>
+              {formData.announcementLink && <span className="underline font-bold text-[#E5C384]">EXPLORE</span>}
+            </div>
+          ) : (
+            <div className="bg-gray-100 text-ink/30 py-4 text-center text-[10px] font-mono tracking-widest uppercase rounded-xl border border-dashed border-ink/10">
+              Banner announcement alert is deactivated. Toggle on to alert prospective clients.
+            </div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-1">
+            <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Announcement Text</label>
+            <input 
+              type="text"
+              placeholder="e.g. Booking private resort interior slots for the Coastal Dry Season. Limited entries remaining."
+              value={formData.announcementText}
+              onChange={e => setFormData({ ...formData, announcementText: e.target.value })}
+              className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs text-ink placeholder-ink/20"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Action Redirect Link</label>
+            <input 
+              type="text"
+              placeholder="e.g. /contact, /services, /#reviews"
+              value={formData.announcementLink}
+              onChange={e => setFormData({ ...formData, announcementLink: e.target.value })}
+              className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs text-ink placeholder-ink/20 font-mono"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Dynamic Testimonials slider curation */}
+      <div className="space-y-6 text-left border-t pt-8">
+        <h3 className="text-xl font-bold serif border-b pb-4 flex items-center gap-3 text-ink">
+          <Star size={20} className="text-brand" />
+          Live Testimonial Slider curator
+        </h3>
+
+        {/* Reviews List */}
+        <div className="space-y-4">
+          <span className="text-[9px] font-mono tracking-widest uppercase text-ink/40 font-bold block">Currently published slides</span>
+          <div className="grid md:grid-cols-2 gap-4">
+            {(formData.reviews || []).map((rev: any, rIdx: number) => (
+              <div key={rIdx} className="p-5 border bg-gray-50/50 rounded-2xl flex flex-col justify-between items-start space-y-4 text-xs group relative">
+                <div>
+                  <div className="flex gap-1 text-brand mb-2">
+                    {[...Array(rev.rating || 5)].map((_, i) => (
+                      <Star key={i} size={11} className="fill-brand text-brand" />
+                    ))}
+                  </div>
+                  <p className="font-sans italic leading-relaxed text-ink/75">"{rev.text}"</p>
+                </div>
+                <div className="flex justify-between items-center w-full pt-2 border-t border-ink/5">
+                  <div className="text-left font-mono">
+                    <span className="font-extrabold text-[#121212] block uppercase text-[9px]">{rev.author}</span>
+                    <span className="text-ink/40 text-[8px] tracking-wider block">{rev.location || 'Verified Client'}</span>
+                  </div>
+                  <button 
+                    onClick={() => handleRemoveReview(rIdx)}
+                    title="Purge slider item"
+                    className="p-1.5 text-red-500 hover:text-white bg-red-50 hover:bg-red-500 border border-red-100 hover:border-red-500 rounded-lg transition-all cursor-pointer opacity-80 group-hover:opacity-100"
+                  >
+                    <Trash2 size={12} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Append review sub-panel */}
+        <div className="p-6 bg-[#F9F9F7] border rounded-3xl space-y-4">
+          <span className="text-[9px] font-mono tracking-widest text-[#A83F1B] uppercase font-bold block">Append Live Bespoke Testimonial Slide</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-[9px] font-bold uppercase tracking-widest text-ink/40">Reviewer Author Name</label>
+              <input 
+                type="text" 
+                placeholder="CEO, Coastal Estates development"
+                value={newReviewAuthor}
+                onChange={e => setNewReviewAuthor(e.target.value)}
+                className="w-full p-3 bg-white border rounded-xl focus:outline-none focus:border-brand text-xs text-ink"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[9px] font-bold uppercase tracking-widest text-ink/40">Role or Subtitle Location</label>
+              <input 
+                type="text" 
+                placeholder="Seaside Penthouse Mombasa"
+                value={newReviewLocation}
+                onChange={e => setNewReviewLocation(e.target.value)}
+                className="w-full p-3 bg-white border rounded-xl focus:outline-none focus:border-brand text-xs text-ink"
+              />
+            </div>
+          </div>
+          <div className="space-y-1 text-left">
+            <label className="text-[9px] font-bold uppercase tracking-widest text-ink/40">Endorsement Review Text Quote</label>
+            <textarea 
+              rows={3}
+              placeholder="Wamled Atelier managed our oceanfront layout with impeccable precision. The coastal daylight blends flawlessly into the stone interiors."
+              value={newReviewText}
+              onChange={e => setNewReviewText(e.target.value)}
+              className="w-full p-3 bg-white border rounded-xl focus:outline-none focus:border-brand text-xs text-ink leading-relaxed"
+            />
+          </div>
+          <button
+            onClick={handleAddReview}
+            className="w-full sm:w-auto px-6 py-2.5 bg-ink text-white hover:bg-brand font-mono text-[9px] tracking-widest uppercase font-bold rounded-xl transition-all cursor-pointer"
+          >
+            APPEND SLIDE TESTIMONIAL
+          </button>
+        </div>
+      </div>
+
       {/* Contact Info */}
-      <div className="space-y-6">
-        <h3 className="text-xl font-bold serif border-b pb-4 flex items-center gap-3">
+      <div className="space-y-6 text-left border-t pt-8">
+        <h3 className="text-xl font-bold serif border-b pb-4 flex items-center gap-3 text-ink">
           <Phone size={20} className="text-brand" />
-          Contact & Studio Info
+          Atelier Location & Contact Global Specs
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div className="space-y-1">
@@ -769,15 +1245,15 @@ function CMSTab({ content, updateContent }: any) {
             <input 
               value={formData.phone}
               onChange={e => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+              className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-sm text-ink font-semibold"
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Location</label>
+            <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Mombasa Headquarters location</label>
             <input 
               value={formData.location}
               onChange={e => setFormData({ ...formData, location: e.target.value })}
-              className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+              className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-sm text-ink"
             />
           </div>
           <div className="space-y-1">
@@ -785,157 +1261,639 @@ function CMSTab({ content, updateContent }: any) {
             <input 
               value={formData.hours}
               onChange={e => setFormData({ ...formData, hours: e.target.value })}
-              className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+              className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-sm text-ink"
             />
           </div>
-        </div>
-      </div>
-
-      {/* Gallery Management */}
-      <div className="space-y-6">
-        <div className="flex justify-between items-center border-b pb-4">
-          <h3 className="text-xl font-bold serif flex items-center gap-3">
-            <ImageIcon size={20} className="text-brand" />
-            Portfolio Gallery
-          </h3>
-          <button 
-            onClick={() => {
-              const newGallery = [...(formData.galleryImages || [])];
-              newGallery.push({ url: '', label: 'GALLERY IMAGE' });
-              setFormData({ ...formData, galleryImages: newGallery });
-            }}
-            className="text-xs font-bold text-brand flex items-center gap-1 hover:underline"
-          >
-            <Plus size={14} />
-            Add Image
-          </button>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {(formData.galleryImages || []).map((img: any, idx: number) => (
-            <div key={idx} className="p-4 bg-gray-50 rounded-2xl border space-y-3 group relative">
-              <button 
-                onClick={() => {
-                  const newGallery = formData.galleryImages.filter((_: any, i: number) => i !== idx);
-                  setFormData({ ...formData, galleryImages: newGallery });
-                }}
-                className="absolute top-2 right-2 p-2 bg-red-50 text-red-500 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <Trash2 size={12} />
-              </button>
-              
-              <div className="space-y-1">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Image URL</label>
-                <input 
-                  value={img.url}
-                  placeholder="https://images.unsplash.com/..."
-                  onChange={e => {
-                    const newGallery = [...formData.galleryImages];
-                    newGallery[idx].url = e.target.value;
-                    setFormData({ ...formData, galleryImages: newGallery });
-                  }}
-                  className="w-full p-2 bg-white border rounded-lg text-xs focus:border-brand outline-none"
-                />
-              </div>
-              
-              <div className="aspect-[3/4] rounded-lg overflow-hidden border bg-white flex items-center justify-center text-ink/20">
-                {img.url ? (
-                  <img src={img.url} className="w-full h-full object-cover" alt="" />
-                ) : (
-                  <ImageIcon size={24} />
-                )}
-              </div>
-            </div>
-          ))}
-          
-          {(!formData.galleryImages || formData.galleryImages.length === 0) && (
-            <div className="col-span-full py-12 text-center bg-gray-50 rounded-3xl border border-dashed">
-              <p className="text-ink/40 text-sm italic">No gallery images added yet.</p>
-              <button 
-                onClick={() => {
-                  setFormData({ ...formData, galleryImages: [{ url: '', label: 'GALLERY IMAGE' }] });
-                }}
-                className="mt-4 text-xs font-bold text-brand hover:underline"
-              >
-                Click to add your first image
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Review Management */}
-      <div className="space-y-6">
-        <h3 className="text-xl font-bold serif border-b pb-4 flex items-center gap-3">
-          <Star size={20} className="text-brand" />
-          Client Reviews
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {formData.reviews?.map((review: any, idx: number) => (
-            <div key={idx} className="p-6 bg-gray-50 rounded-3xl border space-y-4">
-              <textarea 
-                value={review.text}
-                placeholder="Review Text"
-                rows={4}
-                onChange={e => {
-                  const newReviews = [...formData.reviews];
-                  newReviews[idx].text = e.target.value;
-                  setFormData({ ...formData, reviews: newReviews });
-                }}
-                className="w-full p-3 bg-white border rounded-xl text-sm italic"
-              />
-              <input 
-                value={review.author}
-                placeholder="Author Name"
-                onChange={e => {
-                  const newReviews = [...formData.reviews];
-                  newReviews[idx].author = e.target.value;
-                  setFormData({ ...formData, reviews: newReviews });
-                }}
-                className="w-full p-3 bg-white border rounded-xl text-xs font-bold"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Social Links */}
-      <div className="space-y-6">
-        <h3 className="text-xl font-bold serif border-b pb-4 flex items-center gap-3">
-          <ExternalLink size={20} className="text-brand" />
-          Social Media Links
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {formData.socialLinks?.map((social: any, idx: number) => (
-            <div key={idx} className="p-4 bg-gray-50 rounded-2xl border flex items-center gap-3">
-              <div className="p-2 bg-brand text-white rounded-lg capitalize text-[10px] font-bold min-w-[70px] text-center">
-                {social.platform}
-              </div>
-              <input 
-                value={social.url}
-                placeholder="Profile URL"
-                onChange={e => {
-                  const newSocials = [...formData.socialLinks];
-                  newSocials[idx].url = e.target.value;
-                  setFormData({ ...formData, socialLinks: newSocials });
-                }}
-                className="flex-1 p-2 bg-white border rounded-lg text-xs"
-              />
-            </div>
-          ))}
         </div>
       </div>
 
       <div className="flex justify-end pt-8 border-t">
         <button 
           onClick={handleSave}
-          className="bg-brand text-white px-10 py-4 rounded-2xl font-bold flex items-center gap-2 hover:bg-brand/90 transition-all shadow-xl shadow-brand/20"
+          className="bg-brand text-white px-10 py-4 rounded-2xl font-bold flex items-center gap-2 hover:bg-brand/90 transition-all shadow-xl shadow-brand/20 cursor-pointer text-xs uppercase tracking-widest"
         >
-          <Save size={20} />
-          Publish All Changes
+          <Save size={18} />
+          Deploy All CMS Updates Live
         </button>
       </div>
     </div>
   );
 }
+
+function PortfolioTab() {
+  const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('Residential');
+  const [imageUrl, setImageUrl] = useState('');
+  const [location, setLocation] = useState('');
+  const [description, setDescription] = useState('');
+  const [isAdding, setIsAdding] = useState(false);
+
+  useEffect(() => {
+    const q = query(collection(db, 'portfolio'), orderBy('createdAt', 'desc'));
+    const unsub = onSnapshot(q, (s) => setPortfolioItems(s.docs.map(d => ({ id: d.id, ...d.data() }))));
+    return () => unsub();
+  }, []);
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title || !imageUrl) return;
+    setIsAdding(true);
+    try {
+      await addDoc(collection(db, 'portfolio'), {
+        title,
+        category,
+        imageUrl,
+        location,
+        description,
+        createdAt: new Date().toISOString()
+      });
+      setTitle('');
+      setImageUrl('');
+      setLocation('');
+      setDescription('');
+    } catch (e) {
+      console.error("Error creating portfolio item:", e);
+    }
+    setIsAdding(false);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Are you sure you want to delete this portfolio item?")) {
+      try {
+        await deleteDoc(doc(db, 'portfolio', id));
+      } catch (e) {
+        console.error("Error deleting portfolio item:", e);
+      }
+    }
+  };
+
+  return (
+    <div className="space-y-12 text-left">
+      {/* Create form */}
+      <div className="bg-white p-8 lg:p-10 rounded-3xl border shadow-sm">
+        <h3 className="text-xl font-bold serif border-b pb-4 flex items-center gap-2 mb-6 text-left">
+          <Plus size={20} className="text-brand" />
+          Add Live Portfolio Item
+        </h3>
+        <form onSubmit={handleCreate} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Project Name</label>
+              <input 
+                required
+                type="text" 
+                placeholder="e.g. Symmetrical Nyali Pavilion" 
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Category</label>
+              <select 
+                value={category}
+                onChange={e => setCategory(e.target.value)}
+                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand cursor-pointer"
+              >
+                <option value="Residential">Residential</option>
+                <option value="Commercial">Commercial</option>
+                <option value="Yacht & Exterior">Yacht & Exterior</option>
+                <option value="Landscaping">Landscaping</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Image URL</label>
+              <input 
+                required
+                type="text" 
+                placeholder="https://images.unsplash.com/photo-..." 
+                value={imageUrl}
+                onChange={e => setImageUrl(e.target.value)}
+                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Location (Optional)</label>
+              <input 
+                type="text" 
+                placeholder="e.g. Nyali, Mombasa" 
+                value={location}
+                onChange={e => setLocation(e.target.value)}
+                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1.5 text-left">
+            <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Story & Description</label>
+            <textarea 
+              required
+              rows={3}
+              placeholder="Detail the materials, architectural spatial flow, and structural choices..." 
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+              className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand resize-none"
+            />
+          </div>
+
+          <div className="flex justify-end pt-4">
+            <button 
+              type="submit"
+              disabled={isAdding}
+              className="bg-brand text-white px-8 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-brand/90 transition-all shadow-xl shadow-brand/10 disabled:opacity-50 cursor-pointer"
+            >
+              <Plus size={18} />
+              {isAdding ? 'Adding Project...' : 'Add Live Project'}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Portfolio Items list */}
+      <div className="bg-white rounded-3xl border shadow-sm overflow-hidden text-left">
+        <div className="p-6 border-b">
+          <h3 className="text-xl font-bold serif">Live Portfolio Library ({portfolioItems.length})</h3>
+        </div>
+        {portfolioItems.length === 0 ? (
+          <div className="py-20 text-center text-ink/40">
+            <ImageIcon className="mx-auto mb-4 opacity-50 text-brand" size={36} />
+            <p className="text-sm">No items uploaded yet. Start adding items above!</p>
+          </div>
+        ) : (
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-gray-50 border-b">
+                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Project Layout</th>
+                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Category</th>
+                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Details & Story</th>
+                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {portfolioItems.map(item => (
+                <tr key={item.id} className="border-b hover:bg-gray-50/50 transition-colors">
+                  <td className="px-6 py-6 flex items-center gap-4">
+                    <img src={item.imageUrl} alt="" className="w-16 h-16 rounded-xl object-cover border bg-gray-150" />
+                    <div>
+                      <h4 className="font-bold text-sm text-ink">{item.title}</h4>
+                      {item.location && <p className="text-[10px] font-mono text-ink/40">📍 {item.location}</p>}
+                    </div>
+                  </td>
+                  <td className="px-6 py-6 text-xs font-mono uppercase font-bold text-brand">
+                    {item.category}
+                  </td>
+                  <td className="px-6 py-6 text-xs text-ink/65 max-w-xs truncate">
+                    {item.description}
+                  </td>
+                  <td className="px-6 py-6">
+                    <button 
+                      onClick={() => handleDelete(item.id)}
+                      className="p-2 text-red-500 bg-red-50 hover:bg-red-500 hover:text-white transition-all rounded-lg cursor-pointer"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CaseStudiesTab() {
+  const [studies, setStudies] = useState<any[]>([]);
+  const [isAdding, setIsAdding] = useState(false);
+
+  // Form states
+  const [title, setTitle] = useState('');
+  const [location, setLocation] = useState('');
+  const [projectType, setProjectType] = useState('Residential');
+  const [sqFt, setSqFt] = useState('');
+  const [vision, setVision] = useState('');
+  const [textures, setTextures] = useState('');
+  const [swatches, setSwatches] = useState('');
+  const [rawMaterials, setRawMaterials] = useState('');
+  const [challenge, setChallenge] = useState('');
+  const [blueprintUrl, setBlueprintUrl] = useState('');
+  const [renderUrl, setRenderUrl] = useState('');
+  const [finalPhotoUrl, setFinalPhotoUrl] = useState('');
+  const [materialSpotlightDesc, setMaterialSpotlightDesc] = useState('');
+  const [materialSpotlightUrl, setMaterialSpotlightUrl] = useState('');
+  const [galleryUrls, setGalleryUrls] = useState('');
+  const [galleryAnnotations, setGalleryAnnotations] = useState('');
+  const [testimonial, setTestimonial] = useState('');
+  const [testimonialAuthor, setTestimonialAuthor] = useState('');
+  const [outcome, setOutcome] = useState('');
+
+  useEffect(() => {
+    const q = query(collection(db, 'casestudies'), orderBy('createdAt', 'desc'));
+    const unsub = onSnapshot(q, (snapshot) => {
+      setStudies(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+    return () => unsub();
+  }, []);
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title || !vision || !finalPhotoUrl) {
+      alert("Project Title, Vision, and Final Photo URL are required.");
+      return;
+    }
+    setIsAdding(true);
+    try {
+      await addDoc(collection(db, 'casestudies'), {
+        title,
+        location,
+        projectType,
+        sqFt,
+        vision,
+        textures,
+        swatches: swatches || '#111111, #A83F1B',
+        rawMaterials,
+        challenge,
+        blueprintUrl: blueprintUrl || 'https://images.unsplash.com/photo-1544982503-9f984c14501a?auto=format&fit=crop&q=80&w=800',
+        renderUrl: renderUrl || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800',
+        finalPhotoUrl,
+        materialSpotlightDesc,
+        materialSpotlightUrl,
+        galleryUrls,
+        galleryAnnotations,
+        testimonial,
+        testimonialAuthor,
+        outcome,
+        createdAt: new Date().toISOString()
+      });
+      
+      // Clear all
+      setTitle('');
+      setLocation('');
+      setSqFt('');
+      setVision('');
+      setTextures('');
+      setSwatches('');
+      setRawMaterials('');
+      setChallenge('');
+      setBlueprintUrl('');
+      setRenderUrl('');
+      setFinalPhotoUrl('');
+      setMaterialSpotlightDesc('');
+      setMaterialSpotlightUrl('');
+      setGalleryUrls('');
+      setGalleryAnnotations('');
+      setTestimonial('');
+      setTestimonialAuthor('');
+      setOutcome('');
+      alert("Premium Case Study recorded live successfully!");
+    } catch (err) {
+      console.error("Error creating case study:", err);
+      alert("Error saving case study. Check console.");
+    }
+    setIsAdding(false);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Are you sure you want to delete this case study?")) {
+      try {
+        await deleteDoc(doc(db, 'casestudies', id));
+      } catch (err) {
+        console.error("Error deleting case study:", err);
+      }
+    }
+  };
+
+  return (
+    <div className="space-y-12 text-left">
+      <div className="bg-white p-8 lg:p-10 rounded-3xl border shadow-sm">
+        <h3 className="text-xl font-bold serif border-b pb-4 flex items-center gap-2 mb-6 text-left">
+          <BookOpen size={20} className="text-brand" />
+          Compile Premium Case Study Narrative
+        </h3>
+        <p className="text-xs text-ink/50 mb-8 -mt-4 leading-relaxed max-w-2xl">
+          Craft elite visual narratives that justify uncompromised pricing. Provide editorial hooks, 3D journey files, macro shot specifications, and client testimonials.
+        </p>
+
+        <form onSubmit={handleCreate} className="space-y-8">
+          
+          {/* 1. EDITORIAL HOOK */}
+          <div className="space-y-4">
+            <h4 className="text-xs font-mono uppercase tracking-widest text-brand font-bold border-b pb-1">1. The Editorial Hook (Headline & Vision)</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Aspirational Headline Title</label>
+                <input 
+                  required
+                  type="text" 
+                  placeholder="e.g. The Minimalist Sanctuary: A Study in Light and Texture" 
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Project Type</label>
+                <select 
+                  value={projectType}
+                  onChange={e => setProjectType(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand cursor-pointer"
+                >
+                  <option value="Residential">Residential Atelier</option>
+                  <option value="Commercial">Commercial & Hospitality</option>
+                  <option value="Yacht & Exterior">Curated Yacht & Exterior</option>
+                  <option value="Landscaping">Bespoke Landscaping</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Mombasa Location (City/Area)</label>
+                <input 
+                  required
+                  type="text" 
+                  placeholder="e.g. Nyali, Mombasa" 
+                  value={location}
+                  onChange={e => setLocation(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Square Footage / Dimensions</label>
+                <input 
+                  required
+                  type="text" 
+                  placeholder="e.g. 4,200 SQFT" 
+                  value={sqFt}
+                  onChange={e => setSqFt(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">The Vision (2-3 Sentences atmosphere brief)</label>
+              <textarea 
+                required
+                rows={2}
+                placeholder="Describe the atmosphere objectives and the spatial brief intended to create..." 
+                value={vision}
+                onChange={e => setVision(e.target.value)}
+                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand resize-none"
+              />
+            </div>
+          </div>
+
+          {/* 2. THE CONCEPT */}
+          <div className="space-y-4 pt-4">
+            <h4 className="text-xs font-mono uppercase tracking-widest text-brand font-bold border-b pb-1">2. Narrative Concept & Obstacles</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Tactile Textures (comma separated)</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. Laccate Wood, Honed Travertine, Hand-applied microcement" 
+                  value={textures}
+                  onChange={e => setTextures(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Raw Materials (comma separated)</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. Brushed Brass, Solid Iroko Timber, Calacatta Viola Marble" 
+                  value={rawMaterials}
+                  onChange={e => setRawMaterials(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Palette Color Swatches (hexes, comma-separated)</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. #1A1A1A, #A83F1B, #C2121D, #FBFBF9" 
+                  value={swatches}
+                  onChange={e => setSwatches(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">The Critical Challenge / Problem Met</label>
+                <input 
+                  required
+                  type="text" 
+                  placeholder="e.g. Maximizing natural light in a north-facing coastal room without gaining equatorial heat." 
+                  value={challenge}
+                  onChange={e => setChallenge(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* 3. TECHNICAL JOURNEY */}
+          <div className="space-y-4 pt-4">
+            <h4 className="text-xs font-mono uppercase tracking-widest text-brand font-bold border-b pb-1">3. The 3D Journey & Material Spotlights</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">2D Blueprint Image URL</label>
+                <input 
+                  type="text" 
+                  placeholder="https://images.unsplash.com/..." 
+                  value={blueprintUrl}
+                  onChange={e => setBlueprintUrl(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs font-mono"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">3D Render Image URL</label>
+                <input 
+                  type="text" 
+                  placeholder="https://images.unsplash.com/..." 
+                  value={renderUrl}
+                  onChange={e => setRenderUrl(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs font-mono"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Final Realized Photo URL</label>
+                <input 
+                  required
+                  type="text" 
+                  placeholder="https://images.unsplash.com/..." 
+                  value={finalPhotoUrl}
+                  onChange={e => setFinalPhotoUrl(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs font-mono"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Material Spotlight Detail (Macro description)</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. Sourcing Calacatta Viola slabs with matched veins for continuous zero-seam bathroom backdrops." 
+                  value={materialSpotlightDesc}
+                  onChange={e => setMaterialSpotlightDesc(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Material Spotlight Macro Image URL</label>
+                <input 
+                  type="text" 
+                  placeholder="https://images.unsplash.com/..." 
+                  value={materialSpotlightUrl}
+                  onChange={e => setMaterialSpotlightUrl(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs font-mono"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* 4. HERO GALLERY */}
+          <div className="space-y-4 pt-4">
+            <h4 className="text-xs font-mono uppercase tracking-widest text-brand font-bold border-b pb-1">4. Hero Portrait Gallery with Micro-Annotations</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">9:16 Vertical Photo URLs (comma-separated)</label>
+                <textarea 
+                  rows={2}
+                  placeholder="https://images.unsplash.com/1, https://images.unsplash.com/2" 
+                  value={galleryUrls}
+                  onChange={e => setGalleryUrls(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand resize-none text-xs font-mono"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Micro-Annotations for each photo (separated by commas)</label>
+                <textarea 
+                  rows={2}
+                  placeholder="Custom integrated solid oak ceiling grids, Precision-aligned invisible lighting paths" 
+                  value={galleryAnnotations}
+                  onChange={e => setGalleryAnnotations(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand resize-none text-xs"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* 5. TS LIMIT OUTCOME */}
+          <div className="space-y-4 pt-4">
+            <h4 className="text-xs font-mono uppercase tracking-widest text-brand font-bold border-b pb-1">5. Social Proof & Outcome Metrics</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Client Testimonial Quote (One powerful sentence)</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. The finished residence is a quiet sanctuary. Moving from space to space feels like a physical decompression." 
+                  value={testimonial}
+                  onChange={e => setTestimonial(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Client Author / Title</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. Elena Safaricom Elite, Diani Coast" 
+                  value={testimonialAuthor}
+                  onChange={e => setTestimonialAuthor(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Ameasurable Outcome</label>
+              <input 
+                required
+                type="text" 
+                placeholder="e.g. Successfully achieved seamless indoor flow, dropping average indoor thermal temperature by 4.5°C without HVAC usage." 
+                value={outcome}
+                onChange={e => setOutcome(e.target.value)}
+                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end pt-4 border-t">
+            <button 
+              type="submit"
+              disabled={isAdding}
+              className="bg-brand text-white px-10 py-3.5 rounded-2xl font-bold flex items-center gap-2 hover:bg-brand/90 transition-all shadow-xl shadow-brand/10 disabled:opacity-50 cursor-pointer text-xs"
+            >
+              <Plus size={18} />
+              {isAdding ? 'Recording Case Study Narrative...' : 'Publish Premium Case Study Line'}
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+      {/* Case studies database list */}
+      <div className="bg-white rounded-3xl border shadow-sm overflow-hidden text-left">
+        <div className="p-6 border-b">
+          <h3 className="text-xl font-bold serif">Live Case Studies Library ({studies.length})</h3>
+        </div>
+        {studies.length === 0 ? (
+          <div className="py-20 text-center text-ink/40">
+            <BookOpen className="mx-auto mb-4 opacity-50 text-brand" size={36} />
+            <p className="text-sm">No premium case narratives recorded yet. Begin using the editor above!</p>
+          </div>
+        ) : (
+          <table className="w-full text-left font-sans">
+            <thead>
+              <tr className="bg-gray-50 border-b">
+                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Case Study Profile</th>
+                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Classification & Scale</th>
+                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Outcome Statement</th>
+                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {studies.map(study => (
+                <tr key={study.id} className="border-b hover:bg-gray-50/50 transition-colors">
+                  <td className="px-6 py-6 flex items-center gap-4">
+                    <img src={study.finalPhotoUrl} alt="" className="w-16 h-12 rounded-lg object-cover border bg-gray-150" />
+                    <div>
+                      <h4 className="font-bold text-sm text-ink">{study.title}</h4>
+                      <p className="text-[10px] font-mono text-ink/40">📍 {study.location}</p>
+                    </div>
+                  </td>
+                  <td className="px-6 py-6">
+                    <span className="text-xs font-mono uppercase font-bold text-brand block">{study.projectType}</span>
+                    <span className="text-[10px] text-gray-400 font-mono">{study.sqFt}</span>
+                  </td>
+                  <td className="px-6 py-6 text-xs text-ink/65 max-w-xs truncate">
+                    {study.outcome}
+                  </td>
+                  <td className="px-6 py-6">
+                    <button 
+                      onClick={() => handleDelete(study.id)}
+                      className="p-2 text-red-500 bg-red-50 hover:bg-red-500 hover:text-white transition-all rounded-lg cursor-pointer"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </div>
+  );
+}
+
 

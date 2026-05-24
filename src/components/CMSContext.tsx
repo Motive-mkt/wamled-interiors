@@ -11,7 +11,10 @@ interface CMSContent {
   hours: string;
   phone: string;
   socialLinks: { platform: 'instagram' | 'facebook' | 'twitter' | 'linkedin'; url: string }[];
-  reviews: { text: string; author: string; rating: number }[];
+  reviews: { text: string; author: string; rating?: number; role?: string; location?: string }[];
+  announcementActive?: boolean;
+  announcementText?: string;
+  announcementLink?: string;
 }
 
 const defaultContent: CMSContent = {
@@ -31,7 +34,10 @@ const defaultContent: CMSContent = {
       author: "Verified Client",
       rating: 5
     }
-  ]
+  ],
+  announcementActive: true,
+  announcementText: "Now accepting premium residential atelier project consultations for coastal developments in Diani & Mombasa.",
+  announcementLink: "/#consultation"
 };
 
 interface CMSContextType {
