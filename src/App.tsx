@@ -10,19 +10,21 @@ import { collection, addDoc, onSnapshot } from 'firebase/firestore';
 import { db } from './lib/firebase';
 import { CMSProvider, useCMS } from './components/CMSContext';
 import { AuthProvider, useAuth } from './components/AuthContext';
-import AdminDashboard from './pages/AdminDashboard';
 import { BrandValues } from './components/BrandValues';
 import { WhyUsStats } from './components/WhyUsStats';
 import { ServiceStacks } from './components/ServiceStacks';
 import { EnterpriseBridge } from './components/EnterpriseBridge';
 import { ClientReviewsSlider } from './components/ClientReviewsSlider';
 import { BentoGalleryGateway } from './components/BentoGalleryGateway';
-import { Filmstrip } from './pages/Filmstrip';
-import { ServiceDetail } from './pages/ServiceDetail';
-import { BespokeServices } from './pages/BespokeServices';
-import Portfolio from './pages/Portfolio';
-import Contact from './pages/Contact';
-import CaseStudies from './pages/CaseStudies';
+
+// Performance Optimization: Code-Split page nodes dynamically
+const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
+const Portfolio = React.lazy(() => import('./pages/Portfolio'));
+const Contact = React.lazy(() => import('./pages/Contact'));
+const CaseStudies = React.lazy(() => import('./pages/CaseStudies'));
+const Filmstrip = React.lazy(() => import('./pages/Filmstrip').then(module => ({ default: module.Filmstrip })));
+const ServiceDetail = React.lazy(() => import('./pages/ServiceDetail').then(module => ({ default: module.ServiceDetail })));
+const BespokeServices = React.lazy(() => import('./pages/BespokeServices').then(module => ({ default: module.BespokeServices })));
 import { 
   Phone, 
   MapPin, 
@@ -589,6 +591,18 @@ const LandingPage = () => {
   );
 };
 
+const PremiumFallbackLoader = () => (
+  <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 bg-[#F9F9F7] text-[#1A1A1A] select-none">
+    <div className="flex flex-col items-center space-y-4 max-w-xs text-center">
+      <div className="w-10 h-10 border-2 border-[#C5A059]/35 border-t-[#C5A059] rounded-full animate-spin" />
+      <div className="space-y-1">
+        <span className="text-xs font-mono tracking-[0.3em] text-[#C5A059] uppercase block font-semibold">Wamled Atelier</span>
+        <span className="text-[10px] text-[#1A1A1A]/45 tracking-widest uppercase block">Refining Spatial Architecture...</span>
+      </div>
+    </div>
+  </div>
+);
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -596,18 +610,20 @@ export default function App() {
         <CMSProvider>
           <ScrollToTop />
           <Navbar />
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/filmstrip" element={<Filmstrip />} />
-            <Route path="/portfolio" element={<Portfolio />} />
-            <Route path="/casestudies" element={<CaseStudies />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/services" element={<BespokeServices />} />
-            <Route path="/services/:id" element={<ServiceDetail />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/404" element={<NotFound />} />
-            <Route path="*" element={<Navigate to="/404" replace />} />
-          </Routes>
+          <React.Suspense fallback={<PremiumFallbackLoader />}>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/filmstrip" element={<Filmstrip />} />
+              <Route path="/portfolio" element={<Portfolio />} />
+              <Route path="/casestudies" element={<CaseStudies />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/services" element={<BespokeServices />} />
+              <Route path="/services/:id" element={<ServiceDetail />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/404" element={<NotFound />} />
+              <Route path="*" element={<Navigate to="/404" replace />} />
+            </Routes>
+          </React.Suspense>
         </CMSProvider>
       </AuthProvider>
     </BrowserRouter>

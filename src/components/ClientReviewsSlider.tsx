@@ -2,16 +2,23 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { CLIENT_REVIEWS } from '../data/studioData';
+import { useCMS } from './CMSContext';
 
 export const ClientReviewsSlider: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { content } = useCMS();
+
+  // Load reviews from CMS dynamically, with safe local fallback
+  const reviews = content?.reviews && content.reviews.length > 0 
+    ? content.reviews 
+    : CLIENT_REVIEWS;
 
   const prevReview = () => {
-    setCurrentIndex((prev) => (prev === 0 ? CLIENT_REVIEWS.length - 1 : prev - 1));
+    setCurrentIndex((prev) => (prev === 0 ? reviews.length - 1 : prev - 1));
   };
 
   const nextReview = () => {
-    setCurrentIndex((prev) => (prev === CLIENT_REVIEWS.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) => (prev === reviews.length - 1 ? 0 : prev + 1));
   };
 
   return (
@@ -67,27 +74,27 @@ export const ClientReviewsSlider: React.FC = () => {
 
               {/* Review Copy */}
               <div className="md:col-span-10 space-y-6">
-                <div className="flex gap-1">
-                  {[...Array(CLIENT_REVIEWS[currentIndex].rating)].map((_, i) => (
+                <div className="flex gap-1 animate-fade-in">
+                  {[...Array(reviews[currentIndex]?.rating || 5)].map((_, i) => (
                     <Star key={i} size={14} className="text-brand fill-brand" />
                   ))}
                 </div>
 
                 <p className="text-xl md:text-2xl lg:text-3xl font-serif font-light text-ink leading-relaxed italic">
-                  "{CLIENT_REVIEWS[currentIndex].text}"
+                  "{reviews[currentIndex]?.text}"
                 </p>
 
                 <div className="pt-6 border-t border-ink/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
                   <div>
                     <h4 className="text-sm font-semibold text-ink uppercase tracking-wider font-sans">
-                      {CLIENT_REVIEWS[currentIndex].author}
+                      {reviews[currentIndex]?.author}
                     </h4>
                     <p className="text-xs text-brand font-mono tracking-widest mt-1 uppercase">
-                      {CLIENT_REVIEWS[currentIndex].title}
+                      {(reviews[currentIndex] as any).title || (reviews[currentIndex] as any).location || (reviews[currentIndex] as any).role || 'Connoisseur'}
                     </p>
                   </div>
                   <span className="text-[10px] font-mono text-ink/40 uppercase tracking-[0.2em]">
-                    0{currentIndex + 1} / 0{CLIENT_REVIEWS.length}
+                    0{currentIndex + 1} / 0{reviews.length}
                   </span>
                 </div>
               </div>
@@ -97,7 +104,7 @@ export const ClientReviewsSlider: React.FC = () => {
 
         {/* Tiny Kinetic Progress Dash */}
         <div className="flex justify-center gap-2 mt-8">
-          {CLIENT_REVIEWS.map((_, i) => (
+          {reviews.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrentIndex(i)}

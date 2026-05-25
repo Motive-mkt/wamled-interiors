@@ -30,8 +30,21 @@ const defaultContent: CMSContent = {
   ],
   reviews: [
     {
-      text: "Great service and quality work. The team listened, planned thoroughly, and delivered a finish that exceeded what we imagined.",
-      author: "Verified Client",
+      text: "The structural layout Wamled designed for our Diani villa has completely changed our family dynamic. The flow of daylight and continuous coastal breeze feels like a living hotel gallery.",
+      author: "Almasi M. G.",
+      location: "Oceanfront Villa Owner, Diani",
+      rating: 5
+    },
+    {
+      text: "Wamled brought a tier of structural precision to our hotel lounge that we simply had not found elsewhere in East Africa. Every stone seam, timber column, and light level is perfect.",
+      author: "Zuri Resorts Ltd.",
+      location: "Managing Director, Nyali Marina",
+      rating: 5
+    },
+    {
+      text: "Their monochrome concept and raw textures provide an immediate calm. Customers enter our boutique lobby and are instantly captivated by the quiet luxury of the custom marble slab desk.",
+      author: "Elena Mwangi",
+      location: "Founder, Luxe Living Hub",
       rating: 5
     }
   ],
