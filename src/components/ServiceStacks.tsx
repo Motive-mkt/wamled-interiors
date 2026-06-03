@@ -1,181 +1,219 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowUpRight, ArrowRight, Plus } from 'lucide-react';
+import { 
+  Compass, 
+  Cpu, 
+  Columns, 
+  Layers, 
+  Trees, 
+  ArrowRight,
+  Plus 
+} from 'lucide-react';
 
 interface SubService {
   name: string;
   description: string;
 }
 
-interface StackSlide {
+interface PillarData {
   id: string;
+  index: string;
   title: string;
   focus: string;
-  subServices: SubService[];
-  image: string;
-  ctaText: string;
+  icon: React.ComponentType<{ size?: number; className?: string; strokeWidth?: number }>;
+  items: SubService[];
+  link: string;
 }
 
-const STACK_SLIDES: StackSlide[] = [
+const FIVE_PILLARS: PillarData[] = [
   {
-    id: "architectural-interior",
-    title: "Architectural & Interior Design",
-    focus: "Master planning and the core visual identity of the project.",
-    image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&q=95&w=1600&h=1200",
-    ctaText: "Explore the Process",
-    subServices: [
-      { name: "Circulation Design", description: "Mapping the flow and movement within a space." },
-      { name: "Functional Design", description: "Creating layouts that serve the specific purpose of the room." },
-      { name: "Style Design", description: "Defining the aesthetic theme, materials, and color stories." },
-      { name: "Furniture, Fixtures & Equipment (FF&E)", description: "The selection and curation of all movable and fixed items." }
+    id: "architectural",
+    index: "01",
+    title: "Architectural & Interior",
+    focus: "Master planning and the project’s visual soul and movement choreography.",
+    icon: Compass,
+    link: "/services#architectural-interior",
+    items: [
+      { name: "Circulation Design", description: "Mapping flow, viewpoints and cross-ventilation." },
+      { name: "Functional Design", description: "Modular layouts and micro-zoned layouts." },
+      { name: "Style Design", description: "Defining local Swahili and minimalist aesthetic stories." },
+      { name: "FF&E Curation", description: "Italian marble slabs, raw stones and custom furnishings." }
     ]
   },
   {
-    id: "specialty-systems",
-    title: "Specialty Design & Systems",
-    focus: "Engineering and high-utility technical installations.",
-    image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=95&w=1600&h=1200",
-    ctaText: "View Case Studies",
-    subServices: [
-      { name: "MEP Solutions", description: "Mechanical, Electrical, and Plumbing system integration." },
-      { name: "Lighting Systems", description: "Architectural lighting design and smart home illumination." },
-      { name: "Swimming Pools", description: "Technical and aesthetic design for aquatic features." },
-      { name: "Kitchen & Laundry", description: "High-performance spatial planning for service areas." },
-      { name: "ELV & IT System", description: "Extra Low Voltage systems including security and data." }
+    id: "specialty",
+    index: "02",
+    title: "Specialty Systems",
+    focus: "High-utility mechanical, electrical and low-voltage installations.",
+    icon: Cpu,
+    link: "/services#technical-systems-mepf",
+    items: [
+      { name: "MEPF Solutions", description: "Mechanical, Electrical, and Plumbing engineering." },
+      { name: "ELV & IT Systems", description: "Extra Low Voltage systems and automated security." },
+      { name: "Lighting Systems", description: "Architectural luminescence and smart scene setting." },
+      { name: "Kitchen & Laundry", description: "Professional-grade culinary layout design." }
     ]
   },
   {
-    id: "product-application",
-    title: "Product & Application Design",
-    focus: "Structural details and exterior architectural features.",
-    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=95&w=1600&h=1200",
-    ctaText: "Explore the Process",
-    subServices: [
-      { name: "Curtain Wall and Facade", description: "The building’s outer \"skin\" and glass engineering." },
-      { name: "Steel Structure", description: "Structural design and engineering for metal frameworks." },
-      { name: "Balustrade & Staircase", description: "Custom vertical circulation and safety aesthetics." },
-      { name: "Canopy & Partition", description: "External shading solutions and internal spatial dividers." }
+    id: "product",
+    index: "03",
+    title: "Product Application",
+    focus: "Structural glazing, frames and facade boundary engineering.",
+    icon: Columns,
+    link: "/services#exterior-structural",
+    items: [
+      { name: "Facade System", description: "Custom double-glazed acoustic facades." },
+      { name: "Steel Structure", description: "High-wind load bearing metal framing." },
+      { name: "Balustrades", description: "Premium architectural glass stairs & safety railings." },
+      { name: "Partitions & Canopies", description: "Custom sliding partitions and shading canopy frames." }
+    ]
+  },
+  {
+    id: "finishing",
+    index: "04",
+    title: "Finishing & Furnishing",
+    focus: "Meticulous surface coverings, custom timber lattice and raw finishes.",
+    icon: Layers,
+    link: "/services#interior-finishing-furnishing",
+    items: [
+      { name: "Wall & Floor Cover", description: "Hand-pressed lime plaster and seamless microcement." },
+      { name: "Ceiling Systems", description: "Acoustic control and hidden integrated lighting rails." },
+      { name: "Decoration & Artwork", description: "Curation of elite local sculpture and organic art." },
+      { name: "Bathroom Solutions", description: "Custom-carved monolithic stone sinks & baths." }
+    ]
+  },
+  {
+    id: "outdoor",
+    index: "05",
+    title: "Specialized & Outdoor",
+    focus: "Beachfront swimming horizons and salt-tolerant organic landscaping.",
+    icon: Trees,
+    link: "/services#specialized-outdoor",
+    items: [
+      { name: "Landscape Design", description: "Lush native saltwater-safe gardens and beach bounds." },
+      { name: "Hospitality Design", description: "Commercial lounges, spa zones and wellness retreats." },
+      { name: "Signage & Wayfinding", description: "Brass or timber engraved directional systems." },
+      { name: "Wellness & Fitness", description: "Thermal sauna pools and coastal fitness installations." }
     ]
   }
 ];
 
 export const ServiceStacks: React.FC = () => {
   return (
-    <section className="relative w-full bg-[#F9F9F7]">
-      {/* Sticky Scroll Section Stack Container */}
-      <div className="relative">
-        {STACK_SLIDES.map((slide, index) => {
-          // Adjust sticky offsets or zIndex for stacking effect
-          const zIndex = (index + 1) * 10;
-          
-          return (
-            <div 
-              key={slide.id}
-              className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-black text-white shadow-[0_-15px_40px_rgba(0,0,0,0.45)]"
-              style={{ zIndex }}
-            >
-              {/* Full-bleed background project image */}
-              <div className="absolute inset-0 z-0">
-                <img 
-                  src={slide.image} 
-                  alt={slide.title}
-                  className="w-full h-full object-cover select-none pointer-events-none filter brightness-100"
-                  referrerPolicy="no-referrer"
-                />
-                
-                {/* Subtle scrim: Soft left-heavy cinematic dark gradient for high typography readability but clear image overall */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent pointer-events-none" />
-                
-                {/* Visual texture radial overlay */}
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(168,63,27,0.03),transparent_75%)] pointer-events-none" />
-              </div>
-
-              {/* Grid content container */}
-              <div className="relative z-10 w-full max-w-7xl mx-auto px-6 h-full flex flex-col justify-center py-20">
-                <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 items-center">
-                  
-                  {/* Left Column: Atelier Title & Dynamic CTA */}
-                  <div className="lg:col-span-6 space-y-6 lg:space-y-8 text-left">
-                    <div className="space-y-4">
-                      {/* Section Index */}
-                      <div className="inline-flex items-center gap-3">
-                        <span className="font-mono text-xs text-brand font-semibold tracking-wider">0{index + 1} // 03</span>
-                        <span className="h-px bg-brand/35 w-12" />
-                        <span className="text-[10px] uppercase tracking-[0.25em] text-white/50 font-mono">WAMLED ATELIER</span>
-                      </div>
-
-                      {/* Heading: Large elegant Serif font */}
-                      <h3 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-light leading-tight tracking-tight text-white max-w-lg">
-                        {slide.title}
-                      </h3>
-                      
-                      {/* Focus Tagline */}
-                      <p className="text-xs sm:text-sm font-sans font-medium text-brand uppercase tracking-[0.15em] max-w-md">
-                        {slide.focus}
-                      </p>
-                    </div>
-
-                    {/* Aspirational Custom Minimalist CTA */}
-                    <div className="pt-2">
-                      <Link 
-                        to="/filmstrip"
-                        className="inline-flex items-center gap-4 border border-white/20 hover:border-brand/70 hover:bg-brand hover:text-white text-white px-8 py-4 rounded-full font-mono text-[10px] uppercase tracking-[0.25em] font-bold bg-white/5 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] select-none group"
-                      >
-                        <span>{slide.ctaText}</span>
-                        <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-brand-dark transition-colors">
-                          <Plus size={12} className="text-white group-hover:rotate-90 transition-transform duration-300" />
-                        </div>
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* Right Column: Clean, Minimalist spaced-out Sans-Serif sub-services list */}
-                  <div className="lg:col-span-6 space-y-6 border-t border-white/10 lg:border-t-0 pt-6 lg:pt-0 pl-0 lg:pl-12">
-                    <div className="space-y-6">
-                      {slide.subServices.map((sub, sidx) => (
-                        <div 
-                          key={sidx} 
-                          className="group/item border-b border-white/5 pb-4 last:border-b-0 last:pb-0"
-                        >
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="space-y-1">
-                              {/* Sub-heading in a clean small Sans-Serif with high letter spacing */}
-                              <h4 className="font-sans text-[11px] sm:text-xs uppercase tracking-[0.25em] font-medium text-white group-hover/item:text-brand transition-colors duration-300">
-                                {sub.name}
-                              </h4>
-                              {/* Short focus explanation */}
-                              <p className="font-sans text-[11px] text-white/50 font-light leading-relaxed max-w-md">
-                                {sub.description}
-                              </p>
-                            </div>
-                            <div className="opacity-0 group-hover/item:opacity-100 transition-opacity duration-300 text-brand">
-                              <ArrowUpRight size={14} />
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-              {/* Interactive Slide indicator line */}
-              <div className="absolute bottom-6 left-6 right-6 hidden md:flex items-center justify-between text-[11px] font-mono tracking-widest text-white/35 z-10 pointer-events-none">
-                <span>PARALLAX STUDIO STACKS</span>
-                <div className="flex gap-4">
-                  <span className={index === 0 ? "text-brand font-bold" : ""}>01</span>
-                  <span>/</span>
-                  <span className={index === 1 ? "text-brand font-bold" : ""}>02</span>
-                  <span>/</span>
-                  <span className={index === 2 ? "text-brand font-bold" : ""}>03</span>
-                </div>
-              </div>
-
+    <section className="relative w-full bg-white text-ink py-40 border-t border-ink/5">
+      {/* Decorative Blueprint Grid Background Accent lines */}
+      <div className="absolute inset-0 bg-white opacity-25 pointer-events-none"
+        style={{
+          backgroundImage: 'linear-gradient(to right, rgba(26,26,26,0.02) 1px, transparent 1px), linear-gradient(to bottom, rgba(26,26,26,0.02) 1px, transparent 1px)',
+          backgroundSize: '100px 100px'
+        }}
+      />
+      
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        
+        {/* Editorial Section Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 pb-16 mb-16 border-b border-ink/10">
+          <div className="space-y-4 text-left">
+            <div className="inline-flex items-center gap-3">
+              <span className="text-brand font-sans text-[13px] uppercase tracking-[0.15em] font-medium">WAMLED SPECTRUM // THE CULMINATION</span>
+              <span className="h-px bg-brand/35 w-12" />
+              <span className="text-ink/40 text-[11px] font-sans tracking-widest uppercase">02 / PILLARS</span>
             </div>
-          );
-        })}
+            
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-light text-ink tracking-tight mt-2 leading-tight">
+              The Five Pillars of<br />
+              <span className="italic text-ink/70">Spatial Engineering.</span>
+            </h2>
+          </div>
+          
+          <div className="text-left font-sans text-xs md:text-sm text-ink/60 max-w-sm leading-relaxed font-light space-y-3">
+            <p>
+              We categorize our bespoke Mombasa architecture, installations, and custom finishing processes into five integrated columns of master-tier execution.
+            </p>
+          </div>
+        </div>
+
+        {/* 5-Column Elegant Categorized Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 border-t border-b border-ink/10 divide-y md:divide-y-0 lg:divide-x divide-ink/10 bg-white shadow-none">
+          {FIVE_PILLARS.map((pillar) => {
+            const IconComponent = pillar.icon;
+            return (
+              <div 
+                key={pillar.id}
+                className="group p-8 lg:p-10 flex flex-col justify-between hover:bg-white transition-all duration-500 relative overflow-hidden"
+              >
+                {/* Subtle top indicator hover line (gold) */}
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-brand scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+
+                <div className="space-y-8 text-left">
+                  {/* Pillar Metadata Following Architect rule */}
+                  <div className="flex justify-between items-center">
+                    <span className="text-brand font-sans text-[13px] uppercase tracking-[0.15em] font-semibold">{pillar.index}</span>
+                    <span className="text-ink/30 text-[11px] font-sans tracking-widest">WM_CO</span>
+                  </div>
+
+                  {/* High Quality Ultra Thin Iconic Line visual */}
+                  <div className="inline-flex py-2">
+                    <IconComponent className="w-12 h-12 text-ink/40 group-hover:text-brand transition-colors duration-500" strokeWidth={1} />
+                  </div>
+
+                  {/* Header in Playfair Display serif */}
+                  <div className="space-y-3">
+                    <h3 className="text-xl md:text-2xl font-serif font-light text-ink group-hover:text-brand transition-colors duration-300 leading-snug">
+                      {pillar.title}
+                    </h3>
+                    <p className="text-xs text-ink/50 leading-relaxed font-light">
+                      {pillar.focus}
+                    </p>
+                  </div>
+
+                  {/* Sub-services list with thin gold underline reveals on hover */}
+                  <div className="pt-6 border-t border-ink/5 space-y-4">
+                    <span className="text-[10px] font-sans uppercase tracking-[0.15em] text-ink/40 font-semibold block mb-2">OFFERINGS</span>
+                    <ul className="space-y-3">
+                      {pillar.items.map((item, i) => (
+                        <li key={i} className="group/item flex flex-col">
+                          <Link 
+                            to={pillar.link}
+                            className="inline-block"
+                          >
+                            <span className="text-xs uppercase font-sans tracking-widest text-ink/85 group-hover/item:text-brand transition-all duration-300 relative py-0.5">
+                              {item.name}
+                              <span className="absolute bottom-0 left-0 right-0 h-[1px] bg-brand transform scale-x-0 group-hover/item:scale-x-100 transition-transform duration-300 origin-left" />
+                            </span>
+                          </Link>
+                          <span className="text-[10px] text-ink/40 font-light mt-0.5 leading-normal pr-2 block">
+                            {item.description}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Bottom link to deeper process section */}
+                <div className="pt-10 text-left">
+                  <Link 
+                    to={pillar.link}
+                    className="inline-flex items-center gap-2 text-[11px] font-sans uppercase tracking-[0.15em] text-brand hover:text-ink transition-colors font-semibold"
+                  >
+                    <span>EXPLORE PROCESS</span>
+                    <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform duration-300" />
+                  </Link>
+                </div>
+
+              </div>
+            );
+          })}
+        </div>
+        
+        {/* Dynamic visual footer badge */}
+        <div className="pt-16 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-sans uppercase tracking-[0.15em] text-ink/40">
+          <span>WAMLED SPECIFICATION SHEETS v1.02</span>
+          <span className="text-brand">Precision, structure, and quiet sophistication.</span>
+        </div>
+
       </div>
     </section>
   );

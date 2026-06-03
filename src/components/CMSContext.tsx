@@ -21,7 +21,7 @@ const defaultContent: CMSContent = {
   heroHeadline: "Interiors crafted around the way you live.",
   heroImage: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=1920&h=1080",
   galleryImages: [],
-  location: "Moi Avenue, Mombasa",
+  location: "Nairobi and Nakuru, Kenya",
   hours: "Open until 8:00 PM",
   phone: "0723 758 595",
   socialLinks: [

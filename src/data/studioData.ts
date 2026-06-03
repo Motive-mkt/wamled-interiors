@@ -58,8 +58,8 @@ export const STUDIO_SERVICES: ServiceItem[] = [
     title: "Curated Yacht & Exterior",
     subtitle: "Systemic Coastal Elegance & Marine Yacht Styling",
     shortDescription: "Marine-grade luxury appointments engineered to withstand coastal elements. We craft exceptional outdoor pool pavilions, private yacht cabins, and oceanfront bars.",
-    image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=90&w=900&h=1600",
-    filmstripImage: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=90&w=900&h=1600",
+    image: "/src/assets/images/premium_yacht_marina_1780516542006.png",
+    filmstripImage: "/src/assets/images/premium_yacht_marina_1780516542006.png",
     subServices: [
       { name: "Marine-Grade Structural Detailing", description: "Atmospheric weatherproofing, anti-corrosive metals, and UV-reflective luxury fabrics." },
       { name: "Private Yacht & Deck Interiors", description: "Translating space restrictions inside megayachts into expansive, breathtaking suites." },

@@ -97,10 +97,10 @@ export default function Contact() {
                 <MapPin size={18} />
               </div>
               <div>
-                <p className="text-[10px] font-bold font-mono tracking-widest uppercase text-ink/40">Mombasa Headquarters</p>
+                <p className="text-[10px] font-bold font-mono tracking-widest uppercase text-ink/40">Studio Head Office</p>
                 <p className="text-sm text-ink/80 leading-relaxed font-sans mt-0.5">
-                  {content.location} <br />
-                  Mombasa County, Kenya
+                  Nairobi and Nakuru, Kenya <br />
+                  Central & Rift Valley Regions
                 </p>
               </div>
             </div>

@@ -1,21 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif: "Cormorant Garamond", serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", "Cormorant Garamond", serif;
+  --font-sans: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
   
   --color-brand: #C5A059;
-  --color-cream: #F0F0F0;
+  --color-cream: #FFFFFF;
   --color-ink: #1A1A1A;
-  --color-alabaster: #F9F9F7;
+  --color-alabaster: #FFFFFF;
   --color-charcoal: #1A1A1A;
-  --color-platinum: #F0F0F0;
+  --color-platinum: #FFFFFF;
   --color-champagne: #C5A059;
 }
 
 @layer base {
   body {
-    @apply font-sans text-ink bg-alabaster;
+    @apply font-sans text-ink bg-white;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif text-ink;
   }
 }
 
@@ -26,3 +29,13 @@
 .text-balance {
   text-wrap: balance;
 }
+
+.architect-label, 
+.architect-meta {
+  font-family: var(--font-sans) !important;
+  font-size: 13px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.15em !important;
+  font-weight: 500 !important;
+}
+

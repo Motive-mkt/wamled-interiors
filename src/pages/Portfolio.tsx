@@ -30,6 +30,7 @@ export default function Portfolio() {
   const { content } = useCMS();
   const [items, setItems] = useState<PortfolioItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [subCategoryFilter, setSubCategoryFilter] = useState<'All' | 'Institutional' | 'Commercial' | 'Housing'>('All');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -50,9 +51,24 @@ export default function Portfolio() {
     return () => unsubscribe();
   }, []);
 
-  const filteredItems = selectedCategory === 'All' 
-    ? items 
-    : items.filter(item => item.category.toLowerCase() === selectedCategory.toLowerCase());
+  const filteredItems = items.filter(item => {
+    // Stage 1: Global Category Tab
+    const matchesGlobal = selectedCategory === 'All' 
+      ? true 
+      : item.category.toLowerCase() === selectedCategory.toLowerCase();
+      
+    // Stage 2: Sub-Header Navigation Filter
+    if (subCategoryFilter === 'All') {
+      return matchesGlobal;
+    } else if (subCategoryFilter === 'Institutional') {
+      return matchesGlobal && item.category.toLowerCase() === 'institutional';
+    } else if (subCategoryFilter === 'Commercial') {
+      return matchesGlobal && item.category.toLowerCase() === 'commercial';
+    } else if (subCategoryFilter === 'Housing') {
+      return matchesGlobal && (item.category.toLowerCase() === 'housing' || item.category.toLowerCase() === 'residential');
+    }
+    return matchesGlobal;
+  });
 
   return (
     <div className="min-h-screen bg-[#111111] text-white pt-28 pb-24 relative overflow-hidden">
@@ -93,6 +109,57 @@ export default function Portfolio() {
               {category}
             </button>
           ))}
+        </div>
+
+        {/* Sub-header Navigation / Filter Section */}
+        <div className="border border-white/5 bg-white/[0.01] p-6 mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 rounded-none">
+          <div className="space-y-1 text-left">
+            <span className="text-[10px] uppercase tracking-widest text-[#C5A059] font-mono block font-bold">PROJECT DISCIPLINE SELECTION</span>
+            <h2 className="text-xl font-serif font-light text-white uppercase tracking-tight">Curation Filter</h2>
+          </div>
+          
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setSubCategoryFilter('All')}
+              className={`text-[10px] font-mono uppercase tracking-[0.1em] px-4 py-2 border transition-all duration-300 cursor-pointer ${
+                subCategoryFilter === 'All'
+                  ? 'bg-[#A83F1B] border-[#A83F1B] text-white font-bold'
+                  : 'bg-transparent border-white/10 text-gray-400 hover:text-white hover:border-white/35'
+              }`}
+            >
+              All
+            </button>
+            <button
+              onClick={() => setSubCategoryFilter('Institutional')}
+              className={`text-[10px] font-mono uppercase tracking-[0.1em] px-4 py-2 border transition-all duration-300 cursor-pointer ${
+                subCategoryFilter === 'Institutional'
+                  ? 'bg-white text-black border-white font-bold'
+                  : 'bg-transparent border-white/10 text-gray-400 hover:text-white hover:border-white/35'
+              }`}
+            >
+              Institutional
+            </button>
+            <button
+              onClick={() => setSubCategoryFilter('Commercial')}
+              className={`text-[10px] font-mono uppercase tracking-[0.1em] px-4 py-2 border transition-all duration-300 cursor-pointer ${
+                subCategoryFilter === 'Commercial'
+                  ? 'bg-white text-black border-white font-bold'
+                  : 'bg-transparent border-white/10 text-gray-400 hover:text-white hover:border-white/35'
+              }`}
+            >
+              Commercial
+            </button>
+            <button
+              onClick={() => setSubCategoryFilter('Housing')}
+              className={`text-[10px] font-mono uppercase tracking-[0.1em] px-4 py-2 border transition-all duration-300 cursor-pointer ${
+                subCategoryFilter === 'Housing'
+                  ? 'bg-white text-black border-white font-bold'
+                  : 'bg-transparent border-white/10 text-gray-400 hover:text-white hover:border-white/35'
+              }`}
+            >
+              Housing
+            </button>
+          </div>
         </div>
 
         {/* Main List Rendering */}

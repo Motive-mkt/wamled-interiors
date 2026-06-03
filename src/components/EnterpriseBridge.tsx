@@ -3,7 +3,7 @@ import { KENYAN_PARTNERS } from '../data/studioData';
 
 export const EnterpriseBridge: React.FC = () => {
   return (
-    <section className="py-20 bg-cream/25 overflow-hidden border-t border-ink/5 relative">
+    <section className="py-40 bg-white overflow-hidden border-t border-ink/5 relative">
       <style>{`
         @keyframes marquee {
           0% { transform: translateX(0%); }
@@ -18,7 +18,7 @@ export const EnterpriseBridge: React.FC = () => {
       `}</style>
 
       <div className="max-w-7xl mx-auto px-6 mb-10 text-center">
-        <span className="text-brand font-mono tracking-[0.4em] text-[10px] uppercase mb-2 block">
+        <span className="architect-label text-brand mb-2 block">
           Elite Alliances
         </span>
         <h3 className="text-xl md:text-2xl font-serif text-ink/80">
@@ -29,10 +29,10 @@ export const EnterpriseBridge: React.FC = () => {
         </p>
       </div>
 
-      <div className="relative w-full flex overflow-x-hidden py-4 bg-cream/5">
+      <div className="relative w-full flex overflow-x-hidden py-4 bg-white">
         {/* Double gradient fades on edges for luxurious vignette depth */}
-        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-cream to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-cream to-transparent z-10 pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
         {/* Infinite scrolling block */}
         <div className="flex flex-row whitespace-nowrap animate-marquee items-center min-w-full">
@@ -40,7 +40,7 @@ export const EnterpriseBridge: React.FC = () => {
           {[...KENYAN_PARTNERS, ...KENYAN_PARTNERS, ...KENYAN_PARTNERS, ...KENYAN_PARTNERS].map((partner, idx) => (
             <div 
               key={`p1-${idx}`} 
-              className="inline-flex flex-col items-center justify-center mx-12 px-8 py-4 bg-white border border-ink/5 shadow-sm hover:border-brand/25 rounded-xl transition-all duration-300 pointer-events-auto cursor-pointer group"
+              className="inline-flex flex-col items-center justify-center mx-12 px-8 py-4 bg-white border border-ink/15 shadow-none hover:border-brand/40 rounded-none transition-all duration-300 pointer-events-auto cursor-pointer group"
               style={{
                 '--hover-color': partner.originalColor
               } as React.CSSProperties}
@@ -63,7 +63,7 @@ export const EnterpriseBridge: React.FC = () => {
                   {partner.logoText}
                 </span>
               </span>
-              <span className="text-[8px] font-mono text-ink/40 group-hover:text-brand mt-1 uppercase tracking-widest transition-all duration-300">
+              <span className="architect-label text-ink/40 group-hover:text-brand mt-1 block">
                 Partner Alliance
               </span>
             </div>

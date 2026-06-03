@@ -81,7 +81,7 @@ const Navbar = () => {
         to="/services" 
         onClick={() => setIsMobileMenuOpen(false)}
         className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
-          mobile ? 'py-3 text-lg text-ink hover:text-brand' : isScrolled ? 'text-ink/85 hover:text-brand' : 'text-[#D1D1D1] hover:text-[#FFFFFF]'
+          mobile ? 'py-3 text-lg text-black hover:text-brand' : 'text-black hover:text-brand'
         }`}
       >
         Services
@@ -90,7 +90,7 @@ const Navbar = () => {
         to="/portfolio" 
         onClick={() => setIsMobileMenuOpen(false)}
         className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
-          mobile ? 'py-3 text-lg text-ink hover:text-brand' : isScrolled ? 'text-ink/85 hover:text-brand' : 'text-[#D1D1D1] hover:text-[#FFFFFF]'
+          mobile ? 'py-3 text-lg text-black hover:text-brand' : 'text-black hover:text-brand'
         }`}
       >
         Portfolio
@@ -99,7 +99,7 @@ const Navbar = () => {
         to="/casestudies" 
         onClick={() => setIsMobileMenuOpen(false)}
         className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
-          mobile ? 'py-3 text-lg text-ink hover:text-brand' : isScrolled ? 'text-ink/85 hover:text-brand' : 'text-[#D1D1D1] hover:text-[#FFFFFF]'
+          mobile ? 'py-3 text-lg text-black hover:text-brand' : 'text-black hover:text-brand'
         }`}
       >
         Case Studies
@@ -108,7 +108,7 @@ const Navbar = () => {
         to="/filmstrip" 
         onClick={() => setIsMobileMenuOpen(false)}
         className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
-          mobile ? 'py-3 text-lg text-ink hover:text-brand' : isScrolled ? 'text-ink/85 hover:text-brand' : 'text-[#D1D1D1] hover:text-[#FFFFFF]'
+          mobile ? 'py-3 text-lg text-black hover:text-brand' : 'text-black hover:text-brand'
         }`}
       >
         Work
@@ -117,7 +117,7 @@ const Navbar = () => {
         to="/contact" 
         onClick={() => setIsMobileMenuOpen(false)}
         className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
-          mobile ? 'py-3 text-lg text-ink hover:text-brand' : isScrolled ? 'text-ink/85 hover:text-brand' : 'text-[#D1D1D1] hover:text-[#FFFFFF]'
+          mobile ? 'py-3 text-lg text-black hover:text-brand' : 'text-black hover:text-brand'
         }`}
       >
         Contact
@@ -130,7 +130,7 @@ const Navbar = () => {
           if (el) el.scrollIntoView({ behavior: 'smooth' });
         }}
         className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
-          mobile ? 'py-3 text-lg text-ink hover:text-brand' : isScrolled ? 'text-ink/85 hover:text-brand' : 'text-[#D1D1D1] hover:text-[#FFFFFF]'
+          mobile ? 'py-3 text-lg text-black hover:text-brand' : 'text-black hover:text-brand'
         }`}
       >
         Reviews
@@ -140,25 +140,21 @@ const Navbar = () => {
 
   return (
     <>
-      {content.announcementActive && content.announcementText && (
-        <div className="bg-[#A83F1B] text-white py-2 px-6 text-center text-[9px] md:text-xs font-mono tracking-widest uppercase relative z-50 flex items-center justify-center gap-2 select-none border-b border-white/10 shrink-0">
-          <span className="truncate max-w-[85vw] font-semibold">{content.announcementText}</span>
-          {content.announcementLink && (
-            <Link to={content.announcementLink} className="underline text-white font-extrabold tracking-widest hover:text-[#C5A059] ml-1 transition-colors shrink-0">
-              EXPLORE
-            </Link>
-          )}
-        </div>
-      )}
-      <nav className={`fixed left-0 right-0 z-50 transition-all duration-500 ${
-        content.announcementActive && !isScrolled ? 'top-[36px] md:top-[40px]' : 'top-0'
-      } ${isScrolled ? 'bg-[#F9F9F7]/95 backdrop-blur-md py-4 border-b border-ink/5 shadow-md' : 'bg-transparent py-7'}`}>
+      <nav className={`fixed left-0 right-0 z-50 transition-all duration-500 top-0 ${isScrolled ? 'bg-[#F9F9F7]/95 backdrop-blur-md py-4 border-b border-ink/5 shadow-md' : 'bg-transparent py-7'}`}>
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          <div className="text-2xl md:text-3xl font-serif tracking-tight transition-colors duration-500">
-            <Link to="/" className="relative pb-1.5 select-none flex items-center">
-              <span className={isScrolled ? 'text-ink' : 'text-[#FFFFFF]'}>Wamled</span>
-              <span className="text-[#A83F1B]">.</span>
-              <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#A83F1B]" />
+          <div className="flex items-center transition-colors duration-500">
+            <Link to="/" className="select-none flex items-center group">
+              {/* Empty inline-block / image container section directly to the left */}
+              <div className="w-10 h-10 border border-dashed border-black/20 bg-black/[0.02] shrink-0 mr-3 rounded-none flex items-center justify-center text-[8px] font-sans text-black/20 font-bold tracking-widest" title="Logo Placeholder">
+                LOGO
+              </div>
+              
+              {/* Sized/fitted vertically stacked typography */}
+              <div className="flex flex-col text-left justify-center text-[#000000] font-sans tracking-[0.15em] select-none uppercase" style={{ fontSize: '9px', lineHeight: '1.2' }}>
+                <span className="font-extrabold text-[#000000] block">WAMLED</span>
+                <span className="font-extrabold text-[#000000] block">INTERIORS</span>
+                <span className="font-extrabold text-[#000000] block">DESIGNS</span>
+              </div>
             </Link>
           </div>
           
@@ -166,33 +162,25 @@ const Navbar = () => {
             <NavLinks />
             <Link 
               to="/admin" 
-              className={`flex items-center gap-2 text-[10px] font-mono tracking-wider px-4 py-2 rounded-lg border transition-all duration-300 ${
-                !isScrolled 
-                  ? 'border-white/20 text-[#D1D1D1] hover:border-white hover:text-white hover:bg-white/5' 
-                  : 'border-brand/20 text-brand hover:bg-brand/5'
-              }`}
+              className="flex items-center gap-2 text-[10px] font-mono tracking-wider px-4 py-2 rounded-lg border border-black/20 text-black hover:bg-black/5 transition-all duration-300"
             >
-              <Layout size={12} />
+              <Layout size={12} className="text-black" />
               DASHBOARD
             </Link>
             <a 
               href={`tel:${content.phone.replace(/\s+/g, '')}`}
-              className={`flex items-center gap-2 text-xs font-sans tracking-wide px-4 py-2 rounded-full border transition-all duration-300 ${
-                !isScrolled 
-                  ? 'border-white/10 text-white bg-white/5 hover:bg-white/10' 
-                  : 'border-brand/20 text-ink bg-cream/5 hover:bg-cream/15'
-              }`}
+              className="flex items-center gap-2 text-xs font-sans tracking-wide px-4 py-2 rounded-full border border-black/20 text-black bg-white hover:bg-black/5 transition-all duration-300"
             >
-              <Phone size={12} className="text-[#888888] group-hover:text-white" />
+              <Phone size={12} className="text-black" />
               {content.phone}
             </a>
           </div>
 
           <button 
-            className={`md:hidden p-2 rounded-lg transition-colors ${!isScrolled ? 'text-white hover:bg-white/10' : 'text-ink hover:bg-cream/10'}`}
+            className="md:hidden p-2 rounded-lg transition-colors text-black hover:bg-black/5"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            {isMobileMenuOpen ? <X size={20} className="text-black" /> : <Menu size={20} className="text-black" />}
           </button>
         </div>
       </nav>
@@ -217,7 +205,7 @@ const Navbar = () => {
               </a>
             </div>
             <div className="text-center font-mono text-[10px] text-ink/40 uppercase tracking-widest">
-              Wamled Atelier Mombasa
+              Wamled Atelier Nairobi & Nakuru
             </div>
           </motion.div>
         )}
@@ -256,145 +244,166 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-[95vh] flex items-center pt-28 pb-16 bg-[#1A1A1A] text-white overflow-hidden animate-fade-in animate-duration-1000">
-      {/* Background Cinematic Texture & Vignette Overlay */}
-      <div className="absolute inset-0 z-0">
-        <img 
-          src={content.heroImage} 
-          alt="Luxury coastal interior design studio space"
-          className="w-full h-full object-cover"
-          referrerPolicy="no-referrer"
-        />
-        {/* Scrim Overlay: modern gradient mask so the image features on the right stay perfectly clear & bright */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent pointer-events-none" />
-      </div>
+    <section className="relative min-h-screen flex items-center pt-32 pb-24 bg-white text-ink overflow-hidden animate-fade-in animate-duration-1000">
+      {/* Decorative vertical line subtle details mimicking architect drafts */}
+      <div className="absolute top-0 bottom-0 left-[8%] w-px bg-ink/5 pointer-events-none hidden lg:block" />
+      <div className="absolute top-0 bottom-0 right-[8%] w-px bg-ink/5 pointer-events-none hidden lg:block" />
 
-      <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-12 items-center relative z-10 w-full">
+      <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-16 items-center relative z-10 w-full">
+        {/* Left Column: Typography Block */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="lg:col-span-7 space-y-8"
+          className="lg:col-span-7 space-y-10"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/40 border border-white/10 backdrop-blur-md">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#A83F1B]" />
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#FFFFFF] font-extrabold select-none">MOMBASA, KENYA</span>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+            <div className="inline-flex items-center gap-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand" />
+              <span className="text-[13px] font-sans uppercase tracking-[0.15em] text-brand font-medium select-none">MOMBASA, KENYA</span>
+            </div>
+            <div className="hidden sm:block w-px h-4 bg-ink/10" />
+            <span className="text-[11px] font-sans uppercase tracking-[0.25em] text-ink/60 font-semibold select-none">
+              CONSOULT . DESIGN . BUILD
+            </span>
           </div>
           
-          <div className="space-y-4">
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-light leading-[1.1] text-white tracking-tight select-none">
-              Interiors <span className="italic text-[#A83F1B]">crafted</span><br />
+          <div className="space-y-6">
+            <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-serif font-light leading-[1.05] text-ink tracking-tight select-none">
+              Interiors <span className="italic text-brand font-normal">crafted</span><br />
               around the<br />
               way you live.
             </h1>
           </div>
           
-          <p className="text-sm md:text-base text-[#F9F9F9]/90 max-w-xl leading-relaxed font-light">
+          <p className="text-sm md:text-base text-ink/75 max-w-xl leading-relaxed font-light">
             Bespoke residential and commercial interior design from a Mombasa studio with a reputation for quality, structure and quiet sophistication.
           </p>
 
-          <div className="flex flex-wrap gap-x-8 gap-y-3 items-center pt-8 border-t border-white/10 text-[11px] text-[#FFFFFF] font-mono tracking-wider">
+          <div className="flex flex-wrap gap-x-12 gap-y-4 items-center pt-8 border-t border-ink/10 text-[13px] text-ink/80 font-sans tracking-[0.15em] uppercase font-medium">
             <div className="flex items-center gap-2">
-              <span className="text-amber-400">★</span>
-              <span className="font-semibold text-white/90">5.0 rated studio</span>
+              <span className="text-brand">★</span>
+              <span>5.0 rated studio</span>
             </div>
             <div className="flex items-center gap-2">
-              <MapPin size={12} className="text-[#888888]" />
-              <span className="font-semibold text-white/90">Moi Avenue</span>
+              <MapPin size={13} className="text-brand" />
+              <span>Moi Avenue</span>
             </div>
             <div className="flex items-center gap-2">
-              <Clock size={12} className="text-[#888888]" />
-              <span className="font-semibold text-white/90">Open until 8:00 PM</span>
+              <Clock size={13} className="text-brand" />
+              <span>Open until 8:00 PM</span>
             </div>
           </div>
         </motion.div>
 
+        {/* Right Column: Framed Image & Minimal Form */}
         <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
-          id="consultation-form-box"
-          className="lg:col-span-5 bg-[#FDFDFD] p-10 lg:p-12 rounded-3xl border border-gray-100 shadow-2xl max-w-md lg:ml-auto w-full relative animate-fade-in"
+          className="lg:col-span-5 space-y-8 flex flex-col justify-center"
         >
-          {formStatus === 'success' ? (
-            <div className="py-16 text-center space-y-4">
-              <div className="w-16 h-16 bg-[#A83F1B]/10 text-[#A83F1B] rounded-full flex items-center justify-center mx-auto scale-110">
-                <Star size={30} className="fill-current animate-pulse" />
-              </div>
-              <h2 className="text-2xl font-serif text-[#111111] uppercase tracking-wider">Success</h2>
-              <p className="text-gray-500 text-xs font-light max-w-xs mx-auto">We've received your request. A lead architect will contact you directly within 24 hours.</p>
+          {/* Framed Image - bounded with generous white margins rather than full bleed */}
+          <div className="relative border border-ink/10 p-4 bg-white hover:border-brand/40 transition-colors duration-500">
+            <div className="aspect-[16/10] overflow-hidden bg-[#FDFDFD]">
+              <img 
+                src={content.heroImage} 
+                alt="Luxury coastal interior design studio space"
+                className="w-full h-full object-cover select-none pointer-events-none transition-transform duration-[1.2s] hover:scale-105"
+                referrerPolicy="no-referrer"
+              />
             </div>
-          ) : (
-            <>
-              <h2 className="text-2xl md:text-3xl font-serif font-light text-[#111111] mb-2 text-left">Book a free consultation</h2>
-              <p className="text-[#888888] text-xs font-light mb-8 text-left">We'll respond within one business day.</p>
-              
-              <form className="space-y-6" onSubmit={handleSubmit}>
-                <div className="space-y-1.5 text-left">
-                  <label className="text-[10px] font-mono uppercase tracking-widest text-[#888888] font-bold">FULL NAME</label>
-                  <input 
-                    required
-                    type="text" 
-                    placeholder="Jane Mwangi" 
-                    value={formData.name}
-                    onChange={e => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full bg-transparent border-b border-gray-200 py-2 text-[#111111] text-sm focus:outline-none focus:border-[#A83F1B] placeholder-gray-400 transition-colors rounded-none"
-                  />
+            <div className="mt-3 flex justify-between items-center px-1">
+              <span className="text-[10px] font-sans uppercase tracking-[0.15em] text-ink/40">WAMLED ATELIER MODEL</span>
+              <span className="text-[10px] font-sans uppercase tracking-[0.15em] text-brand">EXHIBIT_01</span>
+            </div>
+          </div>
+
+          {/* Form Box - clean borders, no heavy shadow */}
+          <div
+            id="consultation-form-box"
+            className="bg-white p-8 lg:p-10 border border-ink/10 max-w-md w-full relative"
+          >
+            {formStatus === 'success' ? (
+              <div className="py-12 text-center space-y-4">
+                <div className="w-12 h-12 border border-brand text-brand flex items-center justify-center mx-auto">
+                  <Star size={20} className="fill-current animate-pulse" />
                 </div>
-                <div className="space-y-1.5 text-left">
-                  <label className="text-[10px] font-mono uppercase tracking-widest text-[#888888] font-bold font-sans">PHONE</label>
-                  <input 
-                    required
-                    type="tel" 
-                    placeholder="07XX XXX XXX" 
-                    value={formData.phone}
-                    onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-transparent border-b border-gray-200 py-2 text-[#111111] text-sm focus:outline-none focus:border-[#A83F1B] placeholder-gray-400 transition-colors rounded-none"
-                  />
-                </div>
-                <div className="space-y-1.5 text-left">
-                  <label className="text-[10px] font-mono uppercase tracking-widest text-[#888888] font-bold">PROJECT TYPE</label>
-                  <div className="relative">
-                    <select 
-                      value={formData.projectType}
-                      onChange={e => setFormData({ ...formData, projectType: e.target.value })}
-                      className="w-full bg-transparent border-b border-gray-200 py-2 text-[#111111] text-sm focus:outline-none focus:border-[#A83F1B] appearance-none cursor-pointer rounded-none"
-                    >
-                      <option value="Residential">Residential</option>
-                      <option value="Commercial">Commercial & Hospitality</option>
-                      <option value="Yacht & Exterior">Curated Yacht & Exterior</option>
-                      <option value="Landscaping">Bespoke Landscaping</option>
-                    </select>
-                    <span className="absolute right-2 top-3 pointer-events-none text-gray-400 text-xs">▼</span>
-                  </div>
-                </div>
-                <div className="space-y-1.5 text-left">
-                  <label className="text-[10px] font-mono uppercase tracking-widest text-[#888888] font-bold">TELL US ABOUT YOUR SPACE (OPTIONAL)</label>
-                  <textarea 
-                    placeholder="A 3-bedroom apartment in Nyali..." 
-                    rows={1}
-                    value={formData.details}
-                    onChange={e => setFormData({ ...formData, details: e.target.value })}
-                    className="w-full bg-transparent border-b border-gray-200 py-1 text-[#111111] text-sm focus:outline-none focus:border-[#A83F1B] placeholder-gray-400 transition-colors resize-none rounded-none"
-                  />
-                </div>
-                
-                <button 
-                  type="submit"
-                  disabled={formStatus === 'submitting'}
-                  className="w-full bg-[#A83F1B] hover:bg-[#8d3212] text-white py-4 rounded-xl font-mono text-xs uppercase tracking-widest font-bold transition-all disabled:opacity-50 hover:scale-[1.01] cursor-pointer flex items-center justify-center gap-1 mt-4"
-                >
-                  {formStatus === 'submitting' ? 'TRANSMITTING...' : 'REQUEST CONSULTATION'}
-                  <span className="text-white ml-1">→</span>
-                </button>
-              </form>
-              <div className="text-center pt-4">
-                <p className="text-[11px] text-[#888888] font-light">
-                  Or call <a href={`tel:${content.phone.replace(/\s+/g, '')}`} className="underline hover:text-[#A83F1B] transition-colors font-semibold">{content.phone}</a>
-                </p>
+                <h2 className="text-xl font-serif text-ink uppercase tracking-wider">Success</h2>
+                <p className="text-ink/65 text-xs font-light max-w-xs mx-auto">We've received your request. A lead architect will contact you directly within 24 hours.</p>
               </div>
-            </>
-          )}
+            ) : (
+              <>
+                <h2 className="text-xl md:text-2xl font-serif font-light text-ink mb-1 text-left uppercase tracking-tight">Book a free consultation</h2>
+                <p className="text-ink/50 text-[11px] font-light mb-8 text-left uppercase tracking-wider font-sans">We'll respond within one business day.</p>
+                
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                  <div className="space-y-1.5 text-left">
+                    <label className="text-[11px] font-sans uppercase tracking-[0.15em] text-ink/60 font-semibold block">FULL NAME</label>
+                    <input 
+                      required
+                      type="text" 
+                      placeholder="Jane Mwangi" 
+                      value={formData.name}
+                      onChange={e => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full bg-transparent border-b border-ink/15 py-2 text-ink text-xs focus:outline-none focus:border-brand placeholder-ink/30 transition-colors rounded-none"
+                    />
+                  </div>
+                  <div className="space-y-1.5 text-left">
+                    <label className="text-[11px] font-sans uppercase tracking-[0.15em] text-ink/60 font-semibold block">PHONE</label>
+                    <input 
+                      required
+                      type="tel" 
+                      placeholder="07XX XXX XXX" 
+                      value={formData.phone}
+                      onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                      className="w-full bg-transparent border-b border-ink/15 py-2 text-ink text-xs focus:outline-none focus:border-brand placeholder-ink/30 transition-colors rounded-none"
+                    />
+                  </div>
+                  <div className="space-y-1.5 text-left">
+                    <label className="text-[11px] font-sans uppercase tracking-[0.15em] text-ink/60 font-semibold block">PROJECT TYPE</label>
+                    <div className="relative">
+                      <select 
+                        value={formData.projectType}
+                        onChange={e => setFormData({ ...formData, projectType: e.target.value })}
+                        className="w-full bg-transparent border-b border-ink/15 py-2 text-ink text-xs focus:outline-none focus:border-brand appearance-none cursor-pointer rounded-none"
+                      >
+                        <option value="Residential">Residential</option>
+                        <option value="Commercial">Commercial & Hospitality</option>
+                        <option value="Yacht & Exterior">Curated Yacht & Exterior</option>
+                        <option value="Landscaping">Bespoke Landscaping</option>
+                      </select>
+                      <span className="absolute right-2 top-3 pointer-events-none text-ink/40 text-[10px]">▼</span>
+                    </div>
+                  </div>
+                  <div className="space-y-1.5 text-left">
+                    <label className="text-[11px] font-sans uppercase tracking-[0.15em] text-ink/60 font-semibold block">TELL US ABOUT YOUR SPACE (OPTIONAL)</label>
+                    <textarea 
+                      placeholder="A 3-bedroom apartment in Nyali..." 
+                      rows={1}
+                      value={formData.details}
+                      onChange={e => setFormData({ ...formData, details: e.target.value })}
+                      className="w-full bg-transparent border-b border-ink/15 py-1 text-ink text-xs focus:outline-none focus:border-brand placeholder-ink/30 transition-colors resize-none rounded-none"
+                    />
+                  </div>
+                  
+                  <button 
+                    type="submit"
+                    disabled={formStatus === 'submitting'}
+                    className="w-full border border-brand bg-[#A83F1B] hover:bg-[#8d3212] text-white py-3.5 font-sans text-xs uppercase tracking-[0.15em] font-medium transition-all duration-300 disabled:opacity-50 hover:scale-[1.01] cursor-pointer flex items-center justify-center gap-1 mt-4"
+                  >
+                    {formStatus === 'submitting' ? 'TRANSMITTING...' : 'REQUEST CONSULTATION'}
+                    <span className="text-white ml-1">→</span>
+                  </button>
+                </form>
+                <div className="text-center pt-4">
+                  <p className="text-[11px] text-ink/50 font-sans tracking-wide">
+                    Or call <a href={`tel:${content.phone.replace(/\s+/g, '')}`} className="underline hover:text-brand transition-colors font-semibold">{content.phone}</a>
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
         </motion.div>
       </div>
     </section>
@@ -473,7 +482,7 @@ const Footer = () => {
                 LOCATION
               </span>
               <span className="text-xs md:text-sm font-sans font-medium text-white block">
-                {content.location || 'Moi Avenue, Mombasa'}
+                Nairobi and Nakuru, Kenya
               </span>
             </div>
             
@@ -540,33 +549,33 @@ const NotFound = () => (
 
 const GoogleMapSection = () => {
   return (
-    <section className="py-20 bg-[#F9F9F7] px-6 border-t border-ink/5">
+    <section className="py-40 bg-white px-6 border-t border-ink/5">
       <div className="max-w-7xl mx-auto space-y-10">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 pb-6 border-b border-ink/10">
           <div className="space-y-2 text-left">
-            <span className="text-brand font-mono tracking-[0.4em] text-[10px] uppercase font-bold">STUDIO LATITUDE</span>
-            <h2 className="text-3xl md:text-4xl font-serif font-light text-ink uppercase tracking-tight">Our Mombasa Headquarters</h2>
+            <span className="architect-label text-brand block">STUDIO LATITUDE</span>
+            <h2 className="text-3xl md:text-4xl font-serif font-light text-ink uppercase tracking-tight mt-1">Our Nairobi & Nakuru Studios</h2>
           </div>
-          <div className="text-left font-mono text-[10px] text-ink/50 tracking-wider">
-            <span>📍 WMQ9+72, MOI AVENUE, MOMBASA, KENYA</span> <br className="hidden md:inline" />
-            <span className="md:ml-2 text-brand font-semibold">S 4° 3' 49.32'' / E 39° 40' 11.28''</span>
+          <div className="text-left font-sans text-[11px] text-ink/50 tracking-[0.15em] uppercase font-medium">
+            <span>📍 P.O. Box, Nairobi and Nakuru, Kenya</span> <br className="hidden md:inline" />
+            <span className="md:ml-2 text-brand font-semibold">S 1° 17' 11'' / E 36° 49' 2''</span>
           </div>
         </div>
         
-        <div className="w-full h-[450px] md:h-[550px] rounded-3xl overflow-hidden border border-ink/15 shadow-xl relative group">
+        <div className="w-full h-[450px] md:h-[550px] rounded-none overflow-hidden border border-ink/15 shadow-none relative group">
           <iframe 
-            title="Wamled Atelier Mombasa Headquarters Map"
-            src="https://maps.google.com/maps?q=WMQ9%2B72%20Mombasa%20Kenya&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+            title="Wamled Atelier Nairobi Studio Map"
+            src="https://maps.google.com/maps?q=Nairobi%20Kenya&t=&z=12&ie=UTF8&iwloc=&output=embed" 
             className="w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-700 brightness-95 hover:brightness-100"
             allowFullScreen={true}
             loading="lazy"
             referrerPolicy="no-referrer"
           />
           {/* Subtle design overlays to match the premium theme */}
-          <div className="absolute top-6 left-6 bg-ink/95 backdrop-blur-md rounded-2xl p-5 border border-white/10 text-white text-left shadow-2xl pointer-events-none max-w-xs space-y-2.5 hidden sm:block">
-            <span className="text-[9px] font-mono tracking-widest text-[#C5A059] uppercase block font-bold">Atelier Location</span>
-            <p className="text-xs font-serif font-light leading-relaxed text-white/80">
-              Our master Mombasa atelier is nestled precisely off Moi Avenue. Reach out to coordinate an on-site spatial consultation.
+          <div className="absolute top-6 left-6 bg-white p-6 border border-ink/15 text-ink text-left shadow-none pointer-events-none max-w-xs space-y-2.5 hidden sm:block">
+            <span className="architect-label text-[#C5A059] block">Atelier Locations</span>
+            <p className="text-xs font-serif font-light leading-relaxed text-ink/80">
+              Our master design ateliers are situated precisely in Nairobi and Nakuru. Reach out to coordinate an on-site spatial consultation.
             </p>
           </div>
         </div>
@@ -577,7 +586,7 @@ const GoogleMapSection = () => {
 
 const LandingPage = () => {
   return (
-    <div className="bg-[#F9F9F7]">
+    <div className="bg-white">
       <Hero />
       <ServiceStacks />
       <BrandValues />
@@ -592,11 +601,11 @@ const LandingPage = () => {
 };
 
 const PremiumFallbackLoader = () => (
-  <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 bg-[#F9F9F7] text-[#1A1A1A] select-none">
+  <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 bg-white text-[#1A1A1A] select-none">
     <div className="flex flex-col items-center space-y-4 max-w-xs text-center">
       <div className="w-10 h-10 border-2 border-[#C5A059]/35 border-t-[#C5A059] rounded-full animate-spin" />
       <div className="space-y-1">
-        <span className="text-xs font-mono tracking-[0.3em] text-[#C5A059] uppercase block font-semibold">Wamled Atelier</span>
+        <span className="architect-label text-[#C5A059] block">Wamled Atelier</span>
         <span className="text-[10px] text-[#1A1A1A]/45 tracking-widest uppercase block">Refining Spatial Architecture...</span>
       </div>
     </div>
