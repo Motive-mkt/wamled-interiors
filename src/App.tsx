@@ -245,11 +245,29 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center pt-32 pb-24 bg-white text-ink overflow-hidden animate-fade-in animate-duration-1000">
-      {/* Decorative vertical line subtle details mimicking architect drafts */}
-      <div className="absolute top-0 bottom-0 left-[8%] w-px bg-ink/5 pointer-events-none hidden lg:block" />
-      <div className="absolute top-0 bottom-0 right-[8%] w-px bg-ink/5 pointer-events-none hidden lg:block" />
+      {/* Background Image: Exhibit 01 Covers the Whole Hero Section */}
+      <div className="absolute inset-0 z-0 select-none pointer-events-none">
+        <img 
+          src={content.heroImage} 
+          alt="Luxury coastal interior design studio space"
+          className="w-full h-full object-cover"
+          referrerPolicy="no-referrer"
+        />
 
-      <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-16 items-center relative z-10 w-full">
+      </div>
+
+      {/* Decorative vertical line subtle details mimicking architect drafts */}
+      <div className="absolute top-0 bottom-0 left-[8%] w-px bg-ink/10 pointer-events-none hidden lg:block z-10" />
+      <div className="absolute top-0 bottom-0 right-[8%] w-px bg-ink/10 pointer-events-none hidden lg:block z-10" />
+
+      {/* Subtle Exhibit 01 Indicator Overlay in bottom corner */}
+      <div className="absolute bottom-6 right-[10%] z-20 hidden md:flex items-center gap-3 select-none">
+        <span className="text-[10px] font-sans uppercase tracking-[0.2em] text-ink/40 font-semibold">WAMLED ATELIER MODEL</span>
+        <span className="w-4 h-px bg-ink/25" />
+        <span className="text-[10px] font-sans uppercase tracking-[0.2em] text-brand font-bold">EXHIBIT_01</span>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-16 items-center relative z-20 w-full">
         {/* Left Column: Typography Block */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -296,29 +314,13 @@ const Hero = () => {
           </div>
         </motion.div>
 
-        {/* Right Column: Framed Image & Minimal Form */}
+        {/* Right Column: Minimal Form over the background */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="lg:col-span-5 space-y-8 flex flex-col justify-center"
+          className="lg:col-span-5 flex flex-col justify-center"
         >
-          {/* Framed Image - bounded with generous white margins rather than full bleed */}
-          <div className="relative border border-ink/10 p-4 bg-white hover:border-brand/40 transition-colors duration-500">
-            <div className="aspect-[16/10] overflow-hidden bg-[#FDFDFD]">
-              <img 
-                src={content.heroImage} 
-                alt="Luxury coastal interior design studio space"
-                className="w-full h-full object-cover select-none pointer-events-none transition-transform duration-[1.2s] hover:scale-105"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-            <div className="mt-3 flex justify-between items-center px-1">
-              <span className="text-[10px] font-sans uppercase tracking-[0.15em] text-ink/40">WAMLED ATELIER MODEL</span>
-              <span className="text-[10px] font-sans uppercase tracking-[0.15em] text-brand">EXHIBIT_01</span>
-            </div>
-          </div>
-
           {/* Form Box - clean borders, no heavy shadow */}
           <div
             id="consultation-form-box"
