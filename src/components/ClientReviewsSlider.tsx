@@ -22,7 +22,7 @@ export const ClientReviewsSlider: React.FC = () => {
   };
 
   return (
-    <section className="py-40 bg-white text-ink relative overflow-hidden border-t border-ink/5">
+    <section className="py-28 bg-cream/40 text-ink relative overflow-hidden border-t border-ink/5">
       {/* Absolute oversized background quote symbol */}
       <div className="absolute right-12 top-6 text-brand/5 select-none pointer-events-none text-[320px] font-serif leading-none">
         ”
@@ -31,7 +31,7 @@ export const ClientReviewsSlider: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-4">
           <div>
-            <span className="architect-label text-brand mb-4 block">
+            <span className="text-brand font-mono tracking-[0.4em] text-[10px] uppercase mb-4 block">
               CLIENT TESTIMONIALS
             </span>
             <h2 className="text-4xl md:text-5xl font-serif font-light leading-tight">
@@ -65,7 +65,7 @@ export const ClientReviewsSlider: React.FC = () => {
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: -50, scale: 0.95 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
-              className="w-full grid md:grid-cols-12 gap-8 items-center bg-white border border-ink/15 p-8 md:p-12 lg:p-16 rounded-none shadow-none"
+              className="w-full grid md:grid-cols-12 gap-8 items-center bg-white border border-ink/5 p-8 md:p-12 lg:p-16 rounded-3xl shadow-sm"
             >
               {/* Giant floating quotation mark for parallax feel */}
               <div className="md:col-span-1 hidden md:block text-brand text-7xl font-serif leading-none select-none opacity-40">
@@ -89,11 +89,11 @@ export const ClientReviewsSlider: React.FC = () => {
                     <h4 className="text-sm font-semibold text-ink uppercase tracking-wider font-sans">
                       {reviews[currentIndex]?.author}
                     </h4>
-                    <p className="architect-meta text-brand mt-1 block">
+                    <p className="text-xs text-brand font-mono tracking-widest mt-1 uppercase">
                       {(reviews[currentIndex] as any).title || (reviews[currentIndex] as any).location || (reviews[currentIndex] as any).role || 'Connoisseur'}
                     </p>
                   </div>
-                  <span className="architect-meta text-ink/40">
+                  <span className="text-[10px] font-mono text-ink/40 uppercase tracking-[0.2em]">
                     0{currentIndex + 1} / 0{reviews.length}
                   </span>
                 </div>

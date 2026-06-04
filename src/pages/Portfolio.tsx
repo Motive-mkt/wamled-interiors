@@ -30,7 +30,6 @@ export default function Portfolio() {
   const { content } = useCMS();
   const [items, setItems] = useState<PortfolioItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [subCategoryFilter, setSubCategoryFilter] = useState<'All' | 'Institutional' | 'Commercial' | 'Housing'>('All');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -51,113 +50,64 @@ export default function Portfolio() {
     return () => unsubscribe();
   }, []);
 
-  const filteredItems = items.filter(item => {
-    // Stage 1: Global Category Tab
-    const matchesGlobal = selectedCategory === 'All' 
-      ? true 
-      : item.category.toLowerCase() === selectedCategory.toLowerCase();
-      
-    // Stage 2: Sub-Header Navigation Filter
-    if (subCategoryFilter === 'All') {
-      return matchesGlobal;
-    } else if (subCategoryFilter === 'Institutional') {
-      return matchesGlobal && item.category.toLowerCase() === 'institutional';
-    } else if (subCategoryFilter === 'Commercial') {
-      return matchesGlobal && item.category.toLowerCase() === 'commercial';
-    } else if (subCategoryFilter === 'Housing') {
-      return matchesGlobal && (item.category.toLowerCase() === 'housing' || item.category.toLowerCase() === 'residential');
-    }
-    return matchesGlobal;
-  });
+  const filteredItems = selectedCategory === 'All' 
+    ? items 
+    : items.filter(item => item.category.toLowerCase() === selectedCategory.toLowerCase());
 
   return (
-    <div className="min-h-screen bg-[#F9F9F7] text-ink pt-28 pb-24 relative overflow-hidden">
+    <div className="min-h-screen bg-[#111111] text-white pt-28 pb-24 relative overflow-hidden">
       {/* Background Decorative Element */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-20">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-[#A83F1B]/5 blur-[120px] pb-1" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-[#A83F1B]/10 blur-[120px] pb-1" />
         <div className="absolute bottom-1/3 right-1/4 w-[500px] h-[500px] rounded-full bg-[#C5A059]/5 blur-[150px] pb-1" />
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header Title Section with Editorial spacing */}
         <div className="space-y-6 max-w-2xl mb-16 text-left">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-ink/5 shadow-xs">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
             <span className="w-1.5 h-1.5 rounded-full bg-[#A83F1B]" />
-            <span className="text-[9px] font-mono uppercase tracking-widest text-[#1A1A1A]/55 font-bold">Wamled Archives</span>
+            <span className="text-[9px] font-mono uppercase tracking-widest text-white/50 font-bold">Wamled Archives</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-serif font-light tracking-tight leading-[1.1] uppercase text-ink">
+          <h1 className="text-4xl md:text-6xl font-serif font-light tracking-tight leading-[1.1] uppercase">
             Curated <br />
-            <span className="italic text-[#A83F1B]">Portfolio</span> Collection
+            <span className="italic text-[#C5A059]">Portfolio</span> Collection
           </h1>
-          <p className="text-sm text-ink/65 font-light leading-relaxed max-w-lg font-sans">
-            A comprehensive record of uncompromised coastal sanctuaries, private estates, marine assemblies, and high-performance commercial layouts crafted by our Mombasa studio.
+          <p className="text-sm text-gray-400 font-light leading-relaxed max-w-lg">
+            A comprehensive record of uncompromised sanctuaries, private estates, marine assemblies, and high-performance commercial layouts crafted by our Nairobi and Nakuru studios.
           </p>
         </div>
 
-        {/* Categories Tab Selector */}
-        <div className="flex flex-wrap gap-2 pb-6 border-b border-ink/10 mb-12">
-          {CATEGORIES.map(category => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`text-[10px] font-mono uppercase tracking-wider px-5 py-2.5 rounded-full border transition-all duration-300 cursor-pointer ${
-                selectedCategory === category
-                  ? 'bg-[#A83F1B] border-[#A83F1B] text-white font-bold'
-                  : 'bg-white border-ink/10 text-ink/60 hover:text-ink hover:bg-black/[0.03]'
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-
-        {/* Sub-header Navigation / Filter Section */}
-        <div className="border border-ink/5 bg-white p-6 mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 rounded-none shadow-xs">
-          <div className="space-y-1 text-left">
-            <span className="text-[10px] uppercase tracking-widest text-[#A83F1B] font-mono block font-bold">PROJECT DISCIPLINE SELECTION</span>
-            <h2 className="text-xl font-serif font-light text-ink uppercase tracking-tight">Curation Filter</h2>
+        {/* Categories Tab Selector (Sub-Header Navigation/Filter Section) */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12 pb-6 border-b border-white/10 text-left">
+          <div className="space-y-1">
+            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#C5A059] block font-bold">Atelier Classification</span>
+            <span className="text-xs font-sans tracking-widest text-white/45 uppercase">Project Segments & Records</span>
           </div>
           
           <div className="flex flex-wrap gap-2">
+            {['Institutional', 'Commercial', 'Housing'].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setSelectedCategory(tab)}
+                className={`text-[10px] sm:text-xs font-mono uppercase tracking-widest px-6 py-2.5 rounded-full border transition-all duration-300 cursor-pointer ${
+                  selectedCategory.toLowerCase() === tab.toLowerCase()
+                    ? 'bg-[#A83F1B] border-[#A83F1B] text-white font-bold'
+                    : 'bg-white/5 border-white/5 text-gray-400 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
             <button
-              onClick={() => setSubCategoryFilter('All')}
-              className={`text-[10px] font-mono uppercase tracking-[0.1em] px-4 py-2 border transition-all duration-300 cursor-pointer ${
-                subCategoryFilter === 'All'
-                  ? 'bg-[#A83F1B] border-[#A83F1B] text-white font-bold'
-                  : 'bg-transparent border-ink/15 text-ink/60 hover:text-ink hover:border-ink/35'
+              onClick={() => setSelectedCategory('All')}
+              className={`text-[10px] sm:text-xs font-mono uppercase tracking-widest px-6 py-2.5 rounded-full border transition-all duration-300 cursor-pointer ${
+                selectedCategory === 'All'
+                  ? 'bg-white/15 border-white/20 text-white font-bold'
+                  : 'bg-white/5 border-white/5 text-gray-400 hover:text-white hover:bg-white/10'
               }`}
             >
-              All
-            </button>
-            <button
-              onClick={() => setSubCategoryFilter('Institutional')}
-              className={`text-[10px] font-mono uppercase tracking-[0.1em] px-4 py-2 border transition-all duration-300 cursor-pointer ${
-                subCategoryFilter === 'Institutional'
-                  ? 'bg-black text-white border-black font-bold'
-                  : 'bg-transparent border-ink/15 text-ink/60 hover:text-ink hover:border-ink/35'
-              }`}
-            >
-              Institutional
-            </button>
-            <button
-              onClick={() => setSubCategoryFilter('Commercial')}
-              className={`text-[10px] font-mono uppercase tracking-[0.1em] px-4 py-2 border transition-all duration-300 cursor-pointer ${
-                subCategoryFilter === 'Commercial'
-                  ? 'bg-black text-white border-black font-bold'
-                  : 'bg-transparent border-ink/15 text-ink/60 hover:text-ink hover:border-ink/35'
-              }`}
-            >
-              Commercial
-            </button>
-            <button
-              onClick={() => setSubCategoryFilter('Housing')}
-              className={`text-[10px] font-mono uppercase tracking-[0.1em] px-4 py-2 border transition-all duration-300 cursor-pointer ${
-                subCategoryFilter === 'Housing'
-                  ? 'bg-black text-white border-black font-bold'
-                  : 'bg-transparent border-ink/15 text-ink/60 hover:text-ink hover:border-ink/35'
-              }`}
-            >
-              Housing
+              See All
             </button>
           </div>
         </div>
@@ -166,20 +116,20 @@ export default function Portfolio() {
         {loading ? (
           <div className="py-24 text-center">
             <div className="w-10 h-10 border-2 border-[#A83F1B]/30 border-t-[#A83F1B] rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-xs font-mono tracking-widest uppercase text-ink/40">Consulting Archive Indexes...</p>
+            <p className="text-xs font-mono tracking-widest uppercase text-gray-400">Consulting Archive Indexes...</p>
           </div>
         ) : filteredItems.length === 0 ? (
           /* Empty placeholder requested by user */
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="border border-ink/5 bg-white rounded-3xl p-12 lg:p-20 text-center max-w-md mx-auto my-12 shadow-sm"
+            className="border border-white/5 bg-white/[0.02] rounded-3xl p-12 lg:p-20 text-center max-w-md mx-auto my-12"
           >
-            <div className="w-12 h-12 rounded-full bg-[#A83F1B]/5 border border-[#A83F1B]/10 flex items-center justify-center mx-auto mb-6">
-              <Briefcase size={20} className="text-[#A83F1B]" />
+            <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6">
+              <Briefcase size={20} className="text-[#C5A059]" />
             </div>
-            <h3 className="text-lg font-serif font-light text-ink mb-2 uppercase tracking-wide">Dynamic Portfolio is Empty</h3>
-            <p className="text-xs text-ink/65 font-light max-w-xs mx-auto mb-10 leading-relaxed font-sans">
+            <h3 className="text-lg font-serif font-light text-white mb-2 uppercase tracking-wide">Dynamic Portfolio is Empty</h3>
+            <p className="text-xs text-gray-400 font-light max-w-xs mx-auto mb-10 leading-relaxed">
               No works have been added to this query yet. The Studio Archivist will manually upload projects and build photographic records through the Owner Control Dashboard.
             </p>
             <div className="flex flex-col gap-3">
@@ -207,40 +157,40 @@ export default function Portfolio() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.5 }}
-                  className="group relative overflow-hidden rounded-2xl bg-white border border-ink/5 hover:border-brand/20 transition-all duration-500 shadow-xs hover:shadow-lg animate-fade-in"
+                  className="group relative overflow-hidden rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all duration-300"
                 >
                   {/* Photo container */}
-                  <div className="aspect-[4/5] relative overflow-hidden bg-black/[0.02]">
+                  <div className="aspect-[4/5] relative overflow-hidden bg-black/40">
                     <img 
                       src={item.imageUrl} 
                       alt={item.title} 
                       className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105"
                       referrerPolicy="no-referrer"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60 group-hover:opacity-75 transition-opacity duration-300 pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-85 group-hover:opacity-90 transition-opacity duration-300" />
                     
                     {/* Floating Category tag */}
-                    <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-md text-[9px] font-mono tracking-wider font-bold text-ink px-3 py-1 rounded-full border border-ink/5 uppercase shadow-xs select-none">
+                    <span className="absolute top-4 left-4 bg-black/60 backdrop-blur-md text-[9px] font-mono tracking-wider font-bold text-white px-3 py-1 rounded-full border border-white/10 uppercase">
                       {item.category}
                     </span>
-                  </div>
 
-                  {/* Content section below photobox */}
-                  <div className="p-6 space-y-3 text-left bg-white">
-                    {item.location && (
-                      <div className="flex items-center gap-1.5 text-[#A83F1B] text-[10px] font-mono font-bold tracking-wider">
-                        <MapPin size={10} />
-                        <span>{item.location}</span>
-                      </div>
-                    )}
-                    
-                    <h3 className="text-xl font-serif font-light text-ink group-hover:text-[#A83F1B] transition-colors uppercase leading-tight">
-                      {item.title}
-                    </h3>
-                    
-                    <p className="text-[11px] text-ink/70 font-light leading-relaxed line-clamp-3 font-sans">
-                      {item.description}
-                    </p>
+                    {/* Content overlay */}
+                    <div className="absolute bottom-0 inset-x-0 p-6 space-y-3 text-left">
+                      {item.location && (
+                        <div className="flex items-center gap-1.5 text-gray-400 text-[10px] font-mono">
+                          <MapPin size={10} className="text-[#A83F1B]" />
+                          <span>{item.location}</span>
+                        </div>
+                      )}
+                      
+                      <h3 className="text-xl font-serif font-light text-white group-hover:text-[#C5A059] transition-colors uppercase leading-tight">
+                        {item.title}
+                      </h3>
+                      
+                      <p className="text-[11px] text-gray-400 font-light leading-relaxed line-clamp-3">
+                        {item.description}
+                      </p>
+                    </div>
                   </div>
                 </motion.div>
               ))}

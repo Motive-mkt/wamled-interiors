@@ -382,7 +382,7 @@ const CATEGORIES_DATA: ServiceCategory[] = [
         images: [
           "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1600566752239-1718f0752881?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1584622781564-1d987f7333c1?auto=format&fit=crop&q=95&w=640&h=1140"
+          "/src/assets/images/yacht_marina_1780560654319.png"
         ],
         description: "Bespoke spa-grade resort bathrooms featuring walk-in monolithic rain showers and freestanding stone bathtubs.",
         specifications: [
@@ -425,8 +425,8 @@ const CATEGORIES_DATA: ServiceCategory[] = [
         name: "Outdoor & Landscape Solutions",
         icon: Trees,
         images: [
-          "/src/assets/images/modern_kenyan_house_1780516497487.png",
-          "/src/assets/images/premium_yacht_marina_1780516542006.png",
+          "https://images.unsplash.com/photo-1507063856262-d62c3e927500?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=95&w=640&h=1140"
         ],
         description: "Seashore landscape arrangements integrating salt-tolerant native flora, modern stone burners, and private sunlounger pavilions.",
@@ -443,7 +443,7 @@ const CATEGORIES_DATA: ServiceCategory[] = [
         name: "Hospitality & Medical Supplies",
         icon: HeartPulse,
         images: [
-          "/src/assets/images/premium_yacht_marina_1780516542006.png",
+          "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&q=95&w=640&h=1140"
         ],

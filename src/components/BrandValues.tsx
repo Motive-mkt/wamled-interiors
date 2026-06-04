@@ -11,14 +11,14 @@ const VALUES = [
 
 export const BrandValues: React.FC = () => {
   return (
-    <section className="py-40 bg-white text-ink overflow-hidden border-t border-ink/5 relative">
+    <section className="py-32 bg-cream/30 text-ink overflow-hidden border-t border-ink/5 relative">
       {/* Subtle metallic radial background glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(26,26,26,0.015),transparent_65%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(168,63,27,0.03),transparent_65%)] pointer-events-none" />
       
       <div className="max-w-7xl mx-auto px-6 text-center">
-        <span className="architect-label text-brand mb-16 block">Brand Values & Identity</span>
+        <span className="text-brand font-mono tracking-[0.4em] text-[10px] uppercase mb-16 block">Brand Values & Identity</span>
         
-        <h2 className="text-sm md:text-md uppercase tracking-wider font-sans text-ink/65 mb-20 max-w-lg mx-auto">
+        <h2 className="text-sm md:text-md uppercase tracking-wider font-sans text-ink/60 mb-20 max-w-lg mx-auto">
           We dismiss generic design templates. We create architectural answers suited for the highest standards.
         </h2>
 
@@ -33,7 +33,7 @@ export const BrandValues: React.FC = () => {
               className="py-6 border-b border-ink/5 group"
             >
               <div className="flex flex-col md:flex-row items-center justify-between text-left gap-4 md:gap-12">
-                <span className="architect-label text-brand opacity-60">0{idx + 1} //</span>
+                <span className="text-xs font-mono text-brand opacity-60">0{idx + 1} //</span>
                 
                 <h3 className="text-4xl md:text-7xl lg:text-8xl font-serif font-light tracking-tight text-ink group-hover:text-brand transition-colors duration-500">
                   {val.keyword}

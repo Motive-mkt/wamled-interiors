@@ -46,14 +46,14 @@ const AnimatedCounter: React.FC<CounterProps> = ({ value, prefix = "", suffix = 
 
 export const WhyUsStats: React.FC = () => {
   return (
-    <section className="py-40 bg-white text-ink overflow-hidden relative border-t border-ink/5">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(26,26,26,0.015),transparent_70%)] pointer-events-none" />
+    <section className="py-28 bg-cream/20 text-ink overflow-hidden relative border-t border-ink/5">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(168,63,27,0.02),transparent_70%)] pointer-events-none" />
       
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-3 gap-16 md:gap-12 lg:gap-8">
           
           {/* Stat 1 */}
-          <div className="space-y-6 flex flex-col justify-between p-8 rounded-none bg-white border border-ink/15 hover:border-brand/40 shadow-none transition-all duration-300">
+          <div className="space-y-6 flex flex-col justify-between p-6 rounded-2xl bg-white border border-ink/5 hover:border-brand/25 shadow-sm transition-all duration-300">
             <div>
               <div className="h-16 flex items-center mb-6">
                 {/* Thin Line Geometric Icon 1 */}
@@ -70,13 +70,13 @@ export const WhyUsStats: React.FC = () => {
                   <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4,4" />
                 </svg>
               </div>
-              <p className="architect-label text-ink/40 mb-2">Sourcing & Depth</p>
+              <p className="text-[10px] font-mono tracking-[0.3em] uppercase text-ink/40 mb-2">Sourcing & Depth</p>
               <h2 className="flex items-baseline gap-1">
                 <AnimatedCounter value={70000} prefix="OVER " suffix="+" />
               </h2>
             </div>
             <div className="pt-6 border-t border-ink/5 space-y-2">
-              <span className="architect-label text-brand block">Materials Library</span>
+              <span className="text-[11px] font-mono tracking-widest uppercase text-brand">Materials Library</span>
               <p className="text-xs text-ink/70 font-light leading-relaxed">
                 Unrestricted by local coastal supply limits. We directly source exceptional Italian marble slabs, Belgian linens, and exotic woods.
               </p>
@@ -84,7 +84,7 @@ export const WhyUsStats: React.FC = () => {
           </div>
 
           {/* Stat 2 */}
-          <div className="space-y-6 flex flex-col justify-between p-8 rounded-none bg-white border border-ink/15 hover:border-brand/40 shadow-none transition-all duration-300">
+          <div className="space-y-6 flex flex-col justify-between p-6 rounded-2xl bg-white border border-ink/5 hover:border-brand/25 shadow-sm transition-all duration-300">
             <div>
               <div className="h-16 flex items-center mb-6">
                 {/* Thin Line Geometric Icon 2 */}
@@ -101,13 +101,13 @@ export const WhyUsStats: React.FC = () => {
                   <rect x="25" y="45" width="50" height="45" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2,2" />
                 </svg>
               </div>
-              <p className="architect-label text-ink/40 mb-2">Proven Track Record</p>
+              <p className="text-[10px] font-mono tracking-[0.3em] uppercase text-ink/40 mb-2">Proven Track Record</p>
               <h2 className="flex items-baseline gap-1">
                 <AnimatedCounter value={145} suffix=" +" />
               </h2>
             </div>
             <div className="pt-6 border-t border-ink/5 space-y-2">
-              <span className="architect-label text-brand block">Coastal Sanctuaries</span>
+              <span className="text-[11px] font-mono tracking-widest uppercase text-brand">Coastal Sanctuaries</span>
               <p className="text-xs text-ink/70 font-light leading-relaxed">
                 High-performance architectural structures. Expertly designed and carefully built to stay beautiful against intense maritime sea-salt atmospheres.
               </p>
@@ -115,7 +115,7 @@ export const WhyUsStats: React.FC = () => {
           </div>
 
           {/* Stat 3 */}
-          <div className="space-y-6 flex flex-col justify-between p-8 rounded-none bg-white border border-ink/15 hover:border-brand/40 shadow-none transition-all duration-300">
+          <div className="space-y-6 flex flex-col justify-between p-6 rounded-2xl bg-white border border-ink/5 hover:border-brand/25 shadow-sm transition-all duration-300">
             <div>
               <div className="h-16 flex items-center mb-6">
                 {/* Thin Line Geometric Icon 3 */}
@@ -132,13 +132,13 @@ export const WhyUsStats: React.FC = () => {
                   <circle cx="50" cy="50" r="45" stroke="currentColor" strokeWidth="0.5" strokeDasharray="5,5" />
                 </svg>
               </div>
-              <p className="architect-label text-ink/40 mb-2">Global Standing</p>
+              <p className="text-[10px] font-mono tracking-[0.3em] uppercase text-ink/40 mb-2">Global Standing</p>
               <h2 className="flex items-baseline gap-1">
                 <AnimatedCounter value={12} prefix="TOP " />
               </h2>
             </div>
             <div className="pt-6 border-t border-ink/5 space-y-2">
-              <span className="architect-label text-brand block">Design Accolades</span>
+              <span className="text-[11px] font-mono tracking-widest uppercase text-brand">Design Accolades</span>
               <p className="text-xs text-ink/70 font-light leading-relaxed">
                 Direct validation of our core devotion to sublime proportions, monochrome tranquility, and physical structural integrity.
               </p>

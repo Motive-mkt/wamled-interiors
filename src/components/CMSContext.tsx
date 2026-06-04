@@ -30,15 +30,15 @@ const defaultContent: CMSContent = {
   ],
   reviews: [
     {
-      text: "The structural layout Wamled designed for our Diani villa has completely changed our family dynamic. The flow of daylight and continuous coastal breeze feels like a living hotel gallery.",
+      text: "The structural layout Wamled designed for our Nairobi villa has completely changed our family dynamic. The flow of daylight and continuous breeze feels like a living hotel gallery.",
       author: "Almasi M. G.",
-      location: "Oceanfront Villa Owner, Diani",
+      location: "Luxury Villa Owner, Nairobi",
       rating: 5
     },
     {
       text: "Wamled brought a tier of structural precision to our hotel lounge that we simply had not found elsewhere in East Africa. Every stone seam, timber column, and light level is perfect.",
       author: "Zuri Resorts Ltd.",
-      location: "Managing Director, Nyali Marina",
+      location: "Managing Director, Nakuru Marina",
       rating: 5
     },
     {
@@ -48,8 +48,8 @@ const defaultContent: CMSContent = {
       rating: 5
     }
   ],
-  announcementActive: true,
-  announcementText: "Now accepting premium residential atelier project consultations for coastal developments in Diani & Mombasa.",
+  announcementActive: false,
+  announcementText: "",
   announcementLink: "/#consultation"
 };
 
