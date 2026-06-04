@@ -57,9 +57,9 @@ export default function Contact() {
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-12 gap-12 relative z-10 w-full mt-8">
         
         {/* Left column: Contact info and hours */}
-        <div className="md:col-span- così md:col-span-5 space-y-10 text-left">
+        <div className="md:col-span-5 space-y-10 text-left">
           <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cream/10 border border-ink/10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cream border border-ink/10 shadow-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-[#A83F1B]" />
               <span className="text-[9px] font-mono uppercase tracking-widest text-[#121212]/50 font-bold">Atelier Connection</span>
             </div>

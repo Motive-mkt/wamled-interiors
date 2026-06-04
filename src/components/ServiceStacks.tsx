@@ -4,216 +4,223 @@ import { motion } from 'motion/react';
 import { 
   Compass, 
   Cpu, 
-  Columns, 
   Layers, 
-  Trees, 
-  ArrowRight,
-  Plus 
+  Plus,
+  ArrowRight 
 } from 'lucide-react';
 
-interface SubService {
-  name: string;
-  description: string;
-}
-
-interface PillarData {
+interface SlideItem {
   id: string;
   index: string;
   title: string;
-  focus: string;
+  subtitle: string;
+  description: string;
+  image: string;
   icon: React.ComponentType<{ size?: number; className?: string; strokeWidth?: number }>;
-  items: SubService[];
-  link: string;
+  offerings: string[];
+  ctaText: string;
+  destination: string;
 }
 
-const FIVE_PILLARS: PillarData[] = [
+const THREE_SLIDES: SlideItem[] = [
   {
     id: "architectural",
     index: "01",
-    title: "Architectural & Interior",
-    focus: "Master planning and the project’s visual soul and movement choreography.",
+    title: "Architectural & Interior Design",
+    subtitle: "PILLAR A",
+    description: "Creating comprehensive visual codes, trade-wind cross-ventilation maps, and dynamic physical choreography within seaside residences.",
+    image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&q=95&w=1000&h=1600",
     icon: Compass,
-    link: "/services#architectural-interior",
-    items: [
-      { name: "Circulation Design", description: "Mapping flow, viewpoints and cross-ventilation." },
-      { name: "Functional Design", description: "Modular layouts and micro-zoned layouts." },
-      { name: "Style Design", description: "Defining local Swahili and minimalist aesthetic stories." },
-      { name: "FF&E Curation", description: "Italian marble slabs, raw stones and custom furnishings." }
-    ]
+    offerings: [
+      "Circulation Design",
+      "Functional Design",
+      "Style Design",
+      "Furniture, Fixtures & Equipment (FF&E)"
+    ],
+    ctaText: "Explore the Process",
+    destination: "/bespoke-services"
   },
   {
     id: "specialty",
     index: "02",
-    title: "Specialty Systems",
-    focus: "High-utility mechanical, electrical and low-voltage installations.",
+    title: "Specialty Design & Systems",
+    subtitle: "PILLAR B",
+    description: "Automated climate structures, advanced MEP installations, and secure smart automation engineered to survive active marine environments.",
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=95&w=1000&h=1600",
     icon: Cpu,
-    link: "/services#technical-systems-mepf",
-    items: [
-      { name: "MEPF Solutions", description: "Mechanical, Electrical, and Plumbing engineering." },
-      { name: "ELV & IT Systems", description: "Extra Low Voltage systems and automated security." },
-      { name: "Lighting Systems", description: "Architectural luminescence and smart scene setting." },
-      { name: "Kitchen & Laundry", description: "Professional-grade culinary layout design." }
-    ]
+    offerings: [
+      "MEP Solutions",
+      "Swimming Pools",
+      "ELV & IT Systems",
+      "Lighting Systems",
+      "Kitchen & Laundry"
+    ],
+    ctaText: "View Case Studies",
+    destination: "/bespoke-services"
   },
   {
     id: "product",
     index: "03",
-    title: "Product Application",
-    focus: "Structural glazing, frames and facade boundary engineering.",
-    icon: Columns,
-    link: "/services#exterior-structural",
-    items: [
-      { name: "Facade System", description: "Custom double-glazed acoustic facades." },
-      { name: "Steel Structure", description: "High-wind load bearing metal framing." },
-      { name: "Balustrades", description: "Premium architectural glass stairs & safety railings." },
-      { name: "Partitions & Canopies", description: "Custom sliding partitions and shading canopy frames." }
-    ]
-  },
-  {
-    id: "finishing",
-    index: "04",
-    title: "Finishing & Furnishing",
-    focus: "Meticulous surface coverings, custom timber lattice and raw finishes.",
+    title: "Product & Application Design",
+    subtitle: "PILLAR C",
+    description: "Multi-track sliding profiles, double-glazed acoustic structural curtain systems, and bespoke architectural canopy and framing.",
+    image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=95&w=1000&h=1600",
     icon: Layers,
-    link: "/services#interior-finishing-furnishing",
-    items: [
-      { name: "Wall & Floor Cover", description: "Hand-pressed lime plaster and seamless microcement." },
-      { name: "Ceiling Systems", description: "Acoustic control and hidden integrated lighting rails." },
-      { name: "Decoration & Artwork", description: "Curation of elite local sculpture and organic art." },
-      { name: "Bathroom Solutions", description: "Custom-carved monolithic stone sinks & baths." }
-    ]
-  },
-  {
-    id: "outdoor",
-    index: "05",
-    title: "Specialized & Outdoor",
-    focus: "Beachfront swimming horizons and salt-tolerant organic landscaping.",
-    icon: Trees,
-    link: "/services#specialized-outdoor",
-    items: [
-      { name: "Landscape Design", description: "Lush native saltwater-safe gardens and beach bounds." },
-      { name: "Hospitality Design", description: "Commercial lounges, spa zones and wellness retreats." },
-      { name: "Signage & Wayfinding", description: "Brass or timber engraved directional systems." },
-      { name: "Wellness & Fitness", description: "Thermal sauna pools and coastal fitness installations." }
-    ]
+    offerings: [
+      "Curtain Walls & Facades",
+      "Steel Structures",
+      "Balustrades & Staircases",
+      "Canopies & Partitions"
+    ],
+    ctaText: "Explore Structures",
+    destination: "/bespoke-services"
   }
 ];
 
 export const ServiceStacks: React.FC = () => {
   return (
-    <section className="relative w-full bg-white text-ink py-40 border-t border-ink/5">
-      {/* Decorative Blueprint Grid Background Accent lines */}
-      <div className="absolute inset-0 bg-white opacity-25 pointer-events-none"
-        style={{
-          backgroundImage: 'linear-gradient(to right, rgba(26,26,26,0.02) 1px, transparent 1px), linear-gradient(to bottom, rgba(26,26,26,0.02) 1px, transparent 1px)',
-          backgroundSize: '100px 100px'
-        }}
-      />
-      
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        
-        {/* Editorial Section Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 pb-16 mb-16 border-b border-ink/10">
+    <section className="relative w-full bg-[#F9F9F7] text-ink border-t border-ink/5 overflow-visible">
+      {/* Editorial Section Header: Stationary above the scroll cards */}
+      <div className="max-w-7xl mx-auto px-6 pt-32 pb-12 relative z-10" id="service-header-wrapper">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 pb-10 border-b border-ink/10" id="service-section-header">
           <div className="space-y-4 text-left">
             <div className="inline-flex items-center gap-3">
-              <span className="text-brand font-sans text-[13px] uppercase tracking-[0.15em] font-medium">WAMLED SPECTRUM // THE CULMINATION</span>
-              <span className="h-px bg-brand/35 w-12" />
-              <span className="text-ink/40 text-[11px] font-sans tracking-widest uppercase">02 / PILLARS</span>
+              <span className="text-[#C5A059] font-sans text-[13px] uppercase tracking-[0.15em] font-bold">WAMLED SPECTRUM // MASTER SERVICES</span>
+              <span className="h-px bg-[#C5A059]/35 w-12" />
+              <span className="text-ink/40 text-[11px] font-sans tracking-widest uppercase font-semibold">03 / MASTER STACKS</span>
             </div>
             
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-light text-ink tracking-tight mt-2 leading-tight">
-              The Five Pillars of<br />
-              <span className="italic text-ink/70">Spatial Engineering.</span>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-serif font-light text-[#1A1A1A] tracking-tight mt-2 leading-tight">
+              The Three Pillars of<br />
+              <span className="italic text-[#C5A059]">Spatial Architecture.</span>
             </h2>
           </div>
           
-          <div className="text-left font-sans text-xs md:text-sm text-ink/60 max-w-sm leading-relaxed font-light space-y-3">
+          <div className="text-left font-sans text-xs md:text-sm text-ink/65 max-w-sm leading-relaxed font-light">
             <p>
-              We categorize our bespoke Mombasa architecture, installations, and custom finishing processes into five integrated columns of master-tier execution.
+              We compile our bespoke Nairobi and Mombasa designs, structural fabrications, and precision setups into three master-level disciplines.
             </p>
           </div>
         </div>
+      </div>
 
-        {/* 5-Column Elegant Categorized Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 border-t border-b border-ink/10 divide-y md:divide-y-0 lg:divide-x divide-ink/10 bg-white shadow-none">
-          {FIVE_PILLARS.map((pillar) => {
-            const IconComponent = pillar.icon;
-            return (
-              <div 
-                key={pillar.id}
-                className="group p-8 lg:p-10 flex flex-col justify-between hover:bg-white transition-all duration-500 relative overflow-hidden"
+      {/* GSAP-Style Sticky Card Deck Stack Container */}
+      <div className="relative w-full flex flex-col items-center select-none" id="service-sticky-container">
+        {THREE_SLIDES.map((slide, index) => {
+          const IconComponent = slide.icon;
+          return (
+            <div 
+              key={slide.id}
+              className="sticky top-0 h-screen w-full flex items-center justify-center p-4 sm:p-6 md:p-8"
+              style={{
+                zIndex: index + 10,
+              }}
+              id={`slide-wrapper-${slide.id}`}
+            >
+              {/* Luxury Card Box constrained to 9:16 Aspect Ratio and 100% Bright Crisp Image Background */}
+              <motion.div 
+                initial={{ opacity: 0, y: 80, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+                className="relative w-full max-w-[430px] h-[75vh] md:h-[82vh] max-h-[720px] aspect-[9/16] rounded-[36px] overflow-hidden bg-white border border-ink/10 shadow-2xl transition-all duration-500"
+                id={`service-card-${slide.id}`}
               >
-                {/* Subtle top indicator hover line (gold) */}
-                <div className="absolute top-0 left-0 right-0 h-[2px] bg-brand scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                {/* 100% Bright, Crisp, and Unfiltered Project Image */}
+                <img 
+                  src={slide.image} 
+                  alt={slide.title} 
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-105 pointer-events-none"
+                  referrerPolicy="no-referrer"
+                />
 
-                <div className="space-y-8 text-left">
-                  {/* Pillar Metadata Following Architect rule */}
-                  <div className="flex justify-between items-center">
-                    <span className="text-brand font-sans text-[13px] uppercase tracking-[0.15em] font-semibold">{pillar.index}</span>
-                    <span className="text-ink/30 text-[11px] font-sans tracking-widest">WM_CO</span>
+                {/* --- TOP FLOATING PANEL (Absolute text layer over image, no background container) --- */}
+                <div 
+                  className="absolute top-6 left-6 right-6 z-20 text-left pointer-events-none"
+                  style={{
+                    textShadow: '0 2px 8px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.65)'
+                  }}
+                  id={`top-card-panel-${slide.id}`}
+                >
+                  <div className="flex justify-between items-center gap-3 mb-2">
+                    {/* Subtitle / Index: Helvetica Neue 13px, Uppercase, Tracking 0.15em */}
+                    <span className="text-[13px] font-sans font-semibold uppercase tracking-[0.15em] text-white leading-snug drop-shadow-sm">
+                      {slide.index} // {slide.subtitle}
+                    </span>
+                    <div className="p-1.5 rounded-lg bg-white/10 text-white border border-white/20 backdrop-blur-md flex-shrink-0 shadow-md">
+                      <IconComponent size={15} strokeWidth={1.5} />
+                    </div>
                   </div>
+                  
+                  {/* Category Title: Massive elegant Serif font */}
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-serif font-semibold text-white leading-tight">
+                    {slide.title}
+                  </h3>
+                </div>
 
-                  {/* High Quality Ultra Thin Iconic Line visual */}
-                  <div className="inline-flex py-2">
-                    <IconComponent className="w-12 h-12 text-ink/40 group-hover:text-brand transition-colors duration-500" strokeWidth={1} />
-                  </div>
+                {/* --- BOTTOM FLOATING PANEL (Absolute transparent text layer over image) --- */}
+                <div 
+                  className="absolute bottom-6 left-6 right-6 z-20 text-left pointer-events-none"
+                  style={{
+                    textShadow: '0 2px 8px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.65)'
+                  }}
+                  id={`bottom-card-panel-${slide.id}`}
+                >
+                  {/* Brief Strategic Description */}
+                  <p className="text-[12px] font-sans font-light leading-relaxed text-white/95 mb-4">
+                    {slide.description}
+                  </p>
 
-                  {/* Header in Playfair Display serif */}
-                  <div className="space-y-3">
-                    <h3 className="text-xl md:text-2xl font-serif font-light text-ink group-hover:text-brand transition-colors duration-300 leading-snug">
-                      {pillar.title}
-                    </h3>
-                    <p className="text-xs text-ink/50 leading-relaxed font-light">
-                      {pillar.focus}
-                    </p>
-                  </div>
-
-                  {/* Sub-services list with thin gold underline reveals on hover */}
-                  <div className="pt-6 border-t border-ink/5 space-y-4">
-                    <span className="text-[10px] font-sans uppercase tracking-[0.15em] text-ink/40 font-semibold block mb-2">OFFERINGS</span>
-                    <ul className="space-y-3">
-                      {pillar.items.map((item, i) => (
-                        <li key={i} className="group/item flex flex-col">
-                          <Link 
-                            to={pillar.link}
-                            className="inline-block"
-                          >
-                            <span className="text-xs uppercase font-sans tracking-widest text-ink/85 group-hover/item:text-brand transition-all duration-300 relative py-0.5">
-                              {item.name}
-                              <span className="absolute bottom-0 left-0 right-0 h-[1px] bg-brand transform scale-x-0 group-hover/item:scale-x-100 transition-transform duration-300 origin-left" />
-                            </span>
-                          </Link>
-                          <span className="text-[10px] text-ink/40 font-light mt-0.5 leading-normal pr-2 block">
-                            {item.description}
+                  {/* Sub-Services Listing Area */}
+                  <div className="border-t border-white/25 pt-3">
+                    <span className="text-[9px] font-sans uppercase tracking-[0.15em] text-white/60 font-bold block mb-2.5">
+                      PRECISION COMPOSITION
+                    </span>
+                    
+                    {/* Sub-Services blueprint font: 13px, Uppercase, 0.15em letter spacing */}
+                    <div className="space-y-2">
+                      {slide.offerings.map((subService, i) => (
+                        <div 
+                          key={i} 
+                          className="flex items-center justify-between group/sub transition-all duration-300 pointer-events-auto cursor-pointer"
+                        >
+                          <span className="text-[13px] font-sans uppercase tracking-[0.15em] text-white font-medium transition-colors hover:text-[#C5A059]">
+                            {subService}
                           </span>
-                        </li>
+                          <Plus size={10} className="text-[#C5A059] opacity-0 group-hover/sub:opacity-100 transition-opacity" strokeWidth={3} id={`plus-icon-${index}-${i}`} />
+                        </div>
                       ))}
-                    </ul>
+                    </div>
+                  </div>
+
+                  {/* Minimalist CTA Row directly over the image with Gold Hover Interaction */}
+                  <div className="pt-3.5 mt-4 border-t border-white/25 flex justify-between items-center gap-4">
+                    <Link 
+                      to={slide.destination}
+                      className="inline-flex items-center gap-2 px-4.5 py-2 border border-white/30 hover:border-[#C5A059] text-[10px] font-sans uppercase tracking-[0.15em] font-bold text-white hover:text-white rounded-full bg-white/10 hover:bg-[#C5A059] backdrop-blur-md transition-all duration-300 group/link pointer-events-auto shadow-md"
+                    >
+                      <span>{slide.ctaText}</span>
+                      <Plus size={10} className="text-white group-hover/link:rotate-90 transition-transform duration-300" strokeWidth={2.5} />
+                    </Link>
+
+                    <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest font-semibold">
+                      SEC_0{slide.index}
+                    </span>
                   </div>
                 </div>
 
-                {/* Bottom link to deeper process section */}
-                <div className="pt-10 text-left">
-                  <Link 
-                    to={pillar.link}
-                    className="inline-flex items-center gap-2 text-[11px] font-sans uppercase tracking-[0.15em] text-brand hover:text-ink transition-colors font-semibold"
-                  >
-                    <span>EXPLORE PROCESS</span>
-                    <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform duration-300" />
-                  </Link>
-                </div>
+              </motion.div>
+            </div>
+          );
+        })}
+      </div>
 
-              </div>
-            );
-          })}
+      {/* Dynamic Visual Footer Badge & Slogan */}
+      <div className="max-w-7xl mx-auto px-6 py-24 relative z-2" id="service-footer-badge-wrapper">
+        <div className="border-t border-ink/10 pt-10 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-sans uppercase tracking-[0.15em] text-ink/40 font-semibold" id="service-footer-badge">
+          <span>WAMLED SPECIFICATION CATALOGUE // 2026</span>
+          <span className="text-[#C5A059] tracking-[0.2em]">STRUCTURED SOPHISTICATION.</span>
         </div>
-        
-        {/* Dynamic visual footer badge */}
-        <div className="pt-16 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-sans uppercase tracking-[0.15em] text-ink/40">
-          <span>WAMLED SPECIFICATION SHEETS v1.02</span>
-          <span className="text-brand">Precision, structure, and quiet sophistication.</span>
-        </div>
-
       </div>
     </section>
   );
