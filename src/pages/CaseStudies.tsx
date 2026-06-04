@@ -4,6 +4,7 @@ import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { CaseStudy } from '../types';
 import { Link } from 'react-router-dom';
+import kenyanHouseLandscapeImg from '../assets/images/kenyan_house_landscape_1780570586379.png';
 import { 
   Compass, 
   MapPin, 
@@ -22,7 +23,7 @@ import {
 const SUGGESTIONS = [
   {
     title: "The Minimalist Sanctuary: A Study in Light and Texture",
-    location: "Nyali, Mombasa",
+    location: "Nairobi & Nakuru",
     projectType: "Atelier Residential",
     sqFt: "4,200 SQFT",
     vision: "To re-design a north-facing coastal pavilion using monochrome luxury and raw materials. We desired to capture continuous thermal marine breeze pathways while mitigating direct solar glare.",
@@ -31,7 +32,7 @@ const SUGGESTIONS = [
     rawMaterials: "Brushed Brass, Solid Iroko Timber, Calacatta Viola Marble",
     challenge: "Maximizing natural light in a north-facing seaside duplex without introducing extreme equatorial heat, and resisting salt spray degradation.",
     blueprintUrl: "https://images.unsplash.com/photo-1544982503-9f984c14501a?auto=format&fit=crop&q=80&w=800&h=600",
-    renderUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800&h=600",
+    renderUrl: kenyanHouseLandscapeImg,
     finalPhotoUrl: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&q=80&w=800&h=600",
     materialSpotlightDesc: "Sourcing hand-selected monolithic calacatta violet marble slabs directly from Italian quarries to create zero-seam bathroom basins.",
     materialSpotlightUrl: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=800&h=1200",
@@ -218,7 +219,7 @@ export default function CaseStudies() {
                 03. Spatial Process & Precision Transition
               </h3>
               <p className="text-sm text-gray-400 font-light max-w-2xl leading-relaxed">
-                Our Mombasa studio maps spatial reality across three linear thresholds of proof. This guarantees structural precision and uncompromised aesthetic alignment.
+                Our Nairobi and Nakuru studios map spatial reality across three linear thresholds of proof. This guarantees structural precision and uncompromised aesthetic alignment.
               </p>
             </div>
 
@@ -252,7 +253,7 @@ export default function CaseStudies() {
                   <span className="absolute bottom-4 left-4 bg-black/65 px-4 py-1.5 rounded-full text-[9px] font-mono tracking-widest text-emerald-400 font-bold">03. ARCHITECTURAL PHOTOGRAPHY</span>
                 </div>
                 <p className="text-[11px] text-gray-500 leading-relaxed font-sans font-light">
-                  The complete masterpiece on Mombasa's shores. Realized with flawless alignment of structural seams.
+                  The complete masterpiece. Realized with flawless alignment of structural seams.
                 </p>
               </div>
             </div>

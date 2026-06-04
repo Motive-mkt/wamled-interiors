@@ -32,7 +32,11 @@ import {
   BadgeAlert,
   FolderOpen
 } from 'lucide-react';
-
+import kenyanHousePortraitImg from '../assets/images/kenyan_house_portrait_1780570605897.png';
+import kenyanHouseLandscapeImg from '../assets/images/kenyan_house_landscape_1780570586379.png';
+import englishPointLandscapeImg from '../assets/images/english_point_user_landscape_1780571382886.png';
+import englishPointPortraitImg from '../assets/images/english_point_user_portrait_1780571401782.png';
+import luxuryYachtMarinaImg from '../assets/images/luxury_yacht_marina_1780574263644.png';
 interface SubServiceItem {
   id: string;
   name: string;
@@ -202,7 +206,7 @@ const CATEGORIES_DATA: ServiceCategory[] = [
         images: [
           "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1565183997392-2f6f122e5912?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=95&w=640&h=1140"
+          "https://images.unsplash.com/photo-1556912173-3bb406ef7e77?auto=format&fit=crop&q=95&w=640&h=1140"
         ],
         description: "Chef-grade culinary stations and clean commercial-grade laundry infrastructure with high moisture control.",
         specifications: [
@@ -227,7 +231,7 @@ const CATEGORIES_DATA: ServiceCategory[] = [
         name: "Curtain Wall & Facades",
         icon: Layers,
         images: [
-          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=95&w=640&h=1140",
+          kenyanHousePortraitImg,
           "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=95&w=640&h=1140"
         ],
@@ -245,7 +249,7 @@ const CATEGORIES_DATA: ServiceCategory[] = [
         name: "Steel Structures",
         icon: Cpu,
         images: [
-          "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=95&w=640&h=1140",
+          kenyanHousePortraitImg,
           "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=95&w=640&h=1140"
         ],
@@ -346,7 +350,7 @@ const CATEGORIES_DATA: ServiceCategory[] = [
         images: [
           "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=95&w=640&h=1140"
+          kenyanHousePortraitImg
         ],
         description: "Architectural ceiling designs, floating gypsum structures, and integrated warm multi-media sound and projection spaces.",
         specifications: [
@@ -380,9 +384,9 @@ const CATEGORIES_DATA: ServiceCategory[] = [
         name: "Bathroom Solutions",
         icon: Bath,
         images: [
-          "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&q=95&w=640&h=1140",
+          luxuryYachtMarinaImg,
           "https://images.unsplash.com/photo-1600566752239-1718f0752881?auto=format&fit=crop&q=95&w=640&h=1140",
-          "/src/assets/images/yacht_marina_1780560654319.png"
+          "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&q=95&w=640&h=1140"
         ],
         description: "Bespoke spa-grade resort bathrooms featuring walk-in monolithic rain showers and freestanding stone bathtubs.",
         specifications: [
@@ -425,8 +429,8 @@ const CATEGORIES_DATA: ServiceCategory[] = [
         name: "Outdoor & Landscape Solutions",
         icon: Trees,
         images: [
-          "https://images.unsplash.com/photo-1507063856262-d62c3e927500?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=95&w=640&h=1140",
+          englishPointPortraitImg,
+          englishPointLandscapeImg,
           "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=95&w=640&h=1140"
         ],
         description: "Seashore landscape arrangements integrating salt-tolerant native flora, modern stone burners, and private sunlounger pavilions.",
@@ -443,7 +447,7 @@ const CATEGORIES_DATA: ServiceCategory[] = [
         name: "Hospitality & Medical Supplies",
         icon: HeartPulse,
         images: [
-          "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1600334089648-b0a9dc5978f2?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&q=95&w=640&h=1140"
         ],

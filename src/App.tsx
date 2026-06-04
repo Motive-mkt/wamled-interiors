@@ -81,7 +81,7 @@ const Navbar = () => {
         to="/services" 
         onClick={() => setIsMobileMenuOpen(false)}
         className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
-          mobile ? 'py-3 text-lg text-[#000000] hover:text-[#A83F1B]' : 'text-[#000000] hover:text-[#A83F1B]'
+          mobile ? 'py-3 text-lg text-[#000000] hover:opacity-80' : 'text-[#000000] hover:opacity-80'
         }`}
       >
         Services
@@ -90,7 +90,7 @@ const Navbar = () => {
         to="/portfolio" 
         onClick={() => setIsMobileMenuOpen(false)}
         className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
-          mobile ? 'py-3 text-lg text-[#000000] hover:text-[#A83F1B]' : 'text-[#000000] hover:text-[#A83F1B]'
+          mobile ? 'py-3 text-lg text-[#000000] hover:opacity-80' : 'text-[#000000] hover:opacity-80'
         }`}
       >
         Portfolio
@@ -99,7 +99,7 @@ const Navbar = () => {
         to="/casestudies" 
         onClick={() => setIsMobileMenuOpen(false)}
         className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
-          mobile ? 'py-3 text-lg text-[#000000] hover:text-[#A83F1B]' : 'text-[#000000] hover:text-[#A83F1B]'
+          mobile ? 'py-3 text-lg text-[#000000] hover:opacity-80' : 'text-[#000000] hover:opacity-80'
         }`}
       >
         Case Studies
@@ -108,7 +108,7 @@ const Navbar = () => {
         to="/filmstrip" 
         onClick={() => setIsMobileMenuOpen(false)}
         className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
-          mobile ? 'py-3 text-lg text-[#000000] hover:text-[#A83F1B]' : 'text-[#000000] hover:text-[#A83F1B]'
+          mobile ? 'py-3 text-lg text-[#000000] hover:opacity-80' : 'text-[#000000] hover:opacity-80'
         }`}
       >
         Work
@@ -117,7 +117,7 @@ const Navbar = () => {
         to="/contact" 
         onClick={() => setIsMobileMenuOpen(false)}
         className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
-          mobile ? 'py-3 text-lg text-[#000000] hover:text-[#A83F1B]' : 'text-[#000000] hover:text-[#A83F1B]'
+          mobile ? 'py-3 text-lg text-[#000000] hover:opacity-80' : 'text-[#000000] hover:opacity-80'
         }`}
       >
         Contact
@@ -130,7 +130,7 @@ const Navbar = () => {
           if (el) el.scrollIntoView({ behavior: 'smooth' });
         }}
         className={`text-xs font-sans font-medium tracking-widest transition-colors duration-300 ${
-          mobile ? 'py-3 text-lg text-[#000000] hover:text-[#A83F1B]' : 'text-[#000000] hover:text-[#A83F1B]'
+          mobile ? 'py-3 text-lg text-[#000000] hover:opacity-80' : 'text-[#000000] hover:opacity-80'
         }`}
       >
         Reviews

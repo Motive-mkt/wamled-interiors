@@ -203,7 +203,7 @@ export const ServiceDetail: React.FC = () => {
               </h2>
 
               <p className="text-ink/75 text-xs md:text-sm font-light leading-relaxed max-w-md">
-                We invite discerning owners to schedule private consultations at our beachfront Mombasa design studio, or securely via digital video link. Let us outline a masterwork tailored precisely to your land or structural dimensions.
+                We invite discerning owners to schedule private consultations at our prominent Nairobi or Nakuru design studios, or securely via digital video link. Let us outline a masterwork tailored precisely to your land or structural dimensions.
               </p>
 
               <div className="space-y-4 pt-4 border-t border-ink/5 text-xs text-ink/60 font-light">

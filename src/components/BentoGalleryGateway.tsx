@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, ArrowRight } from 'lucide-react';
+import { ArrowUpRight, ArrowRight, Image as ImageIcon } from 'lucide-react';
+import kenyanHousePortraitImg from '../assets/images/kenyan_house_portrait_1780570605897.png';
+import englishPointPortraitImg from '../assets/images/english_point_user_portrait_1780571401782.png';
 
 interface GatewayCategory {
   id: string;
@@ -25,7 +27,7 @@ const GATEWAY_CATEGORIES: GatewayCategory[] = [
     categoryKey: "Exterior",
     title: "Exterior & Outdoor",
     subtitle: "(Facade/Patio)",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=95&w=1200&h=1600",
+    image: kenyanHousePortraitImg,
     tagline: "High-wind structural glazed boundaries resisting marine microclimates."
   },
   {
@@ -41,8 +43,8 @@ const GATEWAY_CATEGORIES: GatewayCategory[] = [
     categoryKey: "Landscaping",
     title: "Landscaping",
     subtitle: "(Gardens/Pools)",
-    image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=95&w=1200&h=1600",
-    tagline: "Beachfront swimming horizons and salt-tolerant organic gardens."
+    image: englishPointPortraitImg,
+    tagline: "Stunning infinity resort pools and salt-tolerant palm gardens of English Point."
   }
 ];
 
@@ -88,14 +90,19 @@ export const BentoGalleryGateway: React.FC = () => {
                 borderBottom: '1px solid rgba(44, 42, 41, 0.15)',
               }}
             >
-              {/* Inner Zoom image container - expands slightly on hover */}
-              <div className="absolute inset-0 overflow-hidden">
-                <img 
-                  src={cat.image} 
-                  alt={cat.title}
-                  className="w-full h-full object-cover opacity-100 transition-transform duration-[1.2s] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-110"
-                  referrerPolicy="no-referrer"
+              {/* Inner Zoom placeholder container instead of photo */}
+              <div className="absolute inset-0 overflow-hidden bg-[#161616]">
+                <div 
+                  className="absolute inset-0 opacity-[0.05]" 
+                  style={{
+                    backgroundImage: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px)',
+                    backgroundSize: '24px 24px'
+                  }}
                 />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-2 opacity-20">
+                  <ImageIcon size={28} className="text-white mb-1" />
+                  <span className="text-[8px] font-mono tracking-[0.25em] text-white uppercase">[ Curation Interface // {cat.title} ]</span>
+                </div>
               </div>
 
               {/* Scrim: Dark premium layer for high contrast typography read-offs */}

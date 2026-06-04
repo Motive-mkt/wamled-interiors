@@ -70,7 +70,7 @@ export default function Contact() {
             </h1>
             
             <p className="text-xs md:text-sm text-ink/75 font-light leading-relaxed max-w-sm">
-              Connect with our master planning and curation architects in Mombasa. We craft private luxury spaces aligned to your life.
+              Connect with our master planning and curation architects based in Nairobi & Nakuru. We craft private luxury spaces aligned to your life.
             </p>
           </div>
 
@@ -97,10 +97,10 @@ export default function Contact() {
                 <MapPin size={18} />
               </div>
               <div>
-                <p className="text-[10px] font-bold font-mono tracking-widest uppercase text-ink/40">Mombasa Headquarters</p>
+                <p className="text-[10px] font-bold font-mono tracking-widest uppercase text-ink/40">Nairobi & Nakuru Headquarters</p>
                 <p className="text-sm text-ink/80 leading-relaxed font-sans mt-0.5">
                   {content.location} <br />
-                  Mombasa County, Kenya
+                  Kenya Ateliers
                 </p>
               </div>
             </div>
@@ -193,7 +193,7 @@ export default function Contact() {
                         <option value="General Inquiry">General Consultation</option>
                         <option value="Residential Atelier">Atelier Residential Design</option>
                         <option value="Commercial & Hospitality">Commercial & Hospitality</option>
-                        <option value="Curated Yacht Deck">Curated Yacht & Exterior</option>
+                        <option value="Curated Yacht & Exterior">Curated Yacht & Exterior</option>
                         <option value="Bespoke Landscaping">Bespoke Landscaping</option>
                       </select>
                       <span className="absolute right-2 top-3 pointer-events-none text-ink/30 text-xs">▼</span>

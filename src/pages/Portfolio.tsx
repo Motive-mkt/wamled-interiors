@@ -14,6 +14,9 @@ import {
   Plus
 } from 'lucide-react';
 
+import kenyanHouseLandscapeImg from '../assets/images/kenyan_house_landscape_1780570586379.png';
+import englishPointLandscapeImg from '../assets/images/english_point_user_landscape_1780571382886.png';
+
 interface PortfolioItem {
   id: string;
   title: string;
@@ -24,12 +27,45 @@ interface PortfolioItem {
   createdAt?: string;
 }
 
-const CATEGORIES = ['All', 'Residential', 'Commercial', 'Yacht & Exterior', 'Landscaping'];
+const DEFAULT_PORTFOLIO_ITEMS: PortfolioItem[] = [
+  {
+    id: "default-p-01",
+    title: "The Mazeras Stone Pavilion & Modern Residence",
+    category: "Housing",
+    imageUrl: kenyanHouseLandscapeImg,
+    description: "A striking warm minimalist modern Kenyan house featuring floor-to-ceiling glass, a flat concrete roofline, and hand-cut Mazeras stone supporting pillars.",
+    location: "Kileleshwa, Nairobi"
+  },
+  {
+    id: "default-p-02",
+    title: "The Obsidian Commercial Tower Plaza",
+    category: "Commercial",
+    imageUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=90&w=900&h=1600",
+    description: "An ultra-clean double-height corporate atrium combining basalt, mahogany columns, and circadian lighting arrays for high-performance workspaces.",
+    location: "Westlands, Nairobi"
+  },
+  {
+    id: "default-p-03",
+    title: "Nairobi Contemporary Art Pavilion",
+    category: "Institutional",
+    imageUrl: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&q=90&w=900&h=1600",
+    description: "A striking, climate-adapted civic pavilion combining local volcanic tuffs with carbon-neutral concrete forms and deep recessed light channels.",
+    location: "Nairobi, Kenya"
+  },
+  {
+    id: "default-p-04",
+    title: "English Point Marina Landscaped Boardwalk & Deck",
+    category: "Commercial",
+    imageUrl: englishPointLandscapeImg,
+    description: "A premium waterfront hospitality landscaping of the dockside at English Point Marina, featuring majestic palm rings, timber-decked lounges, infinity resort pool setups, and deep-water berths.",
+    location: "Based in Nairobi & Nakuru"
+  }
+];
 
 export default function Portfolio() {
   const { content } = useCMS();
   const [items, setItems] = useState<PortfolioItem[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('Institutional');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -50,9 +86,10 @@ export default function Portfolio() {
     return () => unsubscribe();
   }, []);
 
+  const combinedItems = [...items, ...DEFAULT_PORTFOLIO_ITEMS];
   const filteredItems = selectedCategory === 'All' 
-    ? items 
-    : items.filter(item => item.category.toLowerCase() === selectedCategory.toLowerCase());
+    ? combinedItems 
+    : combinedItems.filter(item => item.category.toLowerCase() === selectedCategory.toLowerCase());
 
   return (
     <div className="min-h-screen bg-[#111111] text-white pt-28 pb-24 relative overflow-hidden">
@@ -99,16 +136,6 @@ export default function Portfolio() {
                 {tab}
               </button>
             ))}
-            <button
-              onClick={() => setSelectedCategory('All')}
-              className={`text-[10px] sm:text-xs font-mono uppercase tracking-widest px-6 py-2.5 rounded-full border transition-all duration-300 cursor-pointer ${
-                selectedCategory === 'All'
-                  ? 'bg-white/15 border-white/20 text-white font-bold'
-                  : 'bg-white/5 border-white/5 text-gray-400 hover:text-white hover:bg-white/10'
-              }`}
-            >
-              See All
-            </button>
           </div>
         </div>
 

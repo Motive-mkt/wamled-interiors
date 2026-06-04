@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowUpRight, ArrowRight, Plus } from 'lucide-react';
+import { ArrowUpRight, ArrowRight, Plus, Image as ImageIcon } from 'lucide-react';
+import kenyanHouseLandscapeImg from '../assets/images/kenyan_house_landscape_1780570586379.png';
 
 interface SubService {
   name: string;
@@ -35,7 +36,7 @@ const STACK_SLIDES: StackSlide[] = [
     id: "specialty-systems",
     title: "Specialty Design & Systems",
     focus: "Engineering and high-utility technical installations.",
-    image: "/src/assets/images/kenyan_house_exterior_1780560637351.png",
+    image: kenyanHouseLandscapeImg,
     ctaText: "View Case Studies",
     subServices: [
       { name: "MEP Solutions", description: "Mechanical, Electrical, and Plumbing system integration." },
@@ -49,7 +50,7 @@ const STACK_SLIDES: StackSlide[] = [
     id: "product-application",
     title: "Product & Application Design",
     focus: "Structural details and exterior architectural features.",
-    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=95&w=1600&h=1200",
+    image: kenyanHouseLandscapeImg,
     ctaText: "Explore the Process",
     subServices: [
       { name: "Curtain Wall and Facade", description: "The building’s outer \"skin\" and glass engineering." },
@@ -75,20 +76,24 @@ export const ServiceStacks: React.FC = () => {
               className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden bg-black text-white shadow-[0_-15px_40px_rgba(0,0,0,0.45)]"
               style={{ zIndex }}
             >
-              {/* Full-bleed background project image */}
-              <div className="absolute inset-0 z-0">
-                <img 
-                  src={slide.image} 
-                  alt={slide.title}
-                  className="w-full h-full object-cover select-none pointer-events-none filter brightness-100"
-                  referrerPolicy="no-referrer"
+              {/* Full-bleed background placeholder instead of project image */}
+              <div className="absolute inset-0 z-0 bg-[#0F0F0F]">
+                {/* Micro-grid lines mimicking architectural mapping */}
+                <div 
+                  className="absolute inset-0 opacity-[0.07]" 
+                  style={{
+                    backgroundImage: 'linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)',
+                    backgroundSize: '40px 40px'
+                  }}
                 />
+                <div className="absolute inset-8 border border-white/[0.02] pointer-events-none rounded-2xl" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-3 opacity-25">
+                  <ImageIcon size={44} className="text-white/60 mb-2" />
+                  <span className="text-[10px] font-mono tracking-[0.35em] text-white uppercase">[ Interactive Asset Interface // {slide.title} ]</span>
+                </div>
                 
-                {/* Subtle scrim: Soft left-heavy cinematic dark gradient for high typography readability but clear image overall */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent pointer-events-none" />
-                
-                {/* Visual texture radial overlay */}
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(168,63,27,0.03),transparent_75%)] pointer-events-none" />
+                {/* Subtle scrim: Soft left-heavy cinematic dark gradient for high typography readability */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/30 pointer-events-none" />
               </div>
 
               {/* Grid content container */}

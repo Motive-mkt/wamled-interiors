@@ -1,4 +1,8 @@
 import { ServiceItem, ReviewItem, BentoItem, PartnerItem } from '../types';
+import kenyanHouseLandscapeImg from '../assets/images/kenyan_house_landscape_1780570586379.png';
+import kenyanHousePortraitImg from '../assets/images/kenyan_house_portrait_1780570605897.png';
+import englishPointLandscapeImg from '../assets/images/english_point_user_landscape_1780571382886.png';
+import englishPointPortraitImg from '../assets/images/english_point_user_portrait_1780571401782.png';
 
 export const STUDIO_SERVICES: ServiceItem[] = [
   {
@@ -6,8 +10,8 @@ export const STUDIO_SERVICES: ServiceItem[] = [
     title: "Atelier Residential",
     subtitle: "Architecting Environments for High-Performance Living",
     shortDescription: "Bespoke residential estates designed around quiet luxury, physical flow, and uncompromised craftsmanship. Made for coastal villas and private high-end sanctuaries.",
-    image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&q=90&w=900&h=1600",
-    filmstripImage: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&q=90&w=900&h=1600",
+    image: kenyanHouseLandscapeImg,
+    filmstripImage: kenyanHousePortraitImg,
     subServices: [
       { name: "Spatially Optimized Interior Architecture", description: "Re-engineering internal load-bearing structures to maximize visual sightlines and marine air flow paths." },
       { name: "Custom Millwork & Material Craft", description: "Bespoke cabinetry, architectural timber columns, and premium imported Italian marble integration." },
@@ -58,8 +62,8 @@ export const STUDIO_SERVICES: ServiceItem[] = [
     title: "Curated Yacht & Exterior",
     subtitle: "Systemic Coastal Elegance & Marine Yacht Styling",
     shortDescription: "Marine-grade luxury appointments engineered to withstand coastal elements. We craft exceptional outdoor pool pavilions, private yacht cabins, and oceanfront bars.",
-    image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=90&w=900&h=1600",
-    filmstripImage: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=90&w=900&h=1600",
+    image: englishPointLandscapeImg,
+    filmstripImage: englishPointPortraitImg,
     subServices: [
       { name: "Marine-Grade Structural Detailing", description: "Atmospheric weatherproofing, anti-corrosive metals, and UV-reflective luxury fabrics." },
       { name: "Private Yacht & Deck Interiors", description: "Translating space restrictions inside megayachts into expansive, breathtaking suites." },
@@ -84,8 +88,8 @@ export const STUDIO_SERVICES: ServiceItem[] = [
     title: "Bespoke Landscaping",
     subtitle: "The Sacred Symmetry of Organic Natural Forms",
     shortDescription: "Blending mineral structures, water dynamics, and curated tropical botanical compositions to establish architectural modern sanctuaries.",
-    image: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&q=90&w=900&h=1600",
-    filmstripImage: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&q=90&w=900&h=1600",
+    image: englishPointLandscapeImg,
+    filmstripImage: englishPointPortraitImg,
     subServices: [
       { name: "Modern Courtyard & Mineral Paths", description: "Symmetrical stone blocks, sand raking fields, and architectural gravel pathways." },
       { name: "Architectural Pool & Water Feats", description: "Subtle stone-face waterfalls, silent flow channels, and integrated infinity-edge swimming spaces." },
@@ -187,8 +191,8 @@ export const BENTO_GALLERY: BentoItem[] = [
   },
   {
     id: "b-04",
-    title: "Curated Yacht & Exterior",
-    category: "Exterior",
-    image: "/src/assets/images/yacht_marina_1780560654319.png"
+    title: "English Point Landscape & Boardwalk",
+    category: "Landscaping",
+    image: englishPointPortraitImg
   }
 ];

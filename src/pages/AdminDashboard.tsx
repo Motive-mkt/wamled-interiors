@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import kenyanHouseLandscapeImg from '../assets/images/kenyan_house_landscape_1780570586379.png';
 import { 
   collection, 
   query, 
@@ -840,7 +841,7 @@ function LeadsTab({ leads, isOwner }: any) {
                     </a>
                   )}
                   <a 
-                    href={`https://wa.me/${selectedLead.phone.replace(/[^0-9]/g, '')}?text=Hello%20${encodeURIComponent(selectedLead.name)},%20this%20is%20Wamled%20Atelier%20Mombasa.%20Thank%20you%20for%20reaching%20out...`}
+                    href={`https://wa.me/${selectedLead.phone.replace(/[^0-9]/g, '')}?text=Hello%20${encodeURIComponent(selectedLead.name)},%20this%20is%20Wamled%20Interiors.%20Thank%20you%20for%20reaching%20out...`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-[9px] font-bold tracking-widest rounded-xl transition-all"
@@ -1207,7 +1208,7 @@ function CMSTab({ content, updateContent }: any) {
               <label className="text-[9px] font-bold uppercase tracking-widest text-ink/40">Role or Subtitle Location</label>
               <input 
                 type="text" 
-                placeholder="Seaside Penthouse Mombasa"
+                placeholder="Nairobi Executive Penthouse"
                 value={newReviewLocation}
                 onChange={e => setNewReviewLocation(e.target.value)}
                 className="w-full p-3 bg-white border rounded-xl focus:outline-none focus:border-brand text-xs text-ink"
@@ -1249,7 +1250,7 @@ function CMSTab({ content, updateContent }: any) {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Mombasa Headquarters location</label>
+            <label className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Nairobi & Nakuru Location spec</label>
             <input 
               value={formData.location}
               onChange={e => setFormData({ ...formData, location: e.target.value })}
@@ -1380,7 +1381,7 @@ function PortfolioTab() {
               <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Location (Optional)</label>
               <input 
                 type="text" 
-                placeholder="e.g. Nyali, Mombasa" 
+                placeholder="e.g. Kilimani, Nairobi" 
                 value={location}
                 onChange={e => setLocation(e.target.value)}
                 className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
@@ -1519,7 +1520,7 @@ function CaseStudiesTab() {
         rawMaterials,
         challenge,
         blueprintUrl: blueprintUrl || 'https://images.unsplash.com/photo-1544982503-9f984c14501a?auto=format&fit=crop&q=80&w=800',
-        renderUrl: renderUrl || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800',
+        renderUrl: renderUrl || kenyanHouseLandscapeImg,
         finalPhotoUrl,
         materialSpotlightDesc,
         materialSpotlightUrl,
@@ -1613,11 +1614,11 @@ function CaseStudiesTab() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Mombasa Location (City/Area)</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Nairobi or Nakuru Studio Area</label>
                 <input 
                   required
                   type="text" 
-                  placeholder="e.g. Nyali, Mombasa" 
+                  placeholder="e.g. Kilimani, Nairobi" 
                   value={location}
                   onChange={e => setLocation(e.target.value)}
                   className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
