@@ -2,116 +2,113 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { db } from '../lib/firebase';
-import { useCMS } from '../components/CMSContext';
 import { Link } from 'react-router-dom';
 import { 
-  Compass, 
   MapPin, 
   ArrowRight, 
-  Sparkles, 
   Briefcase,
   Layers,
-  Sparkle
+  X,
+  FileText,
+  Image as ImageIcon
 } from 'lucide-react';
-import { BeforeAfterSlider } from '../components/BeforeAfterSlider';
 
-import kenyanHouseLandscapeImg from '../assets/images/kenyan_house_landscape_1780570586379.png';
-import englishPointLandscapeImg from '../assets/images/english_point_user_landscape_1780571382886.png';
-
-interface PortfolioItem {
+interface Project {
   id: string;
   title: string;
-  category: string;
+  category: 'Institutional' | 'Commercial' | 'Housing';
   imageUrl: string;
   description: string;
+  scopeOfWork?: string;
+  galleryUrls?: string[];
   location?: string;
   createdAt?: string;
-  isBeforeAfter?: boolean;
-  beforeImageUrl?: string;
-  afterImageUrl?: string;
 }
 
-const DEFAULT_PORTFOLIO_ITEMS: PortfolioItem[] = [
+const DEFAULT_PROJECT_ITEMS: Project[] = [
   {
     id: "default-p-01",
-    title: "The Mazeras Stone Pavilion & Modern Residence",
-    category: "Architectural & Interior Design",
-    imageUrl: kenyanHouseLandscapeImg,
-    description: "A striking warm minimalist modern Kenyan house featuring floor-to-ceiling glass, a flat concrete roofline, and hand-cut Mazeras stone supporting pillars.",
-    location: "Kileleshwa, Nairobi"
+    title: "The Nairobi Civic Atelier",
+    category: "Institutional",
+    imageUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=95&w=1200",
+    description: "An editorial-grade public cultural complex fused with Swahili stone masonry and high-performance sun-shading sails.",
+    scopeOfWork: "Interior architecture re-modeling of library wings and presentation halls. Custom acoustic mahogany wood panels and salt-safe mineral mortars. Integrated natural cross-breeze thermal channels.",
+    location: "Kileleshwa, Nairobi",
+    galleryUrls: [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=95&w=1200",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=95&w=1200",
+      "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&q=95&w=1200"
+    ]
   },
   {
     id: "default-p-02",
-    title: "The Obsidian Commercial Tower Plaza",
-    category: "Specialty Design",
-    imageUrl: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=90&w=900&h=675",
-    description: "An ultra-clean double-height corporate atrium combining basalt, mahogany columns, and circadian lighting arrays for high-performance workspaces.",
-    location: "Westlands, Nairobi"
+    title: "Lake Nakuru Eco-lodge Lounge",
+    category: "Commercial",
+    imageUrl: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=95&w=1200",
+    description: "Spatially optimized luxury lodge lounge designed for high-performance guest orientation. Raw stone pillars and customized local timber lattices harmonize seamlessly.",
+    scopeOfWork: "Complete curation of the 450 sqm lounge area. Custom copper fire pits, circadian transitioned lighting layers, and basalt monolith reception installations.",
+    location: "Lake Nakuru Eco-Park",
+    galleryUrls: [
+      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=95&w=1200",
+      "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=95&w=1200",
+      "https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&q=95&w=1200"
+    ]
   },
   {
     id: "default-p-03",
-    title: "Nairobi Contemporary Art Pavilion",
-    category: "Architectural & Interior Design",
-    imageUrl: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&q=90&w=900&h=675",
-    description: "A striking, climate-adapted civic pavilion combining local volcanic tuffs with carbon-neutral concrete forms and deep recessed light channels.",
-    location: "Nairobi, Kenya"
-  },
-  {
-    id: "default-p-04",
-    title: "English Point Marina Landscaped Boardwalk & Deck",
-    category: "Product & Application Design",
-    imageUrl: englishPointLandscapeImg,
-    description: "A premium waterfront hospitality landscaping of the dockside at English Point Marina, featuring majestic palm rings, timber-decked lounges, infinity resort pool setups, and deep-water berths.",
-    location: "Mombasa, Kenya"
-  },
-  {
-    id: "default-p-05",
-    title: "Oceanside Cliffside Modern Villa Restoration",
-    category: "Before & After",
-    isBeforeAfter: true,
-    imageUrl: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=90&w=900&h=675",
-    beforeImageUrl: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=90&w=900&h=675", // raw dry ocean edge
-    afterImageUrl: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=90&w=900&h=675", // finished cliff villa
-    description: "Complete architectural rehabilitation of a neglected coastal villa, converting raw weather-damaged concrete structures into an elite, open-plan minimalist shoreline retreat.",
-    location: "Nyali, Mombasa"
+    title: "Symmetrical Nyali Oceanfront Pavilion",
+    category: "Housing",
+    imageUrl: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&q=95&w=1200",
+    description: "A private residential oceanward sanctuary, featuring multi-car garages, a resort-grade sauna vault, and double-layered glass structures.",
+    scopeOfWork: "Complete interior and exterior landscape layout. Imported dolomite slab finishes, hidden services corridors, and infinity-edge concrete lap baths.",
+    location: "Nyali Beach, Mombasa",
+    galleryUrls: [
+      "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&q=95&w=1200",
+      "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=95&w=1200",
+      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=95&w=1200"
+    ]
   }
 ];
 
 export default function Portfolio() {
-  const [items, setItems] = useState<PortfolioItem[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState('Architectural & Interior Design');
+  const [dbProjects, setDbProjects] = useState<Project[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<'Institutional' | 'Commercial' | 'Housing'>('Institutional');
   const [loading, setLoading] = useState(true);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   useEffect(() => {
-    // Listen to firestore 'portfolio' collection
-    const q = query(collection(db, 'portfolio'), orderBy('createdAt', 'desc'));
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    const q = query(collection(db, 'projects'), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const fetched = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      })) as PortfolioItem[];
-      setItems(fetched);
+      })) as Project[];
+      setDbProjects(fetched);
       setLoading(false);
     }, (error) => {
-      console.error("Error loading portfolio items:", error);
+      console.error("Error loading portfolio from 'projects':", error);
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-  const combinedItems = [...items, ...DEFAULT_PORTFOLIO_ITEMS];
+  // Merge Firestore items with default pre-seeded placeholders
+  const allProjects = [...dbProjects, ...DEFAULT_PROJECT_ITEMS];
 
-  // Filtering logic
-  const filteredItems = combinedItems.filter(item => {
-    if (selectedCategory === 'Before & After') {
-      return item.isBeforeAfter === true || item.category === 'Before & After';
-    } else {
-      // Avoid matching Before&After items inside standard categories
-      if (item.isBeforeAfter || item.category === 'Before & After') return false;
-      return item.category.toLowerCase() === selectedCategory.toLowerCase();
-    }
-  });
+  // Unique merged list by id
+  const uniqueProjects = allProjects.filter(
+    (proj, index, self) => self.findIndex(p => p.id === proj.id) === index
+  );
+
+  // Filter based on selectedCategory ('Institutional' | 'Commercial' | 'Housing')
+  const filteredItems = uniqueProjects.filter(
+    item => item.category.toLowerCase() === selectedCategory.toLowerCase()
+  );
 
   return (
     <div className="min-h-screen bg-[#F9F9F7] text-[#121212] pt-32 pb-24 relative overflow-hidden">
@@ -120,7 +117,7 @@ export default function Portfolio() {
         <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-[#C5A059]/5 blur-[120px]" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-7xl mx-auto px-6 relative z-10 animate-fade-in">
         {/* Header Title Section with Editorial spacing */}
         <div className="space-y-6 max-w-2xl mb-16 text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#121212]/5 border border-[#121212]/10 backdrop-blur-md">
@@ -144,17 +141,13 @@ export default function Portfolio() {
           </div>
           
           <div className="flex flex-wrap gap-2">
-            {[
-              'Architectural & Interior Design', 
-              'Specialty Design', 
-              'Product & Application Design',
-              'Before & After'
-            ].map((tab) => (
+            {(['Institutional', 'Commercial', 'Housing'] as const).map((tab) => (
               <button
                 key={tab}
+                id={`portfolio-tab-${tab.toLowerCase()}`}
                 onClick={() => setSelectedCategory(tab)}
-                className={`text-[9px] sm:text-xs font-mono uppercase tracking-widest px-5 py-2.5 rounded-full border transition-all duration-300 cursor-pointer ${
-                  selectedCategory.toLowerCase() === tab.toLowerCase()
+                className={`text-[9px] sm:text-xs font-mono uppercase tracking-widest px-6 py-3 rounded-full border transition-all duration-300 cursor-pointer ${
+                  selectedCategory === tab
                     ? 'bg-[#C5A059] border-[#C5A059] text-white font-bold shadow-md shadow-[#C5A059]/10'
                     : 'bg-white border-[#121212]/10 text-gray-600 hover:text-[#121212] hover:bg-gray-100/50'
                 }`}
@@ -194,27 +187,6 @@ export default function Portfolio() {
               </Link>
             </div>
           </motion.div>
-        ) : selectedCategory === 'Before & After' ? (
-          /* BEFORE & AFTER SPECIAL LAYOUT: Renders responsive slider cards */
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start text-left">
-            {filteredItems.map(item => (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-                className="bg-white p-4 sm:p-5 rounded-3xl border border-dashed border-[#121212]/10 shadow-lg hover:shadow-xl transition-all duration-350"
-              >
-                <BeforeAfterSlider 
-                  beforeUrl={item.beforeImageUrl || ''} 
-                  afterUrl={item.afterImageUrl || item.imageUrl} 
-                  title={item.title} 
-                  description={item.description} 
-                  location={item.location} 
-                />
-              </motion.div>
-            ))}
-          </div>
         ) : (
           /* STANDARD CATEGORIES: Ultra-clean, white-gallery style layout, NO overlay scrims */
           <motion.div 
@@ -226,13 +198,15 @@ export default function Portfolio() {
                 <motion.div
                   key={item.id}
                   layout
+                  id={`project-card-${item.id}`}
                   initial={{ opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={{ duration: 0.45 }}
-                  className="group relative flex flex-col justify-between overflow-hidden bg-white rounded-3xl border border-[#121212]/5 shadow-xs hover:shadow-lg hover:border-[#C5A059]/20 transition-all duration-400"
+                  onClick={() => setSelectedProject(item)}
+                  className="group relative flex flex-col justify-between overflow-hidden bg-white rounded-3xl border border-[#121212]/5 shadow-sm hover:shadow-lg hover:border-[#C5A059]/30 transition-all duration-400 cursor-pointer"
                 >
-                  {/* Photo container - Absolutely clear on display */}
+                  {/* Photo container */}
                   <div className="aspect-[4/3] w-full relative overflow-hidden bg-[#161616]/5">
                     <img 
                       src={item.imageUrl} 
@@ -256,13 +230,19 @@ export default function Portfolio() {
                       </div>
                     )}
                     
-                    <h3 className="text-lg sm:text-xl font-serif font-light text-[#121212] group-hover:text-[#C5A059] transition-colors uppercase leading-tight tracking-tight">
+                    <h3 className="text-md sm:text-lg font-serif font-light text-[#121212] group-hover:text-[#C5A059] transition-colors uppercase leading-tight tracking-tight">
                       {item.title}
                     </h3>
                     
-                    <p className="text-[11px] text-gray-500 font-light leading-relaxed line-clamp-3">
+                    <p className="text-[11px] text-gray-500 font-light leading-relaxed line-clamp-2">
                       {item.description}
                     </p>
+
+                    <div className="pt-2 flex justify-start">
+                      <span className="text-[9px] font-mono tracking-widest text-[#C5A059] font-bold uppercase inline-flex items-center gap-1 group-hover:underline">
+                        EXPLORE RECORDS <ArrowRight size={10} />
+                      </span>
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -270,6 +250,148 @@ export default function Portfolio() {
           </motion.div>
         )}
       </div>
+
+      {/* PORTFOLIO IMMERSIVE DYNAMIC DETAILS MODAL/LAYOUT OVERLAY */}
+      <AnimatePresence>
+        {selectedProject && (
+          <motion.div
+            id="project-details-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-[#121212]/90 backdrop-blur-md flex justify-center items-center p-4 sm:p-6 overflow-y-auto"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 180 }}
+              className="bg-[#F9F9F7] text-ink rounded-3xl w-full max-w-5xl shadow-2xl overflow-hidden my-auto max-h-[90vh] flex flex-col border border-ink/10"
+            >
+              {/* Modal Top Header Bar */}
+              <div className="p-6 border-b border-ink/5 bg-white flex justify-between items-center shrink-0">
+                <div className="flex items-center gap-3">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#C5A059]" />
+                  <span className="text-xs font-mono tracking-[0.25em] text-[#C5A059] font-black uppercase">
+                    {selectedProject.category} RECORD INDEX
+                  </span>
+                </div>
+                <button
+                  id="close-project-modal"
+                  onClick={() => setSelectedProject(null)}
+                  className="p-2 -mr-2 text-ink/40 hover:text-ink hover:bg-gray-100 rounded-full transition-all cursor-pointer"
+                  title="Close Project Details"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Scrollable Modal Content */}
+              <div className="overflow-y-auto text-left p-6 sm:p-10 space-y-10">
+                {/* Visual Intro Block (Title, Description, and Hero image) */}
+                <div className="grid lg:grid-cols-12 gap-8 items-start">
+                  <div className="lg:col-span-7 space-y-6">
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-light leading-tight text-[#121212] uppercase tracking-tight">
+                      {selectedProject.title}
+                    </h2>
+                    
+                    {selectedProject.location && (
+                      <div className="flex items-center gap-2 text-ink/55 text-xs font-mono uppercase tracking-widest font-semibold border-b border-ink/5 pb-4">
+                        <MapPin size={12} className="text-[#C5A059]" />
+                        <span>{selectedProject.location}</span>
+                      </div>
+                    )}
+
+                    <div className="space-y-2">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-[#A83F1B] font-bold flex items-center gap-1">
+                        <FileText size={12} />
+                        Architectural Synopsis
+                      </span>
+                      <p className="text-sm text-ink/75 font-light leading-relaxed italic pr-4">
+                        "{selectedProject.description}"
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-5">
+                    {/* Primary Image Cover Frame */}
+                    <div className="rounded-2xl overflow-hidden border border-ink/5 shadow-md aspect-[4/3] bg-cream/10">
+                      <img
+                        src={selectedProject.imageUrl}
+                        alt={selectedProject.title}
+                        className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Scope of Work Section */}
+                <div className="space-y-4 border-t border-ink/5 pt-8">
+                  <h4 className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#A83F1B] font-black">
+                    Scope of Work & Spatial Curation
+                  </h4>
+                  <div className="bg-white p-6 sm:p-8 rounded-2xl border border-ink/5 leading-relaxed text-sm text-ink/80 font-light space-y-4">
+                    <p className="whitespace-pre-line">
+                      {selectedProject.scopeOfWork || "Complete spatial mapping, interior elevation, custom furniture fabrication, and high-performance landscape coordination managed entirely by Wamled Interior's senior content desk."}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Multi-Image Gallery Grid */}
+                <div className="space-y-4 border-t border-ink/5 pt-8">
+                  <h4 className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#C5A059] font-black flex items-center gap-2">
+                    <ImageIcon size={12} />
+                    PROMINENT CAMERA WORKS & GALLERY
+                  </h4>
+                  
+                  {/* Gallery Grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {selectedProject.galleryUrls && selectedProject.galleryUrls.length > 0 ? (
+                      selectedProject.galleryUrls.map((url, gIdx) => (
+                        <div key={gIdx} className="aspect-video rounded-xl overflow-hidden border bg-cream/15 group relative shadow-xs">
+                          <img
+                            src={url}
+                            alt={`Camera angle ${gIdx + 1}`}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            referrerPolicy="no-referrer"
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      // If no galleryUrls exist, replicate primary image, Unsplash, or elegant empty blocks
+                      [selectedProject.imageUrl, "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=600"].map((url, gIdx) => (
+                        <div key={gIdx} className="aspect-video rounded-xl overflow-hidden border bg-cream/15 group relative shadow-xs">
+                          <img
+                            src={url}
+                            alt={`Alternate spatial angle ${gIdx + 1}`}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            referrerPolicy="no-referrer"
+                          />
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal Footer Cta Action Bar */}
+              <div className="p-6 border-t border-ink/5 bg-white flex flex-col sm:flex-row justify-between items-center shrink-0 gap-4">
+                <span className="text-[10px] text-ink/40 font-mono">
+                  Wamled Interiors © 2026 Archive Records
+                </span>
+                <Link
+                  to="/#consultation-form-box"
+                  onClick={() => setSelectedProject(null)}
+                  className="w-full sm:w-auto px-8 py-3 bg-[#C5A059] hover:bg-ink text-white font-mono text-[10px] uppercase font-bold tracking-widest rounded-xl transition-all shadow-md text-center"
+                >
+                  Initiate Similar Space Project
+                </Link>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

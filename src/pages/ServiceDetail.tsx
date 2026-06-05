@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, ArrowRight, Calendar, User, Phone, Briefcase, Star, CheckCircle, Mail } from 'lucide-react';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { STUDIO_SERVICES } from '../data/studioData';
 
@@ -17,11 +17,47 @@ export const ServiceDetail: React.FC = () => {
     notes: ''
   });
 
-  const service = STUDIO_SERVICES.find(s => s.id === id);
+  const [service, setService] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    const docRef = doc(db, 'services', id);
+    const unsub = onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        setService({ id: docSnap.id, ...docSnap.data() });
+      } else {
+        // Fallback to static pre-seeded service items
+        const staticService = STUDIO_SERVICES.find(s => s.id === id);
+        if (staticService) {
+          setService(staticService);
+        } else {
+          setService(null);
+        }
+      }
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching service details:", error);
+      // Fallback on error
+      const staticService = STUDIO_SERVICES.find(s => s.id === id);
+      setService(staticService || null);
+      setLoading(false);
+    });
+    return () => unsub();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F9F9F7] flex flex-col items-center justify-center p-6 text-center text-ink">
+        <div className="w-10 h-10 border-2 border-brand/30 border-t-brand rounded-full animate-spin mx-auto mb-4" />
+        <span className="text-xs font-mono tracking-widest text-ink/40 uppercase">Loading Atelier Context...</span>
+      </div>
+    );
+  }
 
   if (!service) {
     return (
@@ -82,18 +118,26 @@ export const ServiceDetail: React.FC = () => {
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           
           {/* Portrait 9:16 Header Image representing modern editorial covers */}
-          <div className="lg:col-span-5 relative aspect-[9/16] rounded-3xl overflow-hidden border border-white/10 group shadow-2xl">
-            <motion.img 
-              initial={{ scale: 1.05, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 1.2, ease: "easeOut" }}
-              src={service.image} 
-              alt={service.title} 
-              className="absolute inset-0 w-full h-full object-cover"
-              referrerPolicy="no-referrer"
-            />
+          <div className="lg:col-span-5 relative aspect-[9/16] rounded-3xl overflow-hidden border border-ink/10 group shadow-2xl bg-cream/30">
+            {service.image ? (
+              <motion.img 
+                initial={{ scale: 1.05, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
+                src={service.image} 
+                alt={service.title} 
+                className="absolute inset-0 w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <div className="absolute inset-x-0 inset-y-0 bg-[#F5F5F0] border-2 border-dashed border-ink/15 rounded-3xl flex flex-col items-center justify-center p-6 text-center text-ink/30">
+                <Briefcase className="mb-2 text-ink/20 animate-pulse" size={40} />
+                <span className="text-xs font-mono tracking-widest font-black uppercase">Atelier Image Frame</span>
+                <span className="text-[10px] text-ink/40 font-mono mt-2 leading-relaxed">Dynamic layout empty frame for<br />{service.title}</span>
+              </div>
+            )}
             {/* Elegant vignette edges */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none" />
             <div className="absolute inset-6 border border-white/5 group-hover:border-brand/35 transition-all duration-700 pointer-events-none rounded-2xl" />
           </div>
 

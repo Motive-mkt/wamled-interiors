@@ -68,5 +68,17 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isOwner();
     }
+
+    // Projects
+    match /projects/{id} {
+      allow read: if true;
+      allow write: if isOwner();
+    }
+
+    // Testimonials
+    match /testimonials/{id} {
+      allow read: if true;
+      allow write: if isOwner();
+    }
   }
 }

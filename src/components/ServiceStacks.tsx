@@ -37,7 +37,7 @@ const STACK_SLIDES: StackSlide[] = [
     title: "Specialty Design & Systems",
     focus: "Engineering and high-utility technical installations.",
     image: kenyanHouseLandscapeImg,
-    ctaText: "View Case Studies",
+    ctaText: "Explore the Process",
     subServices: [
       { name: "MEP Solutions", description: "Mechanical, Electrical, and Plumbing system integration." },
       { name: "Lighting Systems", description: "Architectural lighting design and smart home illumination." },

@@ -59,6 +59,8 @@ import { db } from '../lib/firebase';
 import { useCMS } from '../components/CMSContext';
 import { useAuth } from '../components/AuthContext';
 
+import { STUDIO_SERVICES } from '../data/studioData';
+
 const COLORS = ['#C5A059', '#E5E7EB', '#FBBF24', '#10B981'];
 
 export default function AdminDashboard() {
@@ -71,7 +73,7 @@ export default function AdminDashboard() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   
-  const [activeTab, setActiveTab] = useState<'overview' | 'leads' | 'cms' | 'invites' | 'portfolio' | 'casestudies'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'leads' | 'services' | 'portfolio' | 'casestudies' | 'profile' | 'reviews' | 'cms' | 'invites'>('overview');
   const [leads, setLeads] = useState<any[]>([]);
   const { content, updateContent } = useCMS();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -328,13 +330,16 @@ export default function AdminDashboard() {
           <p className="text-[10px] text-white/40 tracking-widest mt-1">STUDIO DASHBOARD</p>
         </div>
 
-        <nav className="flex-1 px-4 py-4 space-y-2 text-left">
+        <nav className="flex-1 px-4 py-4 space-y-2 text-left overflow-y-auto">
           <SidebarLink active={activeTab === 'overview'} onClick={() => { setActiveTab('overview'); setIsSidebarOpen(false); }} icon={<LayoutDashboard size={20} />} label="Overview" />
           <SidebarLink active={activeTab === 'leads'} onClick={() => { setActiveTab('leads'); setIsSidebarOpen(false); }} icon={<MessageSquare size={20} />} label="Leads & Inquiries" />
           {isOwner && (
             <>
-              <SidebarLink active={activeTab === 'portfolio'} onClick={() => { setActiveTab('portfolio'); setIsSidebarOpen(false); }} icon={<ImageIcon size={20} />} label="Portfolio Curator" />
+              <SidebarLink active={activeTab === 'services'} onClick={() => { setActiveTab('services'); setIsSidebarOpen(false); }} icon={<Package size={20} />} label="Services Curator" />
+              <SidebarLink active={activeTab === 'portfolio'} onClick={() => { setActiveTab('portfolio'); setIsSidebarOpen(false); }} icon={<ImageIcon size={20} />} label="Project Post Manager" />
               <SidebarLink active={activeTab === 'casestudies'} onClick={() => { setActiveTab('casestudies'); setIsSidebarOpen(false); }} icon={<BookOpen size={20} />} label="Case Studies Curator" />
+              <SidebarLink active={activeTab === 'profile'} onClick={() => { setActiveTab('profile'); setIsSidebarOpen(false); }} icon={<Phone size={20} />} label="Company Profile" />
+              <SidebarLink active={activeTab === 'reviews'} onClick={() => { setActiveTab('reviews'); setIsSidebarOpen(false); }} icon={<Star size={20} />} label="Review Manager" />
               <SidebarLink active={activeTab === 'cms'} onClick={() => { setActiveTab('cms'); setIsSidebarOpen(false); }} icon={<Settings size={20} />} label="Site Content" />
               <SidebarLink active={activeTab === 'invites'} onClick={() => { setActiveTab('invites'); setIsSidebarOpen(false); }} icon={<Ticket size={20} />} label="Worker Invites" />
             </>
@@ -377,8 +382,11 @@ export default function AdminDashboard() {
 
         {activeTab === 'overview' && <OverviewTab leads={leads} />}
         {activeTab === 'leads' && <LeadsTab leads={leads} isOwner={isOwner} />}
+        {activeTab === 'services' && isOwner && <ServicesTab />}
         {activeTab === 'portfolio' && isOwner && <PortfolioTab />}
         {activeTab === 'casestudies' && isOwner && <CaseStudiesTab />}
+        {activeTab === 'profile' && isOwner && <ProfileTab content={content} updateContent={updateContent} />}
+        {activeTab === 'reviews' && isOwner && <ReviewsTab />}
         {activeTab === 'cms' && isOwner && <CMSTab content={content} updateContent={updateContent} />}
         {activeTab === 'invites' && isOwner && <InvitesTab />}
       </main>
@@ -1422,70 +1430,82 @@ function CloudinaryImageUploader({ onUploadSuccess, label, currentValue }: Cloud
 }
 
 function PortfolioTab() {
-  const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
+  const [projectsList, setProjectsList] = useState<any[]>([]);
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('Architectural & Interior Design');
+  const [category, setCategory] = useState<'Institutional' | 'Commercial' | 'Housing'>('Institutional');
   const [imageUrl, setImageUrl] = useState('');
-  const [beforeImageUrl, setBeforeImageUrl] = useState('');
-  const [afterImageUrl, setAfterImageUrl] = useState('');
-  const [isBeforeAfter, setIsBeforeAfter] = useState(false);
-  const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
+  const [scopeOfWork, setScopeOfWork] = useState('');
+  const [galleryUrls, setGalleryUrls] = useState<string[]>([]);
+  const [location, setLocation] = useState('');
   const [isAdding, setIsAdding] = useState(false);
+  const [isUploadingGallery, setIsUploadingGallery] = useState(false);
 
   useEffect(() => {
-    const q = query(collection(db, 'portfolio'), orderBy('createdAt', 'desc'));
-    const unsub = onSnapshot(q, (s) => setPortfolioItems(s.docs.map(d => ({ id: d.id, ...d.data() }))));
+    const q = query(collection(db, 'projects'), orderBy('createdAt', 'desc'));
+    const unsub = onSnapshot(q, (s) => setProjectsList(s.docs.map(d => ({ id: d.id, ...d.data() }))));
     return () => unsub();
   }, []);
 
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    setIsUploadingGallery(true);
+    const files = Array.from(e.target.files);
+    const uploadedUrls: string[] = [];
+    
+    for (const file of files) {
+      try {
+        const url = await uploadImageToCloudinary(file as any);
+        if (url) uploadedUrls.push(url);
+      } catch (err) {
+        console.error("Gallery item upload failed:", err);
+      }
+    }
+    setGalleryUrls(prev => [...prev, ...uploadedUrls]);
+    setIsUploadingGallery(false);
+  };
+
+  const removeGalleryUrl = (indexToRemove: number) => {
+    setGalleryUrls(prev => prev.filter((_, idx) => idx !== indexToRemove));
+  };
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isBeforeAfter) {
-      if (!title || !beforeImageUrl || !afterImageUrl) {
-        alert("Please upload/provide both 'Before' and 'After' images.");
-        return;
-      }
-    } else {
-      if (!title || !imageUrl) {
-        alert("Please upload/provide a project image.");
-        return;
-      }
+    if (!title || !imageUrl) {
+      alert("Please provide at least a project title and primary image.");
+      return;
     }
     
     setIsAdding(true);
     try {
-      await addDoc(collection(db, 'portfolio'), {
+      await addDoc(collection(db, 'projects'), {
         title,
-        category: isBeforeAfter ? 'Before & After' : category,
-        originalCategory: category,
-        isBeforeAfter,
-        imageUrl: isBeforeAfter ? afterImageUrl : imageUrl,
-        beforeImageUrl: isBeforeAfter ? beforeImageUrl : '',
-        afterImageUrl: isBeforeAfter ? afterImageUrl : '',
-        location,
+        category,
+        imageUrl,
         description,
+        scopeOfWork,
+        galleryUrls,
+        location,
         createdAt: new Date().toISOString()
       });
       setTitle('');
       setImageUrl('');
-      setBeforeImageUrl('');
-      setAfterImageUrl('');
-      setLocation('');
       setDescription('');
-      setIsBeforeAfter(false);
+      setScopeOfWork('');
+      setGalleryUrls([]);
+      setLocation('');
     } catch (e) {
-      console.error("Error creating portfolio item:", e);
+      console.error("Error creating project item:", e);
     }
     setIsAdding(false);
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this portfolio item?")) {
+    if (window.confirm("Are you sure you want to delete this project?")) {
       try {
-        await deleteDoc(doc(db, 'portfolio', id));
+        await deleteDoc(doc(db, 'projects', id));
       } catch (e) {
-        console.error("Error deleting portfolio item:", e);
+        console.error("Error deleting project:", e);
       }
     }
   };
@@ -1496,137 +1516,127 @@ function PortfolioTab() {
       <div className="bg-white p-6 sm:p-8 lg:p-10 rounded-3xl border shadow-sm">
         <h3 className="text-xl font-bold serif border-b pb-4 flex items-center gap-2 mb-6 text-left text-ink">
           <Plus size={20} className="text-brand" />
-          Add Live Portfolio Item
+          Project Post Manager
         </h3>
         <form onSubmit={handleCreate} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Project Name</label>
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Project Title</label>
               <input 
                 required
                 type="text" 
-                placeholder="e.g. Symmetrical Nyali Pavilion" 
+                placeholder="e.g. Symmetrical Nyali Oceanfront Pavilion" 
                 value={title}
                 onChange={e => setTitle(e.target.value)}
                 className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-sm"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Category Selection</label>
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Category Select</label>
               <select 
                 value={category}
-                onChange={e => setCategory(e.target.value)}
+                onChange={e => setCategory(e.target.value as any)}
                 className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand cursor-pointer text-ink text-sm"
               >
-                <option value="Architectural & Interior Design">Architectural & Interior Design</option>
-                <option value="Specialty Design">Specialty Design</option>
-                <option value="Product & Application Design">Product & Application Design</option>
+                <option value="Institutional">Institutional</option>
+                <option value="Commercial">Commercial</option>
+                <option value="Housing">Housing</option>
               </select>
             </div>
           </div>
 
-          {/* Before & After Checkbox Control */}
-          <div className="bg-amber-50/40 border border-amber-100 p-5 rounded-2xl flex items-start gap-3">
-            <input 
-              type="checkbox"
-              id="isBeforeAfterCheck"
-              checked={isBeforeAfter}
-              onChange={e => setIsBeforeAfter(e.target.checked)}
-              className="mt-1 h-4 w-4 text-brand border-gray-300 rounded focus:ring-brand cursor-pointer"
-            />
-            <div className="space-y-1">
-              <label htmlFor="isBeforeAfterCheck" className="text-xs font-bold uppercase tracking-wider text-amber-900 cursor-pointer select-none">
-                This is a Before & After project
-              </label>
-              <p className="text-[10px] text-amber-800/75 leading-relaxed">
-                Checking this reveals separate file input slots to record spatial transformation. Frontend clients can compare results interactively.
-              </p>
-            </div>
-          </div>
-
-          {/* Conditional Media Uploader Sections */}
-          {isBeforeAfter ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left items-start">
-              <div className="space-y-4 bg-gray-50/50 p-4 sm:p-5 rounded-2xl border border-dashed border-gray-200">
-                <span className="text-[10px] font-mono tracking-widest text-brand block font-bold uppercase">//Original Scene</span>
-                <CloudinaryImageUploader 
-                  onUploadSuccess={(url) => setBeforeImageUrl(url)}
-                  label="Upload 'Before' Image"
-                  currentValue={beforeImageUrl}
-                />
-                <div className="space-y-1.2 font-sans">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#121212]/45">Or Past Before URL</label>
-                  <input 
-                    type="text" 
-                    placeholder="https://images.unsplash.com/photo-..." 
-                    value={beforeImageUrl}
-                    onChange={e => setBeforeImageUrl(e.target.value)}
-                    className="w-full p-3 bg-white border rounded-xl focus:outline-none focus:border-brand text-[10px] font-mono text-ink"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-4 bg-gray-50/50 p-4 sm:p-5 rounded-2xl border border-dashed border-gray-200">
-                <span className="text-[10px] font-mono tracking-widest text-emerald-600 block font-bold uppercase">//Atelier Realized Intervention</span>
-                <CloudinaryImageUploader 
-                  onUploadSuccess={(url) => setAfterImageUrl(url)}
-                  label="Upload 'After' Image"
-                  currentValue={afterImageUrl}
-                />
-                <div className="space-y-1.2 font-sans">
-                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#121212]/45">Or Past After URL</label>
-                  <input 
-                    type="text" 
-                    placeholder="https://images.unsplash.com/photo-..." 
-                    value={afterImageUrl}
-                    onChange={e => setAfterImageUrl(e.target.value)}
-                    className="w-full p-3 bg-white border rounded-xl focus:outline-none focus:border-brand text-[10px] font-mono text-ink"
-                  />
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left items-start">
-              <div className="space-y-4">
-                <CloudinaryImageUploader 
-                  onUploadSuccess={(url) => setImageUrl(url)}
-                  label="Upload Project Photo"
-                  currentValue={imageUrl}
-                />
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Or Paste Image URL</label>
-                  <input 
-                    type="text" 
-                    placeholder="https://images.unsplash.com/photo-..." 
-                    value={imageUrl}
-                    onChange={e => setImageUrl(e.target.value)}
-                    className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs font-mono text-ink"
-                  />
-                </div>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left items-start">
+            <div className="space-y-4">
+              <CloudinaryImageUploader 
+                onUploadSuccess={(url) => setImageUrl(url)}
+                label="Primary Project Image"
+                currentValue={imageUrl}
+              />
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Location (Optional)</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Or Paste Image URL</label>
                 <input 
                   type="text" 
-                  placeholder="e.g. Kilimani, Nairobi" 
+                  placeholder="https://images.unsplash.com/photo-..." 
+                  value={imageUrl}
+                  onChange={e => setImageUrl(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs font-mono text-ink"
+                />
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Location / Territory</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. Nyali, Mombasa" 
                   value={location}
                   onChange={e => setLocation(e.target.value)}
                   className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-sm"
                 />
               </div>
-            </div>
-          )}
 
-          <div className="space-y-1.5 text-left">
-            <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Story & Description</label>
-            <textarea 
-              required
-              rows={3}
-              placeholder="Detail the materials, architectural spatial flow, and structural choices..." 
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-              className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand resize-none text-ink text-sm"
-            />
+              {/* Multi-Image Gallery Uploader */}
+              <div className="space-y-2 p-5 bg-[#FAF9F7] rounded-2xl border">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#C5A059] block">Dynamic Multi-Image Gallery</label>
+                <p className="text-[9px] text-[#121212]/50 leading-relaxed font-sans mb-3">
+                  Upload multiple secondary photographic frames showing custom views and micro elements.
+                </p>
+                <input 
+                  type="file" 
+                  multiple 
+                  accept="image/*"
+                  onChange={handleGalleryUpload}
+                  disabled={isUploadingGallery}
+                  className="block w-full text-[10px] text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[9px] file:font-mono file:uppercase file:tracking-widest file:font-bold file:bg-[#C5A059]/10 file:text-[#C5A059] hover:file:bg-[#C5A059]/15 cursor-pointer"
+                />
+                {isUploadingGallery && (
+                  <p className="text-[9px] font-mono text-[#C5A059] animate-pulse">Uploading gallery components to Cloudinary...</p>
+                )}
+                
+                {/* Active uploads list with remove badges */}
+                {galleryUrls.length > 0 && (
+                  <div className="flex flex-wrap gap-2 pt-3 border-t mt-3">
+                    {galleryUrls.map((url, i) => (
+                      <div key={i} className="relative group/badge w-12 h-12 rounded-xl overflow-hidden border">
+                        <img src={url} alt="" className="w-full h-full object-cover" />
+                        <button 
+                          type="button"
+                          onClick={() => removeGalleryUrl(i)}
+                          className="absolute inset-0 bg-black/60 opacity-0 group-hover/badge:opacity-100 flex items-center justify-center text-white transition-opacity text-[10px] font-mono"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Short Summary description</label>
+              <textarea 
+                required
+                rows={3}
+                placeholder="A brief overview displayed in the main grid view..." 
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand resize-none text-ink text-sm"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Scope of Work (Detailed Text Block)</label>
+              <textarea 
+                required
+                rows={3}
+                placeholder="Detailed scope, materials used, structural interventions..." 
+                value={scopeOfWork}
+                onChange={e => setScopeOfWork(e.target.value)}
+                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand resize-none text-ink text-sm"
+              />
+            </div>
           </div>
 
           <div className="flex justify-end pt-4">
@@ -1636,21 +1646,21 @@ function PortfolioTab() {
               className="bg-brand text-white px-8 py-3.5 rounded-2xl font-bold flex items-center gap-2 hover:bg-brand/90 transition-all shadow-xl shadow-brand/10 disabled:opacity-50 cursor-pointer text-xs uppercase tracking-widest"
             >
               <Plus size={18} />
-              {isAdding ? 'Adding Project...' : 'Add Live Project'}
+              {isAdding ? 'Adding Project...' : 'Add Unified Project'}
             </button>
           </div>
         </form>
       </div>
 
-      {/* Portfolio Items list */}
+      {/* Projects Items list */}
       <div className="bg-white rounded-3xl border shadow-sm overflow-hidden text-left">
         <div className="p-6 border-b">
-          <h3 className="text-xl font-bold serif text-ink">Live Portfolio Library ({portfolioItems.length})</h3>
+          <h3 className="text-xl font-bold serif text-ink">Active Real-Time Projects ({projectsList.length})</h3>
         </div>
-        {portfolioItems.length === 0 ? (
+        {projectsList.length === 0 ? (
           <div className="py-20 text-center text-ink/40">
             <ImageIcon className="mx-auto mb-4 opacity-50 text-brand" size={36} />
-            <p className="text-sm">No items uploaded yet. Start adding items above!</p>
+            <p className="text-sm">No dynamic projects registered yet under the 'projects' Firestore collection.</p>
           </div>
         ) : (
           <div className="overflow-x-auto w-full">
@@ -1659,32 +1669,18 @@ function PortfolioTab() {
                 <tr className="bg-gray-50 border-b">
                   <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Project Layout</th>
                   <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Category</th>
-                  <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Details & Story</th>
+                  <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Scope & Narrative</th>
                   <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {portfolioItems.map(item => (
+                {projectsList.map(item => (
                   <tr key={item.id} className="border-b hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-6 flex items-center gap-4">
-                      <div className="flex gap-1.5 shrink-0">
-                        {item.isBeforeAfter ? (
-                          <>
-                            <img src={item.beforeImageUrl} alt="Before" className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border bg-gray-100" />
-                            <img src={item.afterImageUrl} alt="After" className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border bg-gray-100" />
-                          </>
-                        ) : (
-                          <img src={item.imageUrl} alt="Single" className="w-10 h-10 sm:w-16 sm:h-16 rounded-xl object-cover border bg-gray-100" />
-                        )}
-                      </div>
+                      <img src={item.imageUrl} alt="" className="w-12 h-12 rounded-xl object-cover border bg-gray-100" />
                       <div>
                         <h4 className="font-bold text-sm text-ink">{item.title}</h4>
                         {item.location && <p className="text-[10px] font-mono text-ink/40">📍 {item.location}</p>}
-                        {item.isBeforeAfter && (
-                          <span className="inline-block mt-1 bg-amber-50 text-amber-700 border border-amber-100 text-[8px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-md">
-                            Before & After
-                          </span>
-                        )}
                       </div>
                     </td>
                     <td className="px-6 py-6 text-xs font-mono uppercase font-bold text-brand">
@@ -1706,6 +1702,528 @@ function PortfolioTab() {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ServicesTab() {
+  const [selectedServiceId, setSelectedServiceId] = useState('residential-atelier');
+  const [serviceData, setServiceData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [savingService, setSavingService] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    const serviceDocRef = doc(db, 'services', selectedServiceId);
+    
+    const unsub = onSnapshot(serviceDocRef, (docSnap) => {
+      if (docSnap.exists()) {
+        setServiceData(docSnap.data());
+      } else {
+        // Fallback to static pre-seeded default for editing and creation
+        const defaultService = STUDIO_SERVICES.find(s => s.id === selectedServiceId);
+        setServiceData(defaultService || null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsub();
+  }, [selectedServiceId]);
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!serviceData) return;
+    setSavingService(true);
+    try {
+      await setDoc(doc(db, 'services', selectedServiceId), {
+        ...serviceData,
+        id: selectedServiceId
+      });
+      alert(`Service '${selectedServiceId}' successfully synchronized in Firestore!`);
+    } catch (e) {
+      console.error("Error setting service data in Firestore:", e);
+    }
+    setSavingService(false);
+  };
+
+  const updateServiceField = (field: string, value: any) => {
+    setServiceData((prev: any) => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const updateSubserviceItem = (index: number, subField: string, value: string) => {
+    setServiceData((prev: any) => {
+      const copy = [...(prev.subServices || [])];
+      if (!copy[index]) copy[index] = { name: '', description: '' };
+      copy[index] = { ...copy[index], [subField]: value };
+      return { ...prev, subServices: copy };
+    });
+  };
+
+  const updateProcessStep = (index: number, subField: string, value: string) => {
+    setServiceData((prev: any) => {
+      const copy = [...(prev.processSteps || [])];
+      if (!copy[index]) copy[index] = { number: `0${index+1}`, title: '', description: '' };
+      copy[index] = { ...copy[index], [subField]: value };
+      return { ...prev, processSteps: copy };
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="py-24 text-center">
+        <div className="w-10 h-10 border-2 border-brand border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-xs font-mono tracking-widest uppercase text-gray-400">Syncing Service Record Nodes...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8 text-left">
+      <div className="bg-white p-6 sm:p-8 rounded-3xl border shadow-sm">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4 mb-6 gap-4">
+          <div>
+            <h3 className="text-xl font-bold serif text-ink flex items-center gap-2">
+              <Package size={20} className="text-brand" />
+              Services Dynamics Curator
+            </h3>
+            <p className="text-xs text-ink/40">Select one of the 4 pillar service pages to configure headlines, pictures, and sub-sectors dynamically.</p>
+          </div>
+          <select 
+            value={selectedServiceId}
+            onChange={(e) => setSelectedServiceId(e.target.value)}
+            className="p-3 bg-gray-50 border rounded-xl focus:outline-none focus:border-brand cursor-pointer text-ink text-xs font-mono"
+          >
+            <option value="residential-atelier">Atelier Residential</option>
+            <option value="commercial-hospitality">Commercial & Hospitality</option>
+            <option value="yacht-exterior-styling">Curated Yacht & Exterior Styling</option>
+            <option value="botanical-landscape">Bespoke Landscaping</option>
+          </select>
+        </div>
+
+        {serviceData && (
+          <form onSubmit={handleSave} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Pillar Page Title</label>
+                <input 
+                  required
+                  type="text" 
+                  value={serviceData.title || ''}
+                  onChange={e => updateServiceField('title', e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-sm"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Marketing Subtitle</label>
+                <input 
+                  required
+                  type="text" 
+                  value={serviceData.subtitle || ''}
+                  onChange={e => updateServiceField('subtitle', e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Introductory Short description</label>
+                <textarea 
+                  required
+                  rows={4}
+                  value={serviceData.shortDescription || ''}
+                  onChange={e => updateServiceField('shortDescription', e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-xs resize-none"
+                />
+              </div>
+              <div className="space-y-4">
+                <CloudinaryImageUploader 
+                  onUploadSuccess={(url) => updateServiceField('image', url)}
+                  label="Pillar Cover Image"
+                  currentValue={serviceData.image}
+                />
+                <input 
+                  type="text" 
+                  placeholder="Paste URL..." 
+                  value={serviceData.image || ''}
+                  onChange={e => updateServiceField('image', e.target.value)}
+                  className="w-full p-3 bg-gray-50 border rounded-xl text-[10px] font-mono text-ink"
+                />
+              </div>
+            </div>
+
+            {/* Solution Story */}
+            <div className="p-6 bg-[#FAF9F7] rounded-3xl space-y-6 progress-steps-manager">
+              <span className="text-[10px] font-mono tracking-widest text-brand font-bold block uppercase">// SOLUTION STORY PROFILE</span>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Story Heading</label>
+                <input 
+                  required
+                  type="text" 
+                  value={serviceData.solutionStory?.heading || ''}
+                  onChange={e => updateServiceField('solutionStory', { ...serviceData.solutionStory, heading: e.target.value })}
+                  className="w-full p-4 bg-white border rounded-2xl focus:outline-none focus:border-brand text-ink text-sm"
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Story Paragraph 1</label>
+                  <textarea 
+                    rows={3}
+                    value={serviceData.solutionStory?.paragraphs?.[0] || ''}
+                    onChange={e => {
+                      const paras = [...(serviceData.solutionStory?.paragraphs || ['', ''])];
+                      paras[0] = e.target.value;
+                      updateServiceField('solutionStory', { ...serviceData.solutionStory, paragraphs: paras });
+                    }}
+                    className="w-full p-4 bg-white border rounded-2xl focus:outline-none focus:border-brand text-ink text-xs"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Story Paragraph 2</label>
+                  <textarea 
+                    rows={3}
+                    value={serviceData.solutionStory?.paragraphs?.[1] || ''}
+                    onChange={e => {
+                      const paras = [...(serviceData.solutionStory?.paragraphs || ['', ''])];
+                      paras[1] = e.target.value;
+                      updateServiceField('solutionStory', { ...serviceData.solutionStory, paragraphs: paras });
+                    }}
+                    className="w-full p-4 bg-white border rounded-2xl focus:outline-none focus:border-brand text-ink text-xs"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Sub services list editing */}
+            <div className="space-y-4">
+              <span className="text-[10px] font-mono tracking-widest text-[#C5A059] font-bold block uppercase">// SUB SERVICES / FEATURES LIST</span>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {[0, 1, 2].map((idx) => (
+                  <div key={idx} className="p-4 bg-white border rounded-2xl space-y-3 shadow-xs">
+                    <span className="text-[10.5px] font-mono text-gray-400 font-bold">Sub-service 0{idx+1}</span>
+                    <input 
+                      placeholder="Name..."
+                      type="text" 
+                      value={serviceData.subServices?.[idx]?.name || ''}
+                      onChange={e => updateSubserviceItem(idx, 'name', e.target.value)}
+                      className="w-full p-3 bg-gray-50 border rounded-xl text-xs font-semibold focus:outline-none focus:border-brand text-ink"
+                    />
+                    <textarea 
+                      placeholder="Brief description..."
+                      rows={3}
+                      value={serviceData.subServices?.[idx]?.description || ''}
+                      onChange={e => updateSubserviceItem(idx, 'description', e.target.value)}
+                      className="w-full p-3 bg-gray-50 border rounded-xl text-[11px] focus:outline-none focus:border-brand text-ink resize-none"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Process steps list editing */}
+            <div className="space-y-4 pt-4 border-t">
+              <span className="text-[10px] font-mono tracking-widest text-[#A83F1B] font-bold block uppercase">// STRATEGIC PROCESS STEPS (01 - 04)</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[0, 1, 2, 3].map((idx) => (
+                  <div key={idx} className="p-4 bg-white border rounded-2xl space-y-3 shadow-xs">
+                    <span className="text-[11px] font-mono text-[#A83F1B] font-bold">Step {serviceData.processSteps?.[idx]?.number || `0${idx+1}`}</span>
+                    <input 
+                      placeholder="Step Title..."
+                      type="text" 
+                      value={serviceData.processSteps?.[idx]?.title || ''}
+                      onChange={e => updateProcessStep(idx, 'title', e.target.value)}
+                      className="w-full p-3 bg-gray-50 border rounded-xl text-xs font-semibold focus:outline-none focus:border-brand text-ink"
+                    />
+                    <textarea 
+                      placeholder="Detailed tasks summary..."
+                      rows={3}
+                      value={serviceData.processSteps?.[idx]?.description || ''}
+                      onChange={e => updateProcessStep(idx, 'description', e.target.value)}
+                      className="w-full p-3 bg-gray-50 border rounded-xl text-[11px] focus:outline-none focus:border-brand text-ink resize-none"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-6 border-t">
+              <button 
+                type="submit"
+                disabled={savingService}
+                className="bg-[#C5A059] text-white px-8 py-4 rounded-xl font-mono text-[10px] uppercase font-bold tracking-widest hover:bg-ink transition-all disabled:opacity-50 cursor-pointer shadow-md flex items-center gap-2"
+              >
+                <Save size={14} />
+                {savingService ? 'Synchronizing Service...' : 'Update Service Dynamics'}
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ProfileTab({ content, updateContent }: any) {
+  const [phone, setPhone] = useState(content.phone || '+254 723 758595');
+  const [whatsapp, setWhatsapp] = useState(content.whatsapp || '+254 723 758595');
+  const [email, setEmail] = useState(content.email || 'partner@wamled.com');
+  const [address, setAddress] = useState(content.address || 'Nairobi & Nakuru Studios, Kenya');
+  const [updating, setUpdating] = useState(false);
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setUpdating(true);
+    try {
+      await updateContent({ phone, whatsapp, email, address });
+      alert("Company Profile touchpoints updated in real-time!");
+    } catch (err) {
+      console.error(err);
+    }
+    setUpdating(false);
+  };
+
+  return (
+    <div className="bg-white p-6 sm:p-8 rounded-3xl border shadow-sm text-left max-w-2xl">
+      <h3 className="text-xl font-bold serif border-b pb-4 flex items-center gap-2 mb-6 text-left text-ink">
+        <Phone size={20} className="text-brand" />
+        Company Profile Settings
+      </h3>
+      <form onSubmit={handleUpdate} className="space-y-6">
+        <div className="space-y-1.5">
+          <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Studio Telephone Contact</label>
+          <input 
+            type="text" 
+            value={phone}
+            onChange={e => setPhone(e.target.value)}
+            className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-sm"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Studio WhatsApp Number</label>
+          <input 
+            type="text" 
+            value={whatsapp}
+            onChange={e => setWhatsapp(e.target.value)}
+            className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-sm"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Lead Routing Email Address</label>
+          <input 
+            type="text" 
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-sm"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Locational Studio Headquarters</label>
+          <textarea 
+            rows={2}
+            value={address}
+            onChange={e => setAddress(e.target.value)}
+            className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-sm resize-none"
+          />
+        </div>
+        <div className="flex justify-end">
+          <button 
+            type="submit"
+            disabled={updating}
+            className="bg-brand text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-brand/90 transition-all disabled:opacity-50 text-xs uppercase"
+          >
+            {updating ? 'Saving Profile...' : 'Save Global Profile Touchpoints'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+const DEFAULT_TESTIMONIALS = [
+  {
+    reviewerName: "Lord Edward Cholmondeley",
+    reviewerTitle: "Coastal Villa Owner (Watamu)",
+    rating: 5,
+    text: "Atelier Wamled completely rethought our seaside estate. By utilizing Swahili limestone moldings and corrosion-proof double glazing, they sculpted an eye-safe tropical escape that remains perfectly cool without noisy air conditioning."
+  },
+  {
+    reviewerName: "Amara Gathoni",
+    reviewerTitle: "Operations Director, Eco-Prime",
+    rating: 5,
+    text: "Our enterprise offices command professional respect and cognitive clarity now. Every visual transit line is pristine, and the acoustic integrity is exceptional."
+  }
+];
+
+function ReviewsTab() {
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviewerName, setReviewerName] = useState('');
+  const [reviewerTitle, setReviewerTitle] = useState('');
+  const [rating, setRating] = useState(5);
+  const [text, setText] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    const unsub = onSnapshot(collection(db, 'testimonials'), (snap) => {
+      setReviews(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setLoading(false);
+    });
+    return () => unsub();
+  }, []);
+
+  const handleSeedDefaults = async () => {
+    if (window.confirm("Seed default high-end reviews to 'testimonials' Firestore?")) {
+      for (const t of DEFAULT_TESTIMONIALS) {
+        await addDoc(collection(db, 'testimonials'), t);
+      }
+    }
+  };
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reviewerName || !text) return;
+    setSubmitting(true);
+    try {
+      await addDoc(collection(db, 'testimonials'), {
+        reviewerName,
+        reviewerTitle,
+        rating,
+        text,
+        createdAt: new Date().toISOString()
+      });
+      setReviewerName('');
+      setReviewerTitle('');
+      setRating(5);
+      setText('');
+    } catch (e) {
+      console.error(e);
+    }
+    setSubmitting(false);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Delete this review block?")) {
+      await deleteDoc(doc(db, 'testimonials', id));
+    }
+  };
+
+  if (loading) {
+    return <div className="py-20 text-center font-mono text-ink/40">Synchronizing reviews database...</div>;
+  }
+
+  return (
+    <div className="space-y-12 text-left">
+      <div className="bg-white p-6 sm:p-8 rounded-3xl border shadow-sm">
+        <div className="flex justify-between items-center border-b pb-4 mb-6">
+          <h3 className="text-xl font-bold serif flex items-center gap-2">
+            <Star size={20} className="text-brand fill-brand" />
+            Client Testimonials Curator
+          </h3>
+          {reviews.length === 0 && (
+            <button 
+              onClick={handleSeedDefaults}
+              className="px-4 py-2 bg-[#C5A059]/10 text-[#C5A059] border border-[#C5A059]/20 rounded-xl font-mono text-[9px] uppercase tracking-widest font-bold"
+            >
+              Seed Default Reviews
+            </button>
+          )}
+        </div>
+
+        <form onSubmit={handleCreate} className="space-y-6 max-w-2xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Reviewer Name</label>
+              <input 
+                required
+                type="text" 
+                value={reviewerName}
+                onChange={e => setReviewerName(e.target.value)}
+                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-sm"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Representative Title / Territory</label>
+              <input 
+                type="text" 
+                value={reviewerTitle}
+                onChange={e => setReviewerTitle(e.target.value)}
+                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-sm"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Rating Rating Stars</label>
+              <select 
+                value={rating}
+                onChange={e => setRating(parseInt(e.target.value))}
+                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-[#C5A059] text-ink text-sm"
+              >
+                <option value={5}>★★★★★ (5 Stars)</option>
+                <option value={4}>★★★★ (4 Stars)</option>
+                <option value={3}>★★★ (3 Stars)</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Review content Paragraph</label>
+            <textarea 
+              required
+              rows={3}
+              value={text}
+              onChange={e => setText(e.target.value)}
+              className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-xs resize-none"
+            />
+          </div>
+
+          <div className="flex justify-end">
+            <button 
+              type="submit"
+              disabled={submitting}
+              className="bg-brand text-white px-8 py-3.5 rounded-2xl font-bold"
+            >
+              Add Client Review Block
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div className="bg-white rounded-3xl border shadow-sm text-left overflow-hidden">
+        <div className="p-6 border-b">
+          <h3 className="text-xl font-bold serif">Curated Review List ({reviews.length})</h3>
+        </div>
+        {reviews.length === 0 ? (
+          <div className="py-12 text-center text-ink/30 font-sans text-xs">No customer review blocks saved in Firestore. Click seed above.</div>
+        ) : (
+          <div className="divide-y">
+            {reviews.map(item => (
+              <div key={item.id} className="p-6 flex justify-between items-center gap-6">
+                <div className="space-y-1">
+                  <div className="flex gap-1 text-[#C5A059] text-[10px]">
+                    {"★".repeat(item.rating || 5)}
+                  </div>
+                  <h4 className="font-bold text-sm text-ink">{item.reviewerName}</h4>
+                  <p className="text-[10px] text-gray-400 font-mono italic">{item.reviewerTitle}</p>
+                  <p className="text-xs text-ink/75 leading-relaxed pt-2 max-w-xl">"{item.text}"</p>
+                </div>
+                <button 
+                  onClick={() => handleDelete(item.id)}
+                  className="p-2 text-red-500 bg-red-50 hover:bg-red-500 hover:text-white transition-all rounded-lg"
+                >
+                  <Trash2 size={15} />
+                </button>
+              </div>
+            ))}
           </div>
         )}
       </div>

@@ -268,19 +268,27 @@ const Hero = () => {
           </div>
           
           <div className="space-y-4">
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-light leading-[1.1] text-white tracking-tight select-none">
-              Interiors <span className="italic text-[#A83F1B]">crafted</span><br />
-              around the<br />
-              way you live.
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-light leading-[1.1] text-white tracking-tight select-none whitespace-pre-line">
+              {content.heroHeadline || "Interiors crafted\naround the\nway you live."}
             </h1>
             <p className="font-mono text-xs md:text-sm tracking-[0.3em] text-[#A83F1B] uppercase font-bold pt-2">
-              CONSOULT . DESIGN . BUILD
+              {content.heroSubheadline || "CONSOULT . DESIGN . BUILD"}
             </p>
           </div>
           
           <p className="text-sm md:text-base text-[#F9F9F9]/90 max-w-xl leading-relaxed font-light">
             Bespoke residential and commercial interior design from Nairobi and Nakuru studios with a reputation for quality, structure and quiet sophistication.
           </p>
+
+          <div className="pt-2 flex flex-wrap gap-4">
+            <a 
+              href={content.heroCtaUrl || "#consultation-form-box"} 
+              className="inline-flex items-center gap-2 bg-[#A83F1B] hover:bg-[#8d3212] active:bg-[#6c230a] text-white px-8 py-3.5 rounded-xl font-mono text-xs font-bold uppercase tracking-widest transition-all shadow-lg"
+            >
+              EXPLORE THE PROCESS
+              <span className="text-white">→</span>
+            </a>
+          </div>
 
           <div className="flex flex-wrap gap-x-8 gap-y-3 items-center pt-8 border-t border-white/10 text-[11px] text-[#FFFFFF] font-mono tracking-wider">
             <div className="flex items-center gap-2">

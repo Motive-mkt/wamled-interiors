@@ -67,6 +67,30 @@
         "hours": { "type": "string" },
         "phone": { "type": "string" }
       }
+    },
+    "Project": {
+      "title": "Project",
+      "description": "Dynamic Portfolio Project",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "scopeOfWork": { "type": "string" },
+        "gallery": { "type": "array" },
+        "createdAt": { "type": "string" }
+      }
+    },
+    "Testimonial": {
+      "title": "Testimonial",
+      "description": "Client review or testimonial item",
+      "type": "object",
+      "properties": {
+        "text": { "type": "string" },
+        "author": { "type": "string" },
+        "title": { "type": "string" },
+        "rating": { "type": "number" },
+        "createdAt": { "type": "string" }
+      }
     }
   },
   "firestore": {
@@ -93,6 +117,14 @@
     "site_content/{page}": {
       "schema": "SiteContent",
       "description": "Dynamic page content"
+    },
+    "projects/{projectId}": {
+      "schema": "Project",
+      "description": "Dynamic portfolio projects list"
+    },
+    "testimonials/{testimonialId}": {
+      "schema": "Testimonial",
+      "description": "Client reviews & testimonials"
     }
   }
 }

@@ -5,11 +5,16 @@ import { useAuth } from './AuthContext';
 
 interface CMSContent {
   heroHeadline: string;
+  heroSubheadline?: string;
+  heroCtaUrl?: string;
   heroImage: string;
   galleryImages: { url: string; label: string; span?: string }[];
   location: string;
   hours: string;
   phone: string;
+  email?: string;
+  whatsapp?: string;
+  address?: string;
   socialLinks: { platform: 'instagram' | 'facebook' | 'twitter' | 'linkedin'; url: string }[];
   reviews: { text: string; author: string; rating?: number; role?: string; location?: string }[];
   announcementActive?: boolean;
@@ -19,11 +24,16 @@ interface CMSContent {
 
 const defaultContent: CMSContent = {
   heroHeadline: "Interiors crafted around the way you live.",
+  heroSubheadline: "CONSOULT . DESIGN . BUILD",
+  heroCtaUrl: "#consultation-form-box",
   heroImage: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=1920&h=1080",
   galleryImages: [],
   location: "Based in Nairobi & Nakuru",
   hours: "Open until 8:00 PM",
   phone: "0723 758 595",
+  email: "design@wamled.co.ke",
+  whatsapp: "+254723758595",
+  address: "Moi Avenue, Nairobi Headquarters / Nakuru Heights Studio",
   socialLinks: [
     { platform: 'instagram', url: '#' },
     { platform: 'facebook', url: '#' }
