@@ -30,13 +30,19 @@ import {
   ArrowLeft,
   CheckCircle,
   BadgeAlert,
-  FolderOpen
+  FolderOpen,
+  TrendingDown,
+  LineChart,
+  Target,
+  Globe,
+  Waves
 } from 'lucide-react';
 import kenyanHousePortraitImg from '../assets/images/kenyan_house_portrait_1780570605897.png';
 import kenyanHouseLandscapeImg from '../assets/images/kenyan_house_landscape_1780570586379.png';
 import englishPointLandscapeImg from '../assets/images/english_point_user_landscape_1780571382886.png';
 import englishPointPortraitImg from '../assets/images/english_point_user_portrait_1780571401782.png';
 import luxuryYachtMarinaImg from '../assets/images/luxury_yacht_marina_1780574263644.png';
+
 interface SubServiceItem {
   id: string;
   name: string;
@@ -58,8 +64,125 @@ interface ServiceCategory {
 
 const CATEGORIES_DATA: ServiceCategory[] = [
   {
+    id: "project-positioning",
+    title: "1. Project Positioning",
+    focus: "Strategic alignment and market placement.",
+    accent: "gold",
+    description: "Aligning architectural visions with commercial values, regional cultures, and operational requirements.",
+    items: [
+      {
+        id: "consumer-positioning",
+        name: "Consumer Positioning",
+        icon: Target,
+        images: [
+          "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=95&w=640&h=1140",
+          kenyanHousePortraitImg
+        ],
+        description: "Designing specifically for elite target demographics, understanding user journeys, and structuring spaces for ultimate custom comfort.",
+        specifications: [
+          "Detailed target audience user flow planning",
+          "Demographic lifestyle and spatial sync matrices",
+          "Acoustic and kinetic envelope privacy design",
+          "High-end bespoke wellness zoning mapping"
+        ],
+        coastalTolerance: "High air circulation paths specifically integrated for coastal tropical heat adaptation."
+      },
+      {
+        id: "cultural-positioning",
+        name: "Cultural Positioning",
+        icon: Globe,
+        images: [
+          "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=95&w=640&h=1140",
+          englishPointPortraitImg
+        ],
+        description: "Fusing Swahili-modern accents, local hand-carved heritage details, and global minimalist styles seamlessly.",
+        specifications: [
+          "Native timber lattices and structural carvings research",
+          "Local materials sourcing (such as authentic Kenyan Galana stone)",
+          "Spatially-integrated traditional Swahili stucco techniques",
+          "Contemporary international layout structural frameworks"
+        ],
+        coastalTolerance: "Saltwater-safe mineral lime plasters protecting structures against salty humidity."
+      },
+      {
+        id: "investment-positioning",
+        name: "Investment Positioning",
+        icon: LineChart,
+        images: [
+          "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&q=95&w=640&h=1140"
+        ],
+        description: "Strategic real estate asset optimization, framing luxury value components, and minimizing long-term weather degradation costs.",
+        specifications: [
+          "Premium finish lifecycle analysis",
+          "High durability structural investment calculations",
+          "Passive solar warming and natural cooling designs",
+          "Maintenance exposure architectural evaluations"
+        ],
+        coastalTolerance: "Corrosion-resistant steel framing design to shield investment from oceanward rust."
+      },
+      {
+        id: "functional-positioning",
+        name: "Functional Positioning",
+        icon: Layout,
+        images: [
+          "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&q=95&w=640&h=1140"
+        ],
+        description: "Optimizing room hierarchies, planning clean work zones, and ensuring intuitive transit across elite properties.",
+        specifications: [
+          "Dynamic service-versus-guest movement charts",
+          "Custom multi-purpose modular furniture planning",
+          "Integrated sound insulation structures design",
+          "Discrete service delivery corridors"
+        ],
+        coastalTolerance: "Moisture-purging horizontal framing layout lines to avoid humid air traps."
+      },
+      {
+        id: "surround-positioning",
+        name: "Surround Positioning",
+        icon: Compass,
+        images: [
+          "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&q=95&w=640&h=1140",
+          luxuryYachtMarinaImg
+        ],
+        description: "Mapping beautiful landscape vistas, tracking path views dynamically, and syncing environments with natural sea breeze directions.",
+        specifications: [
+          "Solar path dynamic alignment calculations",
+          "Prevailing trade-winds cross-breeze channelings",
+          "Landscape horizon framing structure planning",
+          "Adaptive shoreline physical elevation profiles"
+        ],
+        coastalTolerance: "Double-layered defense structures guarding against coastal storm winds."
+      },
+      {
+        id: "facility-positioning",
+        name: "Facility Positioning",
+        icon: Grid,
+        images: [
+          "https://images.unsplash.com/photo-1600334089648-b0a9dc5978f2?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&q=95&w=640&h=1140"
+        ],
+        description: "Orchestrating high-end private wellness saunas, advanced gym rooms, pool structures, and luxury multi-car garages.",
+        specifications: [
+          "Resort-grade thermal systems coordination",
+          "Advanced ventilation systems for closed spaces",
+          "Structured high load floor foundations",
+          "Smart access and lighting control hubs"
+        ],
+        coastalTolerance: "Hermetically sealed utility nodes keeping saltwater fog completely isolated."
+      }
+    ]
+  },
+  {
     id: "architectural-interior",
-    title: "Category A: Architectural & Interior Design",
+    title: "2. Architectural & Interior Design",
     focus: "Master planning and the project’s visual soul.",
     accent: "gold",
     description: "Creating comprehensive visual codes and dynamic choreography within seaside residences.",
@@ -73,9 +196,9 @@ const CATEGORIES_DATA: ServiceCategory[] = [
           "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=95&w=640&h=1140"
         ],
-        description: "Mapping the spatial choreography, visual vistas, and elegant flow of air and people within premium high-wall seaside estates.",
+        description: "Mapping the spatial choreography, visual vistas, and elegant flow of air and people within premium high-wall estates.",
         specifications: [
-          "Optimized trade-wind cross-ventilation mapping",
+         "Optimized trade-wind cross-ventilation mapping",
           "Acoustic threshold buffers between public & private wings",
           "Double-height grand portico entrance-ways",
           "Visual horizon framing alignments"
@@ -119,8 +242,8 @@ const CATEGORIES_DATA: ServiceCategory[] = [
         coastalTolerance: "Saltwater-safe mineral lime plaster finishes and sun-bleach resistant timber stain."
       },
       {
-        id: "ffe-curation",
-        name: "Furniture, Fixtures & Equipment (FF&E)",
+        id: "ffe-design",
+        name: "FF&E Design",
         icon: Sofa,
         images: [
           "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=95&w=640&h=1140",
@@ -139,326 +262,101 @@ const CATEGORIES_DATA: ServiceCategory[] = [
     ]
   },
   {
-    id: "technical-systems-mepf",
-    title: "Category B: Technical Systems & MEPF",
-    focus: "The \"brains\" of the building.",
+    id: "specialty-design",
+    title: "3. Specialty Design",
+    focus: "Highly advanced architectural elements.",
     accent: "gold",
-    description: "Engineering and automated climate solutions engineered to survive active marine environments.",
+    description: "Integrating technical complexity with elite-level visual execution across resort landscapes.",
     items: [
       {
-        id: "mepf-solutions",
-        name: "One-stop MEPF Solutions",
+        id: "mep-solution",
+        name: "MEP Solution",
         icon: Wrench,
         images: [
           "https://images.unsplash.com/photo-1558224494-ef18a4573b2c?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1581094288338-2314dddb7ecc?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=95&w=640&h=1140"
         ],
-        description: "Fully engineered multi-system mechanical, electrical, plumbing, and fire safety systems designed for beachfront conditions.",
+        description: "Corrosion-armored Mechanical, Electrical, Plumbing and HVAC setups engineered for seaside atmospheric salts.",
         specifications: [
-          "Corrosion-resistant copper piping and condensation containment",
-          "Premium low-harmonic Variable Refrigerant Flow (A/C) technology",
-          "Triple-stage automated seawater sediment filtration integration",
-          "Integrated marine storm drain pumps"
+          "High thermal performance variable volume cooling",
+          "Double-shielded electrical line conduits",
+          "Integrated marine water filtration integration",
+          "Bespoke horizontal drainage escape layouts"
         ],
-        coastalTolerance: "Corrosion-armored condensing units with anti-microbial sea spray coating."
+        coastalTolerance: "Specially coated aluminum condenser fins to combat humid salt air oxidation."
       },
       {
-        id: "elv-it-systems",
-        name: "Integrated ELV & IT Systems",
+        id: "swimming-pool",
+        name: "Swimming Pool",
+        icon: Waves,
+        images: [
+          "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&q=95&w=640&h=1140"
+        ],
+        description: "Infinity edges, monolithic natural stone basin frames, and advanced structural underwater lighting profiles.",
+        specifications: [
+          "Non-porous solid stone coping finishes",
+          "Hidden perimeter overflows and silent channels",
+          "Low voltage micro-recessed underwater LEDs",
+          "Saltwater chlorination processing equipment"
+        ],
+        coastalTolerance: "High seismic resistance pool foundation structures withstanding coastal sand drift."
+      },
+      {
+        id: "elv-it-system",
+        name: "ELV & IT System",
         icon: Network,
         images: [
           "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=95&w=640&h=1140"
         ],
-        description: "Extra Low Voltage networks, high-security CCTV perimeter matrices, and luxury high-speed fiber-optic linkages.",
+        description: "Extra Low Voltage cabling, enterprise-grade unified Wi-Fi 7 covers, and remote biome smart property gates.",
         specifications: [
-          "Seaside IP67 weather-hardened outdoor camera mounts",
-          "Smart-home centralized server rack integration with redundant thermal control",
-          "Custom biometrics and long-range gate sensors",
-          "Premium unified Wi-Fi 7 beach coverage blankets"
+          "Seaside IP67 weather-hardened camera sensors",
+          "Smart unified server rack thermal management",
+          "Biometric fingerprint property entrance gates",
+          "Low loss fiber-optic connection lines"
         ],
-        coastalTolerance: "Hermetically sealed fiber-node enclosures shielding against ocean salinity."
+        coastalTolerance: "Hermetically isolated communication conduits guarding nodes against coastal dust."
       },
       {
-        id: "lighting-systems",
-        name: "Lighting Systems",
+        id: "lighting-system",
+        name: "Lighting System",
         icon: Lightbulb,
         images: [
           "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1565538810844-1e119faf1117?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&q=95&w=640&h=1140"
         ],
-        description: "Bespoke architectural illumination highlighting structural lines, coastal gardens, and soft interior scenes.",
+        description: "Dynamic warm-to-dim automation, low-glare dark-light modules, and integrated outdoor landscape highlights.",
         specifications: [
-          "Warm-dim LED chips representing golden hours (2400K - 1800K)",
-          "Fully integrated DALI-control automated systems",
-          "Low-glare glare-shielded recess fixtures",
-          "Scenic sea-wall wash dynamic program sequences"
+          "DALI master control dynamic preset programming",
+          "Warm-dim chips matching ocean sunset colors",
+          "Low-glare deep recessed ceiling mounts",
+          "High color fidelity rendering indices (CRI 98+)"
         ],
-        coastalTolerance: "Marine-grade powder-coated cast aluminum with solid IP66 water protection."
+        coastalTolerance: "Anodized powder-finished architectural housings with IP66 dust & water ratings."
       },
       {
-        id: "kitchen-laundry-equipment",
-        name: "Kitchen & Laundry Equipment",
+        id: "kitchen-laundry",
+        name: "Kitchen & Laundry",
         icon: Cpu,
         images: [
           "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1565183997392-2f6f122e5912?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1556912173-3bb406ef7e77?auto=format&fit=crop&q=95&w=640&h=1140"
         ],
-        description: "Chef-grade culinary stations and clean commercial-grade laundry infrastructure with high moisture control.",
+        description: "Bespoke professional cooking zones, heavy grade brushed AISI 316 steel setups, and low moisture noise extraction systems.",
         specifications: [
-          "High-grade AISI 316 brushed stainless steel prep tables",
-          "Under-counter low-noise commercial exhaust extraction hoods",
-          "Heavy-duty smart washers with quick-spin lint moisture extraction",
-          "Integrated prep sink waste disposers"
+          "Premium grade brushed stainless steel counter frames",
+          "Integrated prep sink disposal blocks",
+          "Professional range extraction hoods",
+          "High thermal moisture removal laundry enclosures"
         ],
-        coastalTolerance: "Full mechanical grade stainless steel housing resisting moisture rust."
-      }
-    ]
-  },
-  {
-    id: "exterior-structural",
-    title: "Category C: Exterior & Structural Details",
-    focus: "The building's skin and bones.",
-    accent: "gold",
-    description: "Advanced glass structural envelopes and customized steel structural solutions.",
-    items: [
-      {
-        id: "curtain-wall-facades",
-        name: "Curtain Wall & Facades",
-        icon: Layers,
-        images: [
-          kenyanHousePortraitImg,
-          "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=95&w=640&h=1140"
-        ],
-        description: "Double-glazed structural curtain systems protecting against ocean wind pressures while keeping interior views unobstructed.",
-        specifications: [
-          "Tempered low-E double-insulated structural safety panes",
-          "High thermal break profiles to support oceanward cooling loads",
-          "EPDM heavy weatherproofing gasket joints",
-          "Structural silicone butt glazing"
-        ],
-        coastalTolerance: "Engineered to withstand coastal wind gusts up to 180 km/h."
-      },
-      {
-        id: "steel-structures",
-        name: "Steel Structures",
-        icon: Cpu,
-        images: [
-          kenyanHousePortraitImg,
-          "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=95&w=640&h=1140"
-        ],
-        description: "Structural steel frameworks, custom pavilion beams, and architectural canopy framing engineered for extreme coastal security.",
-        specifications: [
-          "Hot-dip galvanized structural profiles (min 85 microns coating thickness)",
-          "Marine grade double-layer epoxy anti-corrosion paint system",
-          "Hidden connection joints with stainless steel SS316 bolts",
-          "High-load cantilever frame calculations"
-        ],
-        coastalTolerance: "Seismic class C3/C5 level severe marine corrosion protection."
-      },
-      {
-        id: "balustrades-staircases",
-        name: "Balustrades & Staircases",
-        icon: TrendingUp,
-        images: [
-          "https://images.unsplash.com/photo-1562438668-bcf32c77934c?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&q=95&w=640&h=1140"
-        ],
-        description: "Custom staircase structures, glass balustrade railings, and hand-forged metallic detail ribbons.",
-        specifications: [
-          "Laminated structurally-reinforced glass balustrades (15mm+ thickness)",
-          "Marine-grade satin finished solid SS316 handrail rods",
-          "Concealed heavy anchor base-plates in concrete",
-          "Solid timber tread integrations with non-slip flush brass inlays"
-        ],
-        coastalTolerance: "Sweat, spray and hand oil proof satin finishes designed for marine settings."
-      },
-      {
-        id: "canopies-partitions",
-        name: "Canopies & Partitions",
-        icon: Columns,
-        images: [
-          "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=95&w=640&h=1140"
-        ],
-        description: "External shading overhang structures and internal architectural room dividers crafted with custom rhythmic louvres.",
-        specifications: [
-          "Adjustable motorized louvered aluminium shading canopy shields",
-          "Hardwood iroko or mvule screen lattice walls",
-          "Pre-stressed architectural shade sail sailcloth hooks",
-          "Sliding glass acoustically-insulated room dividers"
-        ],
-        coastalTolerance: "UV-stabilized resin polymers and saltwater-safe powder coatings."
-      },
-      {
-        id: "window-door-systems",
-        name: "Window & Door Systems",
-        icon: DoorOpen,
-        images: [
-          "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&q=95&w=640&h=1140"
-        ],
-        description: "Massive floor-to-ceiling multi-track sliding doors that collapse completely, blending indoor and outdoor coastal living.",
-        specifications: [
-          "Slim-line structural aluminum frames with integrated insect screen tracks",
-          "Marine Grade Class 2 window profiles",
-          "Waterproof weep drain threshold channels",
-          "Heavy-duty multi-point security locking bolts"
-        ],
-        coastalTolerance: "Wind-load and saltwater tested heavy rollers with self-cleaning nylon wheels."
-      }
-    ]
-  },
-  {
-    id: "interior-finishing-furnishing",
-    title: "Category D: Interior Finishes & Furniture",
-    focus: "The tactile experience of the space.",
-    accent: "gold",
-    description: "Immersive surface treatments, bespoke bathroom layouts, and fine interior furnishings.",
-    items: [
-      {
-        id: "wall-floor-covering",
-        name: "Wall & Floor Covering",
-        icon: Grid,
-        images: [
-          "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=95&w=640&h=1140"
-        ],
-        description: "Selection of solid marble slabs, local coastal Galana stone slabs, and customized warm terrazzo flooring styles.",
-        specifications: [
-          "Honed slip-resistant matte marble finishes",
-          "High stability micro-cement continuous surfaces",
-          "Authentic unpolished natural coral-stone block wall claddings",
-          "Premium low-porosity sealants shielding against dampness"
-        ],
-        coastalTolerance: "Highly durable stone surfaces sealed against salt crystal penetration."
-      },
-      {
-        id: "ceiling-systems",
-        name: "Ceiling Systems",
-        icon: Square,
-        images: [
-          "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=95&w=640&h=1140",
-          kenyanHousePortraitImg
-        ],
-        description: "Architectural ceiling designs, floating gypsum structures, and integrated warm multi-media sound and projection spaces.",
-        specifications: [
-          "Moisture-resistant gypsum board ceiling cores",
-          "Concealed linear warm LED accent cove lighting",
-          "Bespoke tropical cedar wood ceiling inlays",
-          "Flush architectural speaker and AC vents integration"
-        ],
-        coastalTolerance: "High-grade anti-sagging gypsum boards with specialized anti-humidity paints."
-      },
-      {
-        id: "decoration-artwork",
-        name: "Decoration & Artwork",
-        icon: Paintbrush,
-        images: [
-          "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&q=95&w=640&h=1140"
-        ],
-        description: "Sourcing and curating local coastal stone carvings, handmade ceramics, and high-value modern artwork.",
-        specifications: [
-          "Custom hand-made coastal clay pottery accessories",
-          "Framed archival premium photography series on maritime life",
-          "Curated sculptural installation elements on marble foundations",
-          "Woven natural fiber architectural hanging fixtures"
-        ],
-        coastalTolerance: "Acid-free museum glazing on art prints shielding against extreme sea air humidity."
-      },
-      {
-        id: "bathroom-solutions",
-        name: "Bathroom Solutions",
-        icon: Bath,
-        images: [
-          luxuryYachtMarinaImg,
-          "https://images.unsplash.com/photo-1600566752239-1718f0752881?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&q=95&w=640&h=1140"
-        ],
-        description: "Bespoke spa-grade resort bathrooms featuring walk-in monolithic rain showers and freestanding stone bathtubs.",
-        specifications: [
-          "Solid carved natural river stone custom soaking tubs",
-          "Waterproof continuous micro-cement walls and wet areas",
-          "Thin-line brushed gold or copper thermostatic faucets",
-          "Concealed floor drains with integrated odor backflow valves"
-        ],
-        coastalTolerance: "Heavy solid brass faucet cartridges protecting against highly mineralized coastal water lines."
-      },
-      {
-        id: "furniture-decor",
-        name: "Furniture & Decor",
-        icon: Home,
-        images: [
-          "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&q=95&w=640&h=1140"
-        ],
-        description: "Warm, luxury lounge arrangements carrying clean silhouettes and natural neutral textures.",
-        specifications: [
-          "Modular bespoke sofas with down-blend cushions",
-          "Solid local hardwood credenzas paired with brass inlays",
-          "Linen-blend breathable slipcovers in cream hues",
-          "Woven sea-grass rugs with heavy jute backing"
-        ],
-        coastalTolerance: "Highly breathable linen textiles resisting mildew accumulation."
-      }
-    ]
-  },
-  {
-    id: "specialized-outdoor",
-    title: "Category E: Specialized & Outdoor Environments",
-    focus: "Holistic project completion.",
-    accent: "gold",
-    description: "Holistic completion elements that frame the coastal luxury lifestyle.",
-    items: [
-      {
-        id: "outdoor-landscape-solutions",
-        name: "Outdoor & Landscape Solutions",
-        icon: Trees,
-        images: [
-          englishPointPortraitImg,
-          englishPointLandscapeImg,
-          "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=95&w=640&h=1140"
-        ],
-        description: "Seashore landscape arrangements integrating salt-tolerant native flora, modern stone burners, and private sunlounger pavilions.",
-        specifications: [
-          "Custom local coral-rag boundary walls with lime mortars",
-          "Salt-tolerant coconut palms and coastal landscape arrangements",
-          "Monolithic natural stone fire feature setups",
-          "Subsurface localized drip irrigation systems"
-        ],
-        coastalTolerance: "High salt-resistance landscape and flora selection withstanding high coastal summer seasons."
-      },
-      {
-        id: "hospitality-medical-supplies",
-        name: "Hospitality & Medical Supplies",
-        icon: HeartPulse,
-        images: [
-          "https://images.unsplash.com/photo-1600334089648-b0a9dc5978f2?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&q=95&w=640&h=1140"
-        ],
-        description: "Bespoke specifications, sanitary supplies, and medical grade wellness treatment beds built for elite seaside spa-hotels.",
-        specifications: [
-          "Commercial grade antimicrobial synthetic leather materials",
-          "Fully adjustable heavy aluminum therapy tables",
-          "High thermal insulation wellness sauna setups",
-          "Premium guest-room wellness accessories"
-        ],
-        coastalTolerance: "Hypo-allergenic moisture-resistant materials designed for warm seaside environments."
+        coastalTolerance: "Corrosion-proof mechanical grade steel hardware protecting electronic relays."
       },
       {
         id: "signage-wayfinding",
@@ -469,32 +367,203 @@ const CATEGORIES_DATA: ServiceCategory[] = [
           "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&q=95&w=640&h=1140",
           "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=95&w=640&h=1140"
         ],
-        description: "Clean, architectural resort signage boards, luxury directional markers, and bespoke entrance gate typography.",
+        description: "Architectural property directional milestones, solid brass details, and background led signage plaques.",
         specifications: [
-          "Matte solid brass lettering with defensive marine clear coatings",
-          "Hand-carved organic stone milestone directional guides",
-          "Concealed dynamic LED edge backlighting matrices",
-          "Aesthetic low-profile ground mounted markers"
+          "Matte treated marine brass lettering arrays",
+          "Raw carved coral milestone orientation blocks",
+          "Dampness-isolated internal LED lighting setups",
+          "Architectural entrance gate lettering"
         ],
-        coastalTolerance: "Extreme maritime weather-tight lighting pods and UV-shielded engravings."
+        coastalTolerance: "UV-shielded outdoor metal lacquers and moisture-impermeable internal modules."
       },
       {
-        id: "fitness-equipment",
-        name: "Fitness Equipment",
-        icon: Dumbbell,
+        id: "landscape",
+        name: "Landscape",
+        icon: Trees,
         images: [
-          "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=95&w=640&h=1140",
-          "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=95&w=640&h=1140"
+          englishPointPortraitImg,
+          englishPointLandscapeImg,
+          "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=95&w=640&h=1140"
         ],
-        description: "Elite level oceanside gym equipment layout setups with active humidity drainage and solid luxury materials.",
+        description: "Lush tropical shoreline architecture featuring salt-tolerant palms, beachfront concrete fire pits, and stone garden rails.",
         specifications: [
-          "Water-resistance customized wood-framed rowers",
-          "Anti-slip polyurethane specialized gym mats",
-          "Solid custom weights with rustproof rubber guards",
-          "Fully integrated custom vertical mirror walls"
+          "Locally source limestone dry stone retaining walls",
+          "Salt air adapted shoreline palm plant screens",
+          "Integrated natural stone beachfront gas fire bowls",
+          "Climatic sub-surface drip hydration channels"
         ],
-        coastalTolerance: "Sweat-acid and salty air proof mechanics protecting machinery wires."
+        coastalTolerance: "Highly adapted local organic root system plans protecting coastlines."
+      },
+      {
+        id: "artwork",
+        name: "Artwork",
+        icon: Paintbrush,
+        images: [
+          "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&q=95&w=640&h=1140"
+        ],
+        description: "Curating elite local limestone installations, authentic clay ceramics, and premium moisture insulated master canvases.",
+        specifications: [
+          "Solid raw marble foundational sculpture plinths",
+          "Original hand-thrown local clay pottery arrays",
+          "Architectural woven palm wall art displays",
+          "UV-shielded heavy non-reflective museum framing"
+        ],
+        coastalTolerance: "Acid-free rear framing seals protecting fine artwork against salty sea fog."
+      }
+    ]
+  },
+  {
+    id: "product-application",
+    title: "4. Product & Application Design",
+    focus: "Tactile surface solutions & functional products.",
+    accent: "gold",
+    description: "Pre-engineered structural glass, metal fixtures, and customized products crafted to endure extreme weathering.",
+    items: [
+      {
+        id: "curtain-wall-facade",
+        name: "Curtain Wall and Facade",
+        icon: Layers,
+        images: [
+          kenyanHousePortraitImg,
+          "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=95&w=640&h=1140"
+        ],
+        description: "Structural double-glazed glass skins engineered to withstand severe shorefront wind pressures.",
+        specifications: [
+          "Low-emissivity double-insulated laminated glass",
+          "High thermal separation support profiles",
+          "Melt-resistant heavy polymer structural seals",
+          "Slick frameless seamless glass junctions"
+        ],
+        coastalTolerance: "Grade C5 severe marine wind pressure profile tolerance calculations."
+      },
+      {
+        id: "steel-structure",
+        name: "Steel Structure",
+        icon: Columns,
+        images: [
+          kenyanHousePortraitImg,
+          "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=95&w=640&h=1140"
+        ],
+        description: "Galvanized heavy steel supporting columns, architectural canopy frameworks, and seamless structural spans.",
+        specifications: [
+          "Hot-dip galvanized primary metal beams",
+          "Corrosion-combating dual composite marine paint layers",
+          "Premium SS316 certified connection bolts",
+          "Pre-stressed architectural cantilever geometry codes"
+        ],
+        coastalTolerance: "High seismic resistance and anti-chemical saltwater structural paint specs."
+      },
+      {
+        id: "balustrade-staircase",
+        name: "Balustrade & Staircase",
+        icon: TrendingUp,
+        images: [
+          "https://images.unsplash.com/photo-1562438668-bcf32c77934c?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&q=95&w=640&h=1140"
+        ],
+        description: "Laminated glass safety railings, solid satin SS316 hand rail pipes, and integrated stair treads.",
+        specifications: [
+          "Laminated structurally-reinforced glass (15mm+ thickness)",
+          "Marine-grade satin finished solid SS316 handrail rods",
+          "Concealed heavy anchor base-plates in concrete",
+          "Solid timber tread integrations with non-slip flush brass inlays"
+        ],
+        coastalTolerance: "Fingerprint and salty mist proof satin-brushed raw steel finishing panels."
+      },
+      {
+        id: "canopy-partition",
+        name: "Canopy & Partition",
+        icon: Columns,
+        images: [
+          "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=95&w=640&h=1140"
+        ],
+        description: "Overhang shade canopies, wooden screening systems, and acoustically isolated internal partitions.",
+        specifications: [
+          "Anodized louvred solar shading structures",
+          "Highly durable oil-finished tropical timber screens",
+          "High stability sound attenuation internal dividers",
+          "Tempered matte satin glass separating partitions"
+        ],
+        coastalTolerance: "UV-protected organic coatings resisting sun-bleaching and mold."
+      },
+      {
+        id: "furniture",
+        name: "Furniture",
+        icon: Sofa,
+        images: [
+          "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&q=95&w=640&h=1140"
+        ],
+        description: "Bespoke couches, custom solid local timber credenzas, and high-performance weather-safe poolside outdoor loungers.",
+        specifications: [
+          "Double-density inner structural foam inserts",
+          "Fine loose weave linen linen upholstery fabric slots",
+          "Hand-rubbed organic natural teak oil wood treatments",
+          "Custom matching metal accents in marine brass"
+        ],
+        coastalTolerance: "Saltwater-and-rainwater safe breathable structures avoiding damp build-up."
+      },
+      {
+        id: "lights",
+        name: "Lights",
+        icon: Lightbulb,
+        images: [
+          "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1565538810844-1e119faf1117?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&q=95&w=640&h=1140"
+        ],
+        description: "Bespoke structural light columns, decorative brass lanterns, and dimmable interior spotlight modules.",
+        specifications: [
+          "Solid cast marine brass light structures",
+          "IP65 waterproof outdoor spotlights and pillars",
+          "Integrated warm LED dim-to-glow fixtures",
+          "Anti-glare structure rings to support raw optics"
+        ],
+        coastalTolerance: "100% saltwater non-oxidizing solid brass and glass light frameworks."
+      },
+      {
+        id: "window-door",
+        name: "Window & Door",
+        icon: DoorOpen,
+        images: [
+          "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&q=95&w=640&h=1140"
+        ],
+        description: "Heavy multi-lock sliding glass panes that collapse completely, blending outdoor living with dry home sanctuaries.",
+        specifications: [
+          "Structural grade custom aluminum frames",
+          "Secluded double gaskets avoiding sea storm drafts",
+          "Sub-level integrated water run-off drain pathways",
+          "Heavy-duty multi-point frame lock systems"
+        ],
+        coastalTolerance: "Self-cleaning nylon frame track slides designed to clear sea sand."
+      },
+      {
+        id: "sanitary-ware",
+        name: "Sanitary Ware",
+        icon: Bath,
+        images: [
+          luxuryYachtMarinaImg,
+          "https://images.unsplash.com/photo-1600566752239-1718f0752881?auto=format&fit=crop&q=95&w=640&h=1140",
+          "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?auto=format&fit=crop&q=95&w=640&h=1140"
+        ],
+        description: "Bespoke river-stone carved soaking tubs, brushed gold water mixers, and continuous stone basin countertops.",
+        specifications: [
+          "Carved natural stone freestanding tubs",
+          "Brushed precious gold double thermostatic mixer sets",
+          "Seamless micro-cement bathroom floor contours",
+          "High drainage speed integrated odor blocks"
+        ],
+        coastalTolerance: "Severe scale resistance interior cartridges resistant to high mineral ground wells."
       }
     ]
   }
@@ -551,15 +620,15 @@ export const BespokeServices: React.FC = () => {
   const triggerWhatsAppInquiry = () => {
     const serviceString = selectedItem ? `[${selectedItem.name}]` : "Bespoke Services Ecosystem";
     const cleanText = encodeURIComponent(
-      `Hello Wamled Atelier, I would like to inquire about your ${serviceString} for my oceanside project.`
+      `Hello Wamled Atelier, I would like to inquire about your ${serviceString} for my elite architectural project.`
     );
-    window.open(`https://wa.me/254700000000?text=${cleanText}`, '_blank');
+    window.open(`https://wa.me/254723758595?text=${cleanText}`, '_blank');
   };
 
   return (
     <div className="min-h-screen bg-[#F9F9F7] text-[#1A1A1A] pt-32 pb-24 relative overflow-x-hidden">
       {/* Background elegant lighting blur grid */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-brand/3 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#A83F1B]/3 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-[#C5A059]/3 rounded-full blur-[160px] pointer-events-none" />
 
       {/* 1. The Header: Authority & Context */}
@@ -578,7 +647,7 @@ export const BespokeServices: React.FC = () => {
         
         {/* Small, justified paragraph explaining holistic design capabilities */}
         <p className="max-w-2xl mx-auto text-xs md:text-sm text-[#333333] font-sans tracking-wide leading-relaxed text-justify md:text-center pt-2">
-          From the initial strokes of master planning and architectural circulation design to the selection & curation of custom furnishings, we orchestrate every layer of premium oceanside real estate. Our integration system seamlessly delivers advanced MEPF networks, climate-tolerant structural framing, and soft tactile finishes, resulting in highly unified, luxury high-art environments.
+          From strategic consumer and investment positioning to custom architectural layouts, advanced MEP engineering, and resilient product applications, we orchestrate every layer of premium real estate. Our synchronized workflow ensures absolute design excellence at both micro and macro levels.
         </p>
 
         <div className="flex justify-center items-center gap-6 pt-4">
@@ -628,7 +697,7 @@ export const BespokeServices: React.FC = () => {
               </div>
             </div>
 
-            {/* Minimalist 4-Column responsive grid layout */}
+            {/* ServiceGrid Component Realization: 9:16 portrait images with typography styled over the bottom */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {category.items.map((item) => {
                 const IconComponent = item.icon;
@@ -636,32 +705,41 @@ export const BespokeServices: React.FC = () => {
                   <button
                     key={item.id}
                     onClick={() => openServiceModal(item, category.title)}
-                    className="group relative bg-white border border-[#F0F0F0] p-8 rounded-2xl text-left flex flex-col justify-between items-start gap-8 hover:border-[#C5A059]/35 hover:bg-white hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.01]"
+                    className="group relative overflow-hidden aspect-[9/16] rounded-2xl w-full text-left flex flex-col justify-end p-6 border border-[#222222]/10 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1 hover:scale-[1.01] cursor-pointer"
                   >
-                    {/* Hover Glow & Icon Glow effect */}
-                    <div className="absolute inset-0 bg-radial-gradient(circle_at_center,rgba(197,160,89,0.01),transparent_70%) opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl" />
+                    {/* Clear image inside */}
+                    <img 
+                      src={item.images[0]} 
+                      alt={item.name} 
+                      className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none filter brightness-[0.80] group-hover:brightness-[0.90] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105"
+                      referrerPolicy="no-referrer"
+                    />
+                    
+                    {/* Dark gradient mask - clear at top, rich and legible at bottom */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/10 pointer-events-none z-10" />
 
-                    <div className="w-12 h-12 rounded-xl bg-[#F0F0F0]/50 group-hover:bg-[#C5A059]/5 text-[#1A1A1A]/90 group-hover:text-[#C5A059] flex items-center justify-center transition-all duration-300 transform group-hover:scale-110 shadow-xs border border-[#F0F0F0]">
-                      <IconComponent size={22} className="stroke-[1.25]" />
+                    {/* Left Icon badge overlay */}
+                    <div className="absolute top-4 left-4 w-9 h-9 rounded-lg bg-black/45 backdrop-blur-md text-white/90 flex items-center justify-center border border-white/10 z-20 group-hover:bg-[#C5A059] group-hover:text-white transition-colors duration-300">
+                      <IconComponent size={16} className="stroke-[1.5]" />
                     </div>
 
-                    <div className="space-y-2 pointer-events-none">
-                      <h3 className="font-serif text-xl font-normal text-[#1A1A1A] group-hover:text-[#C5A059] transition-colors duration-300">
+                    {/* Text overlays - Helvetica Neue styling, 13px, uppercase, 0.15em spacing */}
+                    <div className="relative z-20 space-y-2 pointer-events-none">
+                      <h3 className="font-['Helvetica_Neue',Arial,sans-serif] text-[13px] tracking-[0.15em] uppercase font-bold text-white group-hover:text-[#C5A059] transition-colors duration-300 drop-shadow-md">
                         {item.name}
                       </h3>
-                      <p className="text-[11px] text-[#333333] leading-relaxed font-light line-clamp-3">
+                      
+                      <p className="text-[10px] text-gray-300 font-light leading-relaxed font-sans line-clamp-2">
                         {item.description}
                       </p>
-                    </div>
 
-                    {/* Dynamic Label transition on Hover */}
-                    <div className="w-full flex justify-between items-center pointer-events-none border-t border-[#F0F0F0] pt-4">
-                      <span className="text-[9px] font-mono tracking-widest text-[#C5A059] group-hover:text-[#C5A059] font-bold uppercase transition-colors">
-                        VIEW PROJECTS
-                      </span>
-                      <span className="opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 transform text-[#C5A059]">
-                        <ArrowRight size={12} />
-                      </span>
+                      {/* View details prompt */}
+                      <div className="pt-2 border-t border-white/10 w-full flex justify-between items-center text-[9px] font-mono tracking-[0.12em] text-[#C5A059] font-bold uppercase transition-colors">
+                        <span>LEARN MORE</span>
+                        <span className="group-hover:translate-x-1 transition-transform duration-300 text-[#C5A059]">
+                          →
+                        </span>
+                      </div>
                     </div>
                   </button>
                 );
@@ -674,7 +752,7 @@ export const BespokeServices: React.FC = () => {
       {/* 3. The "Deep-Dive" Interaction Popup Modal with 9:16 Vertical Gallery */}
       <AnimatePresence>
         {selectedItem && (
-          <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 md:p-6">
+          <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 md:p-6 animate-fade-in animate-duration-300">
             {/* Dark glass backdrop layout */}
             <motion.div 
               initial={{ opacity: 0 }}
@@ -710,10 +788,10 @@ export const BespokeServices: React.FC = () => {
                     <span className="h-2 w-2 rounded-full bg-[#C5A059] animate-[pulse_1.5s_infinite]" />
                   </div>
                   <h3 className="font-serif text-2xl font-light text-[#1A1A1A]">
-                    Coastal Blueprints
+                    Design Blueprints
                   </h3>
                   <p className="text-[11px] text-[#333333]/70 leading-relaxed font-sans">
-                    Scroll down to explore vertical 9:16 portrait frames captured directly from finished private beachfront structures, demonstrating elite architectural configurations.
+                    Scroll down to explore vertical 9:16 portrait frames captured directly from finished structures, proving uncompromised spatial execution.
                   </p>
                 </div>
 
@@ -731,7 +809,7 @@ export const BespokeServices: React.FC = () => {
                         referrerPolicy="no-referrer"
                       />
                       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent p-5 text-left pointer-events-none">
-                        <span className="text-[9px] font-mono text-brand tracking-widest block font-bold uppercase">
+                        <span className="text-[9px] font-mono text-[#C5A059] tracking-widest block font-bold uppercase animate-pulse">
                           ARCHIVE SCENE {imgIdx + 1}
                         </span>
                         <p className="font-serif text-sm text-white italic font-light">
@@ -750,7 +828,7 @@ export const BespokeServices: React.FC = () => {
                     <span className="text-[10px] font-mono tracking-[0.25em] text-[#C5A059] font-bold block uppercase">
                       {parentCategoryTitle}
                     </span>
-                    <h2 className="text-3xl font-serif font-light text-[#1A1A1A] tracking-tight leading-tight">
+                    <h2 className="text-3xl font-serif font-light text-[#1A1A1A] tracking-tight leading-tight uppercase">
                       {selectedItem.name}
                     </h2>
                   </div>
@@ -777,11 +855,11 @@ export const BespokeServices: React.FC = () => {
                     </ul>
                   </div>
 
-                  {/* Coastal safety tolerance warnings (highly tailored to Kenya coastal region specs) */}
+                  {/* Coastal safety tolerance warnings (highly tailored to Kenya region specs) */}
                   <div className="flex gap-3 bg-[#C5A059]/3 border border-[#C5A059]/10 p-4 rounded-xl items-start">
                     <BadgeAlert size={16} className="text-[#C5A059] shrink-0 mt-0.5" />
                     <div className="space-y-0.5">
-                      <span className="text-[9px] font-mono tracking-wider font-extrabold text-[#C5A059] uppercase block">Seawater Spray & Climatic Tolerance Spec</span>
+                      <span className="text-[9px] font-mono tracking-wider font-extrabold text-[#C5A059] uppercase block">Material and Environmental Safety Spec</span>
                       <p className="text-[11px] text-[#333333] leading-relaxed font-sans">{selectedItem.coastalTolerance}</p>
                     </div>
                   </div>
@@ -794,7 +872,7 @@ export const BespokeServices: React.FC = () => {
                       Inquire About {selectedItem.name}
                     </span>
                     <p className="text-[11px] text-[#333333]/80 font-sans leading-relaxed">
-                      Transmit a blueprint or system specification consultation request directly to our principal director.
+                      Transmit an inquiry on dynamic layouts or bespoke technical specifications.
                     </p>
                   </div>
 
@@ -808,7 +886,7 @@ export const BespokeServices: React.FC = () => {
                       >
                         <CheckCircle size={24} className="text-[#C5A059]" />
                         <p className="text-sm font-serif font-light text-[#1A1A1A]">
-                          Blueprint Inquiry Received
+                          Inquiry Received Successfully
                         </p>
                         <p className="text-[10px] text-[#333333] leading-relaxed font-sans">
                           A detailed system technical layout portfolio will be delivered directly inside 12 hours.
@@ -861,7 +939,7 @@ export const BespokeServices: React.FC = () => {
                           <button
                             type="submit"
                             disabled={formStatus === 'submitting'}
-                            className="w-full sm:w-1/2 bg-[#C5A059] hover:bg-[#1A1A1A] text-white font-mono text-[10px] uppercase tracking-wider py-3 px-4 rounded-lg font-bold transition-all duration-300 disabled:opacity-50 select-none shadow-xs cursor-pointer"
+                            className="w-full sm:w-1/2 bg-[#C5A059] hover:bg-[#1A1A1A] text-white font-mono text-[10px] uppercase tracking-wider py-3 px-4 rounded-lg font-bold transition-all duration-300 disabled:opacity-50 select-none shadow-xs cursor-pointer text-center"
                           >
                             {formStatus === 'submitting' ? 'PROBING NETWORK...' : 'TRANSMIT BLUEPRINT REQ'}
                           </button>
@@ -869,7 +947,7 @@ export const BespokeServices: React.FC = () => {
                           <button
                             type="button"
                             onClick={triggerWhatsAppInquiry}
-                            className="w-full sm:w-1/2 bg-transparent hover:bg-[#F0F0F0]/50 text-[#1A1A1A] border border-[#F0F0F0] font-mono text-[10px] uppercase tracking-wider py-3 px-4 rounded-lg font-bold transition-all duration-300 select-none cursor-pointer"
+                            className="w-full sm:w-1/2 bg-transparent hover:bg-[#F0F0F0]/50 text-[#1A1A1A] border border-[#F0F0F0] font-mono text-[10px] uppercase tracking-wider py-3 px-4 rounded-lg font-bold transition-all duration-300 select-none cursor-pointer text-center"
                           >
                             CONTACT VIA WHATSAPP
                           </button>
@@ -900,7 +978,7 @@ export const BespokeServices: React.FC = () => {
               <span className="italic">Start Your Project Today.</span>
             </h2>
             <p className="text-xs text-[#333333] max-w-lg mx-auto leading-relaxed">
-              Connect with Wamled Atelier to translate master concepts and specialized technical architectural files safely into reality on oceanside landscapes.
+              Connect with Wamled Atelier to translate master concepts and specialized technical architectural files safely into reality.
             </p>
           </div>
 
@@ -948,7 +1026,7 @@ export const BespokeServices: React.FC = () => {
                     />
                     <textarea 
                       rows={2}
-                      placeholder="Brief description of your coastal property location, land specs or timeline..."
+                      placeholder="Brief description of your property location, land specs or timeline..."
                       value={formData.notes}
                       onChange={e => setFormData({ ...formData, notes: e.target.value })}
                       className="bg-[#F0F0F0]/30 border border-[#F0F0F0] rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-[#C5A059] w-full resize-none text-[#1A1A1A]"
@@ -957,7 +1035,7 @@ export const BespokeServices: React.FC = () => {
                       <button
                         type="submit"
                         disabled={formStatus === 'submitting'}
-                        className="w-full bg-[#C5A059] hover:bg-[#1A1A1A] text-white font-mono text-[10px] uppercase font-bold tracking-widest py-3 rounded-xl transition-all shadow-xs cursor-pointer"
+                        className="w-full bg-[#C5A059] hover:bg-[#1A1A1A] text-white font-mono text-[10px] uppercase font-bold tracking-widest py-3 rounded-xl transition-all shadow-xs cursor-pointer text-center"
                       >
                         {formStatus === 'submitting' ? 'PROCESSING...' : 'REQUEST BRIEFING SESSION'}
                       </button>

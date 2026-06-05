@@ -21,6 +21,7 @@ import {
   LogOut, 
   Plus, 
   Trash2, 
+  Upload,
   Clock, 
   TrendingUp,
   User as UserIcon,
@@ -39,7 +40,8 @@ import {
   X,
   Check,
   Edit,
-  Eye
+  Eye,
+  Menu
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -72,6 +74,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'overview' | 'leads' | 'cms' | 'invites' | 'portfolio' | 'casestudies'>('overview');
   const [leads, setLeads] = useState<any[]>([]);
   const { content, updateContent } = useCMS();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (authLoading || roleLoading || !user || !role) return;
@@ -291,34 +294,56 @@ export default function AdminDashboard() {
   const isOwner = role === 'owner';
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row relative">
+      {/* Mobile Top App Bar */}
+      <div className="md:hidden bg-[#181818] text-white px-6 py-4 flex justify-between items-center border-b border-white/10 z-50">
+        <div className="flex items-center gap-2 text-left">
+          <span className="text-xl font-serif tracking-tight text-white leading-none">Wamled</span>
+          <span className="text-xl font-serif text-[#C5A059] leading-none">.</span>
+        </div>
+        <button 
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+          className="p-1.5 rounded-lg hover:bg-white/5 active:scale-95 transition-all text-white cursor-pointer"
+        >
+          {isSidebarOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
+      </div>
+
+      {/* Mobile Backdrop Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 z-30 md:hidden animate-fade-in"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-ink text-white flex flex-col">
-        <div className="p-8">
+      <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-[#181818] text-white flex flex-col transform transition-transform duration-300 md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:static md:flex shrink-0 min-h-screen md:min-h-0`}>
+        <div className="p-8 text-left">
           <Link to="/" className="inline-block relative pb-1.5 select-none hover:opacity-90 transition-opacity">
             <span className="text-2xl font-serif tracking-tight text-white">Wamled</span>
-            <span className="text-2xl font-serif text-[#A83F1B]">.</span>
-            <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#A83F1B]" />
+            <span className="text-2xl font-serif text-[#C5A059]">.</span>
+            <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#C5A059]" />
           </Link>
           <p className="text-[10px] text-white/40 tracking-widest mt-1">STUDIO DASHBOARD</p>
         </div>
 
-        <nav className="flex-1 px-4 py-4 space-y-2">
-          <SidebarLink active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} icon={<LayoutDashboard size={20} />} label="Overview" />
-          <SidebarLink active={activeTab === 'leads'} onClick={() => setActiveTab('leads')} icon={<MessageSquare size={20} />} label="Leads & Inquiries" />
+        <nav className="flex-1 px-4 py-4 space-y-2 text-left">
+          <SidebarLink active={activeTab === 'overview'} onClick={() => { setActiveTab('overview'); setIsSidebarOpen(false); }} icon={<LayoutDashboard size={20} />} label="Overview" />
+          <SidebarLink active={activeTab === 'leads'} onClick={() => { setActiveTab('leads'); setIsSidebarOpen(false); }} icon={<MessageSquare size={20} />} label="Leads & Inquiries" />
           {isOwner && (
             <>
-              <SidebarLink active={activeTab === 'portfolio'} onClick={() => setActiveTab('portfolio')} icon={<ImageIcon size={20} />} label="Portfolio Curator" />
-              <SidebarLink active={activeTab === 'casestudies'} onClick={() => setActiveTab('casestudies')} icon={<BookOpen size={20} />} label="Case Studies Curator" />
-              <SidebarLink active={activeTab === 'cms'} onClick={() => setActiveTab('cms')} icon={<Settings size={20} />} label="Site Content" />
-              <SidebarLink active={activeTab === 'invites'} onClick={() => setActiveTab('invites')} icon={<Ticket size={20} />} label="Worker Invites" />
+              <SidebarLink active={activeTab === 'portfolio'} onClick={() => { setActiveTab('portfolio'); setIsSidebarOpen(false); }} icon={<ImageIcon size={20} />} label="Portfolio Curator" />
+              <SidebarLink active={activeTab === 'casestudies'} onClick={() => { setActiveTab('casestudies'); setIsSidebarOpen(false); }} icon={<BookOpen size={20} />} label="Case Studies Curator" />
+              <SidebarLink active={activeTab === 'cms'} onClick={() => { setActiveTab('cms'); setIsSidebarOpen(false); }} icon={<Settings size={20} />} label="Site Content" />
+              <SidebarLink active={activeTab === 'invites'} onClick={() => { setActiveTab('invites'); setIsSidebarOpen(false); }} icon={<Ticket size={20} />} label="Worker Invites" />
             </>
           )}
         </nav>
 
-        <div className="p-4 border-t border-white/10">
+        <div className="p-4 border-t border-white/10 text-left">
           <div className="flex items-center gap-3 mb-4 px-4 py-2 bg-white/5 rounded-xl">
-            <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center font-bold text-xs uppercase">
+            <div className="w-8 h-8 rounded-full bg-[#C5A059] flex items-center justify-center font-bold text-xs uppercase">
               {user.email?.[0]}
             </div>
             <div className="flex-1 min-w-0">
@@ -326,7 +351,7 @@ export default function AdminDashboard() {
               <p className="text-[10px] text-white/40 truncate capitalize">{role}</p>
             </div>
           </div>
-          <button onClick={() => logout()} className="flex items-center gap-2 text-xs text-white/60 hover:text-white transition-colors px-4 py-2 w-full">
+          <button onClick={() => logout()} className="flex items-center gap-2 text-xs text-white/60 hover:text-white transition-colors px-4 py-2 w-full text-left cursor-pointer">
             <LogOut size={16} />
             Logout
           </button>
@@ -334,18 +359,18 @@ export default function AdminDashboard() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto p-10">
-        <header className="flex justify-between items-center mb-10">
+      <main className="flex-1 min-w-0 overflow-y-auto p-4 sm:p-6 md:p-10">
+        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 text-left">
           <div>
-            <h2 className="text-3xl font-bold serif text-ink capitalize">{activeTab}</h2>
-            <p className="text-ink/40 text-sm mt-1">
+            <h2 className="text-2xl sm:text-3xl font-bold serif text-ink capitalize tracking-tight">{activeTab}</h2>
+            <p className="text-ink/40 text-xs sm:text-sm mt-1">
               {isOwner ? 'Manage your studio operations and site content.' : 'Track and manage client inquiries.'}
             </p>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="bg-white border rounded-xl px-4 py-2 flex items-center gap-3 text-sm">
-              <span className="font-medium text-ink/40 tracking-widest text-[10px] font-bold uppercase">Kenya Standard Time</span>
-              <span className="font-medium">{new Date().toLocaleDateString('en-KE', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+          <div className="flex items-center gap-4 shrink-0">
+            <div className="bg-white border rounded-xl px-4 py-2 flex items-center gap-3 text-sm shadow-sm">
+              <span className="font-medium text-ink/40 tracking-widest text-[9px] font-bold uppercase">Kenya Standard Time</span>
+              <span className="font-semibold text-xs text-ink">{new Date().toLocaleDateString('en-KE', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
             </div>
           </div>
         </header>
@@ -1281,11 +1306,129 @@ function CMSTab({ content, updateContent }: any) {
   );
 }
 
+// Replace these with your actual Cloudinary details
+const CLOUDINARY_URL = import.meta.env.VITE_CLOUDINARY_URL || "https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload";
+const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "YOUR_UNSIGNED_UPLOAD_PRESET";
+
+async function uploadImageToCloudinary(fileFile: File): Promise<string | undefined> {
+    const formData = new FormData();
+    formData.append('file', fileFile);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+    try {
+        const response = await fetch(CLOUDINARY_URL, {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        // This secure_url is the clean image link you will save into Firestore!
+        return data.secure_url; 
+    } catch (error) {
+        console.error("Cloudinary Upload Error:", error);
+    }
+}
+
+interface CloudinaryImageUploaderProps {
+  onUploadSuccess: (url: string) => void;
+  label: string;
+  currentValue?: string;
+}
+
+function CloudinaryImageUploader({ onUploadSuccess, label, currentValue }: CloudinaryImageUploaderProps) {
+  const [isUploading, setIsUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
+
+  const handleFileChange = async (file: File) => {
+    if (!file) return;
+    setIsUploading(true);
+    setError(null);
+    try {
+      const url = await uploadImageToCloudinary(file);
+      if (url) {
+        onUploadSuccess(url);
+      } else {
+        setError("Upload failed. Verify Cloudinary credentials.");
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError("Upload error: " + (err.message || err));
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileChange(e.dataTransfer.files[0]);
+    }
+  };
+
+  return (
+    <div className="space-y-1.5 text-left">
+      <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">{label}</label>
+      <div 
+        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={onDrop}
+        className={`relative border border-dashed rounded-2xl p-4 flex flex-col items-center justify-center gap-2 transition-all min-h-[110px] ${
+          dragOver ? 'border-brand bg-brand/5' : 'border-gray-200 bg-gray-50 hover:bg-gray-100/50'
+        } ${isUploading ? 'opacity-70 pointer-events-none' : ''}`}
+      >
+        <input 
+          type="file" 
+          accept="image/*"
+          onChange={(e) => e.target.files && e.target.files[0] && handleFileChange(e.target.files[0])}
+          className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+        />
+        {isUploading ? (
+          <div className="flex flex-col items-center gap-1">
+            <div className="animate-spin rounded-full h-5 w-5 border-2 border-brand border-t-transparent mb-1" />
+            <span className="text-[10px] font-mono text-brand font-bold tracking-widest animate-pulse">UPLOADING TO CLOUDINARY...</span>
+          </div>
+        ) : (
+          <div className="text-center space-y-1">
+            <Upload size={20} className="mx-auto text-ink/40" />
+            <p className="text-xs text-ink/60 font-semibold">Drag & Drop or <span className="text-brand">Browse File</span></p>
+            <p className="text-[9px] font-mono text-ink/30">SUPPORTED FORMATS: JPG, PNG, WEBP</p>
+          </div>
+        )}
+      </div>
+      {error && (
+        <p className="text-[10px] font-mono text-red-500 font-bold tracking-wider mt-1">⚠️ {error}</p>
+      )}
+      {currentValue && (
+        <div className="flex items-center gap-3 p-3 bg-emerald-50/50 border border-emerald-100 rounded-xl mt-2">
+          <img src={currentValue} defaultValue="https://images.unsplash.com" alt="Preview" className="w-10 h-10 rounded-lg object-cover border bg-white" />
+          <div className="flex-1 min-w-0">
+            <p className="text-[9px] uppercase font-bold text-emerald-600 font-mono tracking-widest">✓ Media Ready</p>
+            <p className="text-[8px] text-[#121212]/50 truncate font-mono">{currentValue}</p>
+          </div>
+          <button 
+            type="button"
+            onClick={() => onUploadSuccess('')}
+            className="text-ink/40 hover:text-red-500 p-1 rounded-full hover:bg-gray-200 transition-all z-20 relative"
+            title="Clear image URL"
+          >
+            <X size={12} />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function PortfolioTab() {
   const [portfolioItems, setPortfolioItems] = useState<any[]>([]);
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('Residential');
+  const [category, setCategory] = useState('Architectural & Interior Design');
   const [imageUrl, setImageUrl] = useState('');
+  const [beforeImageUrl, setBeforeImageUrl] = useState('');
+  const [afterImageUrl, setAfterImageUrl] = useState('');
+  const [isBeforeAfter, setIsBeforeAfter] = useState(false);
   const [location, setLocation] = useState('');
   const [description, setDescription] = useState('');
   const [isAdding, setIsAdding] = useState(false);
@@ -1298,21 +1441,39 @@ function PortfolioTab() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !imageUrl) return;
+    if (isBeforeAfter) {
+      if (!title || !beforeImageUrl || !afterImageUrl) {
+        alert("Please upload/provide both 'Before' and 'After' images.");
+        return;
+      }
+    } else {
+      if (!title || !imageUrl) {
+        alert("Please upload/provide a project image.");
+        return;
+      }
+    }
+    
     setIsAdding(true);
     try {
       await addDoc(collection(db, 'portfolio'), {
         title,
-        category,
-        imageUrl,
+        category: isBeforeAfter ? 'Before & After' : category,
+        originalCategory: category,
+        isBeforeAfter,
+        imageUrl: isBeforeAfter ? afterImageUrl : imageUrl,
+        beforeImageUrl: isBeforeAfter ? beforeImageUrl : '',
+        afterImageUrl: isBeforeAfter ? afterImageUrl : '',
         location,
         description,
         createdAt: new Date().toISOString()
       });
       setTitle('');
       setImageUrl('');
+      setBeforeImageUrl('');
+      setAfterImageUrl('');
       setLocation('');
       setDescription('');
+      setIsBeforeAfter(false);
     } catch (e) {
       console.error("Error creating portfolio item:", e);
     }
@@ -1332,8 +1493,8 @@ function PortfolioTab() {
   return (
     <div className="space-y-12 text-left">
       {/* Create form */}
-      <div className="bg-white p-8 lg:p-10 rounded-3xl border shadow-sm">
-        <h3 className="text-xl font-bold serif border-b pb-4 flex items-center gap-2 mb-6 text-left">
+      <div className="bg-white p-6 sm:p-8 lg:p-10 rounded-3xl border shadow-sm">
+        <h3 className="text-xl font-bold serif border-b pb-4 flex items-center gap-2 mb-6 text-left text-ink">
           <Plus size={20} className="text-brand" />
           Add Live Portfolio Item
         </h3>
@@ -1347,47 +1508,114 @@ function PortfolioTab() {
                 placeholder="e.g. Symmetrical Nyali Pavilion" 
                 value={title}
                 onChange={e => setTitle(e.target.value)}
-                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
+                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-sm"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Category</label>
+              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Category Selection</label>
               <select 
                 value={category}
                 onChange={e => setCategory(e.target.value)}
-                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand cursor-pointer"
+                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand cursor-pointer text-ink text-sm"
               >
-                <option value="Residential">Residential</option>
-                <option value="Commercial">Commercial</option>
-                <option value="Yacht & Exterior">Yacht & Exterior</option>
-                <option value="Landscaping">Landscaping</option>
+                <option value="Architectural & Interior Design">Architectural & Interior Design</option>
+                <option value="Specialty Design">Specialty Design</option>
+                <option value="Product & Application Design">Product & Application Design</option>
               </select>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Image URL</label>
-              <input 
-                required
-                type="text" 
-                placeholder="https://images.unsplash.com/photo-..." 
-                value={imageUrl}
-                onChange={e => setImageUrl(e.target.value)}
-                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Location (Optional)</label>
-              <input 
-                type="text" 
-                placeholder="e.g. Kilimani, Nairobi" 
-                value={location}
-                onChange={e => setLocation(e.target.value)}
-                className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
-              />
+          {/* Before & After Checkbox Control */}
+          <div className="bg-amber-50/40 border border-amber-100 p-5 rounded-2xl flex items-start gap-3">
+            <input 
+              type="checkbox"
+              id="isBeforeAfterCheck"
+              checked={isBeforeAfter}
+              onChange={e => setIsBeforeAfter(e.target.checked)}
+              className="mt-1 h-4 w-4 text-brand border-gray-300 rounded focus:ring-brand cursor-pointer"
+            />
+            <div className="space-y-1">
+              <label htmlFor="isBeforeAfterCheck" className="text-xs font-bold uppercase tracking-wider text-amber-900 cursor-pointer select-none">
+                This is a Before & After project
+              </label>
+              <p className="text-[10px] text-amber-800/75 leading-relaxed">
+                Checking this reveals separate file input slots to record spatial transformation. Frontend clients can compare results interactively.
+              </p>
             </div>
           </div>
+
+          {/* Conditional Media Uploader Sections */}
+          {isBeforeAfter ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left items-start">
+              <div className="space-y-4 bg-gray-50/50 p-4 sm:p-5 rounded-2xl border border-dashed border-gray-200">
+                <span className="text-[10px] font-mono tracking-widest text-brand block font-bold uppercase">//Original Scene</span>
+                <CloudinaryImageUploader 
+                  onUploadSuccess={(url) => setBeforeImageUrl(url)}
+                  label="Upload 'Before' Image"
+                  currentValue={beforeImageUrl}
+                />
+                <div className="space-y-1.2 font-sans">
+                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#121212]/45">Or Past Before URL</label>
+                  <input 
+                    type="text" 
+                    placeholder="https://images.unsplash.com/photo-..." 
+                    value={beforeImageUrl}
+                    onChange={e => setBeforeImageUrl(e.target.value)}
+                    className="w-full p-3 bg-white border rounded-xl focus:outline-none focus:border-brand text-[10px] font-mono text-ink"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4 bg-gray-50/50 p-4 sm:p-5 rounded-2xl border border-dashed border-gray-200">
+                <span className="text-[10px] font-mono tracking-widest text-emerald-600 block font-bold uppercase">//Atelier Realized Intervention</span>
+                <CloudinaryImageUploader 
+                  onUploadSuccess={(url) => setAfterImageUrl(url)}
+                  label="Upload 'After' Image"
+                  currentValue={afterImageUrl}
+                />
+                <div className="space-y-1.2 font-sans">
+                  <label className="text-[9px] font-bold uppercase tracking-widest text-[#121212]/45">Or Past After URL</label>
+                  <input 
+                    type="text" 
+                    placeholder="https://images.unsplash.com/photo-..." 
+                    value={afterImageUrl}
+                    onChange={e => setAfterImageUrl(e.target.value)}
+                    className="w-full p-3 bg-white border rounded-xl focus:outline-none focus:border-brand text-[10px] font-mono text-ink"
+                  />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left items-start">
+              <div className="space-y-4">
+                <CloudinaryImageUploader 
+                  onUploadSuccess={(url) => setImageUrl(url)}
+                  label="Upload Project Photo"
+                  currentValue={imageUrl}
+                />
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Or Paste Image URL</label>
+                  <input 
+                    type="text" 
+                    placeholder="https://images.unsplash.com/photo-..." 
+                    value={imageUrl}
+                    onChange={e => setImageUrl(e.target.value)}
+                    className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs font-mono text-ink"
+                  />
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Location (Optional)</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. Kilimani, Nairobi" 
+                  value={location}
+                  onChange={e => setLocation(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-sm"
+                />
+              </div>
+            </div>
+          )}
 
           <div className="space-y-1.5 text-left">
             <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Story & Description</label>
@@ -1397,7 +1625,7 @@ function PortfolioTab() {
               placeholder="Detail the materials, architectural spatial flow, and structural choices..." 
               value={description}
               onChange={e => setDescription(e.target.value)}
-              className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand resize-none"
+              className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand resize-none text-ink text-sm"
             />
           </div>
 
@@ -1405,7 +1633,7 @@ function PortfolioTab() {
             <button 
               type="submit"
               disabled={isAdding}
-              className="bg-brand text-white px-8 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-brand/90 transition-all shadow-xl shadow-brand/10 disabled:opacity-50 cursor-pointer"
+              className="bg-brand text-white px-8 py-3.5 rounded-2xl font-bold flex items-center gap-2 hover:bg-brand/90 transition-all shadow-xl shadow-brand/10 disabled:opacity-50 cursor-pointer text-xs uppercase tracking-widest"
             >
               <Plus size={18} />
               {isAdding ? 'Adding Project...' : 'Add Live Project'}
@@ -1417,7 +1645,7 @@ function PortfolioTab() {
       {/* Portfolio Items list */}
       <div className="bg-white rounded-3xl border shadow-sm overflow-hidden text-left">
         <div className="p-6 border-b">
-          <h3 className="text-xl font-bold serif">Live Portfolio Library ({portfolioItems.length})</h3>
+          <h3 className="text-xl font-bold serif text-ink">Live Portfolio Library ({portfolioItems.length})</h3>
         </div>
         {portfolioItems.length === 0 ? (
           <div className="py-20 text-center text-ink/40">
@@ -1425,43 +1653,60 @@ function PortfolioTab() {
             <p className="text-sm">No items uploaded yet. Start adding items above!</p>
           </div>
         ) : (
-          <table className="w-full text-left">
-            <thead>
-              <tr className="bg-gray-50 border-b">
-                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Project Layout</th>
-                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Category</th>
-                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Details & Story</th>
-                <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {portfolioItems.map(item => (
-                <tr key={item.id} className="border-b hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-6 flex items-center gap-4">
-                    <img src={item.imageUrl} alt="" className="w-16 h-16 rounded-xl object-cover border bg-gray-150" />
-                    <div>
-                      <h4 className="font-bold text-sm text-ink">{item.title}</h4>
-                      {item.location && <p className="text-[10px] font-mono text-ink/40">📍 {item.location}</p>}
-                    </div>
-                  </td>
-                  <td className="px-6 py-6 text-xs font-mono uppercase font-bold text-brand">
-                    {item.category}
-                  </td>
-                  <td className="px-6 py-6 text-xs text-ink/65 max-w-xs truncate">
-                    {item.description}
-                  </td>
-                  <td className="px-6 py-6">
-                    <button 
-                      onClick={() => handleDelete(item.id)}
-                      className="p-2 text-red-500 bg-red-50 hover:bg-red-500 hover:text-white transition-all rounded-lg cursor-pointer"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </td>
+          <div className="overflow-x-auto w-full">
+            <table className="w-full text-left min-w-[700px]">
+              <thead>
+                <tr className="bg-gray-50 border-b">
+                  <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Project Layout</th>
+                  <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Category</th>
+                  <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Details & Story</th>
+                  <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-ink/40">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {portfolioItems.map(item => (
+                  <tr key={item.id} className="border-b hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-6 flex items-center gap-4">
+                      <div className="flex gap-1.5 shrink-0">
+                        {item.isBeforeAfter ? (
+                          <>
+                            <img src={item.beforeImageUrl} alt="Before" className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border bg-gray-100" />
+                            <img src={item.afterImageUrl} alt="After" className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border bg-gray-100" />
+                          </>
+                        ) : (
+                          <img src={item.imageUrl} alt="Single" className="w-10 h-10 sm:w-16 sm:h-16 rounded-xl object-cover border bg-gray-100" />
+                        )}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-sm text-ink">{item.title}</h4>
+                        {item.location && <p className="text-[10px] font-mono text-ink/40">📍 {item.location}</p>}
+                        {item.isBeforeAfter && (
+                          <span className="inline-block mt-1 bg-amber-50 text-amber-700 border border-amber-100 text-[8px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-md">
+                            Before & After
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-6 text-xs font-mono uppercase font-bold text-brand">
+                      {item.category}
+                    </td>
+                    <td className="px-6 py-6 text-xs text-ink/65 max-w-xs truncate">
+                      {item.description}
+                    </td>
+                    <td className="px-6 py-6">
+                      <button 
+                        type="button"
+                        onClick={() => handleDelete(item.id)}
+                        className="p-2 text-red-500 bg-red-50 hover:bg-red-500 hover:text-white transition-all rounded-lg cursor-pointer"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
@@ -1704,42 +1949,63 @@ function CaseStudiesTab() {
           {/* 3. TECHNICAL JOURNEY */}
           <div className="space-y-4 pt-4">
             <h4 className="text-xs font-mono uppercase tracking-widest text-brand font-bold border-b pb-1">3. The 3D Journey & Material Spotlights</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">2D Blueprint Image URL</label>
-                <input 
-                  type="text" 
-                  placeholder="https://images.unsplash.com/..." 
-                  value={blueprintUrl}
-                  onChange={e => setBlueprintUrl(e.target.value)}
-                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs font-mono"
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+              <div className="space-y-3">
+                <CloudinaryImageUploader 
+                  onUploadSuccess={(url) => setBlueprintUrl(url)}
+                  label="Upload 2D Blueprint"
+                  currentValue={blueprintUrl}
                 />
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Or Blueprint Image URL</label>
+                  <input 
+                    type="text" 
+                    placeholder="https://images.unsplash.com/..." 
+                    value={blueprintUrl}
+                    onChange={e => setBlueprintUrl(e.target.value)}
+                    className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs font-mono"
+                  />
+                </div>
               </div>
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">3D Render Image URL</label>
-                <input 
-                  type="text" 
-                  placeholder="https://images.unsplash.com/..." 
-                  value={renderUrl}
-                  onChange={e => setRenderUrl(e.target.value)}
-                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs font-mono"
+              <div className="space-y-3">
+                <CloudinaryImageUploader 
+                  onUploadSuccess={(url) => setRenderUrl(url)}
+                  label="Upload 3D Render"
+                  currentValue={renderUrl}
                 />
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Or Render Image URL</label>
+                  <input 
+                    type="text" 
+                    placeholder="https://images.unsplash.com/..." 
+                    value={renderUrl}
+                    onChange={e => setRenderUrl(e.target.value)}
+                    className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs font-mono"
+                  />
+                </div>
               </div>
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Final Realized Photo URL</label>
-                <input 
-                  required
-                  type="text" 
-                  placeholder="https://images.unsplash.com/..." 
-                  value={finalPhotoUrl}
-                  onChange={e => setFinalPhotoUrl(e.target.value)}
-                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs font-mono"
+              <div className="space-y-3">
+                <CloudinaryImageUploader 
+                  onUploadSuccess={(url) => setFinalPhotoUrl(url)}
+                  label="Upload Final Realized Photo"
+                  currentValue={finalPhotoUrl}
                 />
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Or Final Realized URL</label>
+                  <input 
+                    required
+                    type="text" 
+                    placeholder="https://images.unsplash.com/..." 
+                    value={finalPhotoUrl}
+                    onChange={e => setFinalPhotoUrl(e.target.value)}
+                    className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs font-mono"
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-1.5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+              <div className="space-y-1.5 md:mt-2">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Material Spotlight Detail (Macro description)</label>
                 <input 
                   type="text" 
@@ -1749,15 +2015,22 @@ function CaseStudiesTab() {
                   className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand"
                 />
               </div>
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Material Spotlight Macro Image URL</label>
-                <input 
-                  type="text" 
-                  placeholder="https://images.unsplash.com/..." 
-                  value={materialSpotlightUrl}
-                  onChange={e => setMaterialSpotlightUrl(e.target.value)}
-                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs font-mono"
+              <div className="space-y-3">
+                <CloudinaryImageUploader 
+                  onUploadSuccess={(url) => setMaterialSpotlightUrl(url)}
+                  label="Upload Material Macro Photo"
+                  currentValue={materialSpotlightUrl}
                 />
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Or Material Spotlight URL</label>
+                  <input 
+                    type="text" 
+                    placeholder="https://images.unsplash.com/..." 
+                    value={materialSpotlightUrl}
+                    onChange={e => setMaterialSpotlightUrl(e.target.value)}
+                    className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-xs font-mono"
+                  />
+                </div>
               </div>
             </div>
           </div>
