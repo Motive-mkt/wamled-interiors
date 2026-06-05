@@ -22,53 +22,10 @@ interface Project {
   scopeOfWork?: string;
   galleryUrls?: string[];
   location?: string;
+  completionYear?: string;
+  isArchived?: boolean;
   createdAt?: string;
 }
-
-const DEFAULT_PROJECT_ITEMS: Project[] = [
-  {
-    id: "default-p-01",
-    title: "The Nairobi Civic Atelier",
-    category: "Institutional",
-    imageUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=95&w=1200",
-    description: "An editorial-grade public cultural complex fused with Swahili stone masonry and high-performance sun-shading sails.",
-    scopeOfWork: "Interior architecture re-modeling of library wings and presentation halls. Custom acoustic mahogany wood panels and salt-safe mineral mortars. Integrated natural cross-breeze thermal channels.",
-    location: "Kileleshwa, Nairobi",
-    galleryUrls: [
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=95&w=1200",
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=95&w=1200",
-      "https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&q=95&w=1200"
-    ]
-  },
-  {
-    id: "default-p-02",
-    title: "Lake Nakuru Eco-lodge Lounge",
-    category: "Commercial",
-    imageUrl: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=95&w=1200",
-    description: "Spatially optimized luxury lodge lounge designed for high-performance guest orientation. Raw stone pillars and customized local timber lattices harmonize seamlessly.",
-    scopeOfWork: "Complete curation of the 450 sqm lounge area. Custom copper fire pits, circadian transitioned lighting layers, and basalt monolith reception installations.",
-    location: "Lake Nakuru Eco-Park",
-    galleryUrls: [
-      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=95&w=1200",
-      "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=95&w=1200",
-      "https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&q=95&w=1200"
-    ]
-  },
-  {
-    id: "default-p-03",
-    title: "Symmetrical Nyali Oceanfront Pavilion",
-    category: "Housing",
-    imageUrl: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&q=95&w=1200",
-    description: "A private residential oceanward sanctuary, featuring multi-car garages, a resort-grade sauna vault, and double-layered glass structures.",
-    scopeOfWork: "Complete interior and exterior landscape layout. Imported dolomite slab finishes, hidden services corridors, and infinity-edge concrete lap baths.",
-    location: "Nyali Beach, Mombasa",
-    galleryUrls: [
-      "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&q=95&w=1200",
-      "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=95&w=1200",
-      "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&q=95&w=1200"
-    ]
-  }
-];
 
 export default function Portfolio() {
   const [dbProjects, setDbProjects] = useState<Project[]>([]);
@@ -97,17 +54,11 @@ export default function Portfolio() {
     return () => unsubscribe();
   }, []);
 
-  // Merge Firestore items with default pre-seeded placeholders
-  const allProjects = [...dbProjects, ...DEFAULT_PROJECT_ITEMS];
-
-  // Unique merged list by id
-  const uniqueProjects = allProjects.filter(
-    (proj, index, self) => self.findIndex(p => p.id === proj.id) === index
-  );
-
-  // Filter based on selectedCategory ('Institutional' | 'Commercial' | 'Housing')
-  const filteredItems = uniqueProjects.filter(
-    item => item.category.toLowerCase() === selectedCategory.toLowerCase()
+  // Filter based on selectedCategory ('Institutional' | 'Commercial' | 'Housing') and exclude archived items
+  const filteredItems = dbProjects.filter(
+    item => 
+      item.category.toLowerCase() === selectedCategory.toLowerCase() && 
+      item.isArchived !== true
   );
 
   return (
@@ -208,12 +159,19 @@ export default function Portfolio() {
                 >
                   {/* Photo container */}
                   <div className="aspect-[4/3] w-full relative overflow-hidden bg-[#161616]/5">
-                    <img 
-                      src={item.imageUrl} 
-                      alt={item.title} 
-                      className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105 select-none"
-                      referrerPolicy="no-referrer"
-                    />
+                    {item.imageUrl ? (
+                      <img 
+                        src={item.imageUrl} 
+                        alt={item.title} 
+                        className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105 select-none"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[#FAF9F7] border border-dashed border-[#121212]/20 flex flex-col items-center justify-center p-6 text-center select-none">
+                        <ImageIcon size={24} className="text-[#C5A059]/40 mb-2" />
+                        <span className="text-[9px] font-mono uppercase tracking-widest text-[#121212]/30">Media Frame Pending</span>
+                      </div>
+                    )}
                     
                     {/* Floating Category tag over visual top margin */}
                     <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-md text-[8px] font-mono tracking-wider font-extrabold text-[#C5A059] px-3 py-1 rounded-md border border-[#121212]/5 uppercase shadow-xs z-10">
@@ -223,10 +181,17 @@ export default function Portfolio() {
 
                   {/* High Legibility text block *UNDER* the picture inside white layout container */}
                   <div className="p-6 text-left space-y-3 bg-white">
-                    {item.location && (
-                      <div className="flex items-center gap-1 text-gray-400 text-[9px] font-mono tracking-widest uppercase font-semibold">
-                        <MapPin size={10} className="text-[#C5A059]" />
-                        <span>{item.location}</span>
+                    {(item.location || item.completionYear) && (
+                      <div className="flex items-center justify-between text-gray-400 text-[9px] font-mono tracking-widest uppercase font-semibold">
+                        <div className="flex items-center gap-1">
+                          <MapPin size={10} className="text-[#C5A059]" />
+                          <span>{item.location || "Nairobi Studio"}</span>
+                        </div>
+                        {item.completionYear && (
+                          <span className="text-[#C5A059] tracking-wider">
+                            Year: {item.completionYear}
+                          </span>
+                        )}
                       </div>
                     )}
                     
@@ -295,10 +260,17 @@ export default function Portfolio() {
                       {selectedProject.title}
                     </h2>
                     
-                    {selectedProject.location && (
-                      <div className="flex items-center gap-2 text-ink/55 text-xs font-mono uppercase tracking-widest font-semibold border-b border-ink/5 pb-4">
-                        <MapPin size={12} className="text-[#C5A059]" />
-                        <span>{selectedProject.location}</span>
+                    {(selectedProject.location || selectedProject.completionYear) && (
+                      <div className="flex items-center justify-between text-ink/55 text-xs font-mono uppercase tracking-widest font-semibold border-b border-ink/5 pb-4">
+                        <div className="flex items-center gap-2">
+                          <MapPin size={12} className="text-[#C5A059]" />
+                          <span>{selectedProject.location || "Nairobi Studio"}</span>
+                        </div>
+                        {selectedProject.completionYear && (
+                          <span className="text-[#A83F1B] font-bold">
+                            Completed: {selectedProject.completionYear}
+                          </span>
+                        )}
                       </div>
                     )}
 

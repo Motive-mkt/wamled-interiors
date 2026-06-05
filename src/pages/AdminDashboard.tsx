@@ -1438,6 +1438,7 @@ function PortfolioTab() {
   const [scopeOfWork, setScopeOfWork] = useState('');
   const [galleryUrls, setGalleryUrls] = useState<string[]>([]);
   const [location, setLocation] = useState('');
+  const [completionYear, setCompletionYear] = useState('');
   const [isAdding, setIsAdding] = useState(false);
   const [isUploadingGallery, setIsUploadingGallery] = useState(false);
 
@@ -1486,6 +1487,8 @@ function PortfolioTab() {
         scopeOfWork,
         galleryUrls,
         location,
+        completionYear: completionYear || new Date().getFullYear().toString(),
+        isArchived: false,
         createdAt: new Date().toISOString()
       });
       setTitle('');
@@ -1494,6 +1497,7 @@ function PortfolioTab() {
       setScopeOfWork('');
       setGalleryUrls([]);
       setLocation('');
+      setCompletionYear('');
     } catch (e) {
       console.error("Error creating project item:", e);
     }
@@ -1507,6 +1511,16 @@ function PortfolioTab() {
       } catch (e) {
         console.error("Error deleting project:", e);
       }
+    }
+  };
+
+  const handleToggleArchive = async (item: any) => {
+    try {
+      await updateDoc(doc(db, 'projects', item.id), {
+        isArchived: !item.isArchived
+      });
+    } catch (e) {
+      console.error("Error toggling archivation:", e);
     }
   };
 
@@ -1564,15 +1578,27 @@ function PortfolioTab() {
               </div>
             </div>
             <div className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Location / Territory</label>
-                <input 
-                  type="text" 
-                  placeholder="e.g. Nyali, Mombasa" 
-                  value={location}
-                  onChange={e => setLocation(e.target.value)}
-                  className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-sm"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Location / Territory</label>
+                  <input 
+                    type="text" 
+                    placeholder="e.g. Nyali, Mombasa" 
+                    value={location}
+                    onChange={e => setLocation(e.target.value)}
+                    className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-sm"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-[#121212]/40">Completion Year</label>
+                  <input 
+                    type="text" 
+                    placeholder="e.g. 2026" 
+                    value={completionYear}
+                    onChange={e => setCompletionYear(e.target.value)}
+                    className="w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:border-brand text-ink text-sm"
+                  />
+                </div>
               </div>
 
               {/* Multi-Image Gallery Uploader */}
@@ -1680,7 +1706,9 @@ function PortfolioTab() {
                       <img src={item.imageUrl} alt="" className="w-12 h-12 rounded-xl object-cover border bg-gray-100" />
                       <div>
                         <h4 className="font-bold text-sm text-ink">{item.title}</h4>
-                        {item.location && <p className="text-[10px] font-mono text-ink/40">📍 {item.location}</p>}
+                        <p className="text-[10px] font-mono text-ink/40">
+                          {item.location && `📍 ${item.location}`} {item.completionYear && `• Year: ${item.completionYear}`}
+                        </p>
                       </div>
                     </td>
                     <td className="px-6 py-6 text-xs font-mono uppercase font-bold text-brand">
@@ -1690,13 +1718,28 @@ function PortfolioTab() {
                       {item.description}
                     </td>
                     <td className="px-6 py-6">
-                      <button 
-                        type="button"
-                        onClick={() => handleDelete(item.id)}
-                        className="p-2 text-red-500 bg-red-50 hover:bg-red-500 hover:text-white transition-all rounded-lg cursor-pointer"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => handleToggleArchive(item)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all ${
+                            item.isArchived 
+                              ? 'bg-amber-100 text-amber-800 border border-amber-200 hover:bg-amber-200' 
+                              : 'bg-emerald-100 text-emerald-800 border border-emerald-200 hover:bg-emerald-200'
+                          }`}
+                          title={item.isArchived ? "Click to Activate" : "Click to Archive"}
+                        >
+                          {item.isArchived ? "Archived (Hidden)" : "Live (Visible)"}
+                        </button>
+                        <button 
+                          type="button"
+                          onClick={() => handleDelete(item.id)}
+                          className="p-2 text-red-500 bg-red-50 hover:bg-red-500 hover:text-white transition-all rounded-lg cursor-pointer"
+                          title="Delete permanently"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

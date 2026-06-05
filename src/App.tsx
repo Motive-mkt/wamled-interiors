@@ -22,9 +22,9 @@ const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
 const Portfolio = React.lazy(() => import('./pages/Portfolio'));
 const Contact = React.lazy(() => import('./pages/Contact'));
 const CaseStudies = React.lazy(() => import('./pages/CaseStudies'));
-const Filmstrip = React.lazy(() => import('./pages/Filmstrip').then(module => ({ default: module.Filmstrip })));
-const ServiceDetail = React.lazy(() => import('./pages/ServiceDetail').then(module => ({ default: module.ServiceDetail })));
-const BespokeServices = React.lazy(() => import('./pages/BespokeServices').then(module => ({ default: module.BespokeServices })));
+const Filmstrip = React.lazy(() => import('./pages/Filmstrip'));
+const ServiceDetail = React.lazy(() => import('./pages/ServiceDetail'));
+const BespokeServices = React.lazy(() => import('./pages/BespokeServices'));
 import { 
   Phone, 
   MapPin, 
